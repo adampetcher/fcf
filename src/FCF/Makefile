@@ -1,5 +1,5 @@
 
-MODULES := Limit Blist StdNat Rat Fold Comp DetSem DistSem DistRules DistTacs ProgTacs GenTacs Crypto SemEquiv ProgramLogic RndNat Bernoulli FCF HasDups CompFold RepeatCore PRF_Encryption_IND_CPA PRF Array Encryption Asymptotic Admissibility RndInList OTP RndGrpElem GroupTheory WC_PolyTime RndListElem RndPerm NoDup_gen Hybrid OracleCompFold Encryption_PK DiffieHellman
+MODULES := Limit Blist StdNat Rat Fold Comp DetSem DistSem DistRules DistTacs ProgTacs GenTacs Crypto SemEquiv ProgramLogic RndNat Bernoulli FCF HasDups CompFold RepeatCore PRF Array Encryption Asymptotic Admissibility RndInList OTP RndGrpElem GroupTheory WC_PolyTime RndListElem RndPerm NoDup_gen Hybrid OracleCompFold Encryption_PK DiffieHellman
 
 VS      := $(MODULES:%=%.v)
 
