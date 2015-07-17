@@ -86,23 +86,16 @@ Lemma RndNat_unchecked_lt_support : forall n v,
   
   intuition.
   unfold RndNat_unchecked.
-  simpl.
-  eapply in_getUnique.
-  eapply in_flatten.
-  econstructor.
-  split.
-  eapply in_map_iff.
-  econstructor.
-  split.
-  eauto.
-  Focus 2.
+
+  eapply getSupport_In_Seq.
+  eapply in_getAllBvectors.
   simpl.
   left.
+  
   eapply bvToNat_natToBv_inverse.
   eapply lognat_monotonic.
   omega.
-  
-  eapply in_getAllBvectors.
+ 
   
 Qed.
 
