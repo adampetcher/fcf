@@ -11,6 +11,9 @@ Class EqDec (A : Set) := {
   eqb_leibniz : forall x y, eqb x y = true <-> x = y 
 }.
 
+Infix "?=" := eqb (at level 70) : eq_scope.
+Infix "!=" := (fun x y => negb (eqb x y)) (at level 70) : eq_scope.
+
 Theorem eqb_refl : forall (A : Set)(pf : EqDec A)(a : A),
   eqb a a = true.
   
