@@ -59,7 +59,7 @@ Section DupProb.
 
   Theorem dupProb : 
     forall (ls : list A),
-      Pr[x <-$ compMap _ (fun _ => {0,1}^eta) ls; ret (hasDups _ x)] <= 
+      Pr[x <-$ compMap _ (fun _ => {0, 1}^eta) ls; ret (hasDups _ x)] <= 
       (length ls ^ 2 / 2 ^ eta).
 
     Local Opaque evalDist.
