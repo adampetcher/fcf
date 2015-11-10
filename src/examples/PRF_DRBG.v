@@ -6,6 +6,7 @@ Require Import HasDups.
 Require Import RndInList.
 Require Import CompFold.
 
+(* Indistinguishability definition for DRBGs *)
 Section DRBG.
 
   (* The type of random seeds. *)
@@ -35,19 +36,9 @@ Section DRBG.
 
 End DRBG.
 
-(* For example, a DRBG on uniform bit vectors. *)
-Section DRBG_bits.
-
-  Variable k : nat.
-  Variable l : nat.
-
-  Definition DRBG_bits_Advantage := DRBG_Advantage ({0, 1}^k) ({0, 1}^l).
-
-End DRBG_bits.
-
 Require Import PRF.
 
-(* To avoid all the bit vector complexities, we will use the generic definition and use lists of PRF outputs as the output of the DRBG. *)
+(* To keep things simple, we will assume that PRF outputs are bit vectors, and the DRBG output is a list of these bit vectors.  This setup can be generalized, if necessary.  *)
 
 (* We need an adaptively-secure PRF because we use the PRF output to produce the next input, and therefore this input is unpredictable. *)
 
@@ -71,13 +62,18 @@ Section PRF_DRBG.
   Hypothesis injD_correct : 
     forall r1 r2, (injD r1) = (injD r2) -> r1 = r2.
 
+  (* The length (in PRF output blocks) of the DRBG output is l.  This value must be positive. *)
   Variable l : nat.
   Hypothesis l_pos : l  > 0.
+
+  (* Because the DRBG is constructed using feedback from the previous iteration, we need an initial value.  We assume an arbitrary bit vector and then inject it into the domain of the PRF.  This arrangement was chosen for simplicity, and it could easily be modified or generalized. *)
   Variable r_init : Bvector eta.
   Definition v_init := injD r_init.
   
+  (* The computation used to obtain uniform random values in the range of the DRBG.  This computation is used only in the security definition. *)
   Definition RndOut := compMap _ (fun _ => {0, 1}^eta) (forNats l).
   
+  (* We model the DRBG using a function that uses the previous output value (injected into the domain) as the current input value of the PRF. *)
   Fixpoint PRF_DRBG_f (v : D)(n : nat)(k : Key) :=
     match n with
         | O => nil
@@ -85,10 +81,11 @@ Section PRF_DRBG.
           r <- (f k v);
             r :: (PRF_DRBG_f (injD r) n' k)
     end.
-
+  
   Definition PRF_DRBG (k : Key) :=
     PRF_DRBG_f v_init l k.
   
+  (* The adversary against the DRBG. *)
   Variable A : list (Bvector eta) -> Comp bool.
   Hypothesis A_wf : forall c, well_formed_comp (A c).
 
@@ -97,7 +94,7 @@ Section PRF_DRBG.
     s <-$ RndKey ;
     A (PRF_DRBG_f v_init l s).
 
-  (* This game is equivalent to the first game in the security definition. *)
+  (* This game is equivalent to the first game in the DRBG security definition. *)
   Theorem PRF_DRBG_G1_equiv : 
     Pr[DRBG_G0 RndKey PRF_DRBG A] == Pr[PRF_DRBG_G1].
 
@@ -105,7 +102,7 @@ Section PRF_DRBG.
 
   Qed.
 
-  (* Step 2: use the PRF as an oracle. *)
+  (* Step 2: use the PRF as an oracle.  This will allow us to apply the security definition and replace it in the next step.*)
   Fixpoint PRF_DRBG_f_G2 (v : D)(n : nat) :=
     match n with
         | O => $ ret nil
@@ -115,7 +112,7 @@ Section PRF_DRBG.
                 $ ret (r :: ls')
     end.
 
-
+  (* The constructed adversary against the PRF. *)
   Definition PRF_A := (ls <--$ PRF_DRBG_f_G2 v_init l; $ A ls).
 
   Theorem PRF_DRBG_f_G2_wf : 
@@ -200,7 +197,6 @@ Section PRF_DRBG.
 
    Qed.
 
-
    Theorem PRF_DRBG_f_G1_1_G2_equiv :
      forall k n v,
      comp_spec (fun x1 x2 => x1 = fst x2) (PRF_DRBG_f_G1_1 v n k)
@@ -252,7 +248,6 @@ Section PRF_DRBG.
   Qed.
 
   (* Step 3: replace the PRF with a random function *)
-
   Definition PRF_DRBG_G3 :=
     [b, _] <-$2 PRF_A _ _ (randomFunc ({0,1}^eta) _) nil;
     ret b.
@@ -264,11 +259,12 @@ Section PRF_DRBG.
   Qed.
 
   
-  (* Step 4 : replace the random function with random values.  This is the same as long as there are no duplicates in the list of random function inputs. *)
+  (* Step 4 : Replace the random function with random values.  This is the same as long as there are no duplicates in the list of random function inputs. *)
   Definition PRF_DRBG_G4 :=
     [b, _] <-$2 PRF_A _ _ (fun _ _ => x <-$ {0, 1}^eta; ret (x, tt)) tt;
     ret b.
 
+  (* Step 3.1: Preserve duplicate inputs using an oracle that keeps track of all the queries. *)
   Definition randomFunc_withDups ls x :=
     y <-$ 
       (match (arrayLookup _ ls x) with 
@@ -277,11 +273,11 @@ Section PRF_DRBG.
        end); 
     ret (y, (x, y) :: ls).
 
-  (* Step 3.1: preserve duplicate calls *)
   Definition PRF_DRBG_G3_1 :=
     [b, _] <-$2 PRF_A _ _ (randomFunc_withDups) nil;
     ret b.
   
+  (* randomFunc_withDups behaves the same as randomFunc, even though the state information is different. *)
   Theorem randomFunc_withDups_spec : 
     forall x1 x2 a, 
       (forall x, arrayLookup _ x1 x = arrayLookup _ x2 x) ->
@@ -328,6 +324,7 @@ Section PRF_DRBG.
 
   Qed.
 
+  (* Expose the bad event to the game. *)
   Definition PRF_DRBG_G3_2 :=
     [b, ls] <-$2 PRF_A _ _ (randomFunc_withDups) nil;
     ret (b, hasDups _ (fst (split ls))).
@@ -347,11 +344,12 @@ Section PRF_DRBG.
     reflexivity.
   Qed.
 
+  (* Obtain a new random value for all inputs.  This game is only equal to the previous game when there are no duplicates in the inputs. *)
   Definition PRF_DRBG_G3_3 :=
     [b, ls] <-$2 PRF_A _ _  (fun ls a => x <-$ {0, 1}^eta; ret (x, (a, x)::ls)) nil;
     ret (b, hasDups _ (fst (split ls))).
  
-
+  (* The "equal until bad" specification for randomFunc_withDups and the oracle that always produces a new random value.  This specification forms the core of the proofs of the two parts of the fundamental lemma in the following two theorems. *)
   Theorem PRF_A_randomFunc_eq_until_bad : 
     comp_spec 
       (fun y1 y2 =>
@@ -445,90 +443,101 @@ Section PRF_DRBG.
   Qed.
 
 
-   Theorem PRF_DRBG_G3_2_3_badness_same : 
-      Pr  [x <-$ PRF_DRBG_G3_2; ret snd x ] ==
-      Pr  [x <-$ PRF_DRBG_G3_3; ret snd x ].
+  Theorem PRF_DRBG_G3_2_3_badness_same : 
+    Pr  [x <-$ PRF_DRBG_G3_2; ret snd x ] ==
+    Pr  [x <-$ PRF_DRBG_G3_3; ret snd x ].
+    
+    unfold PRF_DRBG_G3_2, PRF_DRBG_G3_3.
+    comp_inline_l.
+    comp_inline_r.
+    eapply comp_spec_eq_impl_eq.
+    comp_skip.
+    eapply PRF_A_randomFunc_eq_until_bad.
+    
+    comp_simp.
+    intuition.
+    simpl in *.
+    eapply comp_spec_ret; intuition.
+  Qed.
 
-     unfold PRF_DRBG_G3_2, PRF_DRBG_G3_3.
-     comp_inline_l.
-     comp_inline_r.
-     eapply comp_spec_eq_impl_eq.
-     comp_skip.
-     eapply PRF_A_randomFunc_eq_until_bad.
+  Theorem PRF_DRBG_G3_2_3_eq_until_bad : 
+    forall a : bool,
+      evalDist PRF_DRBG_G3_2 (a, false) == evalDist PRF_DRBG_G3_3 (a, false).
 
-     comp_simp.
-     intuition.
-     simpl in *.
-     eapply comp_spec_ret; intuition.
-   Qed.
+    intuition.
+    unfold PRF_DRBG_G3_2, PRF_DRBG_G3_3.
+    eapply comp_spec_impl_eq.
+    comp_skip.
+    eapply PRF_A_randomFunc_eq_until_bad.
+    comp_simp.
+    eapply comp_spec_ret; intuition.
+    simpl in *; pairInv; intuition; subst;
+    trivial.
+    
+    simpl in *.
+    pairInv.
+    rewrite H2.
+    rewrite <- H2 in H6.
+    edestruct H3; intuition; subst.
+    trivial.
 
+  Qed.
 
-   Theorem PRF_DRBG_G3_2_3_close : 
-     | Pr[x <-$ PRF_DRBG_G3_2; ret (fst x)] - Pr[x <-$ PRF_DRBG_G3_3; ret (fst x)] | <= Pr[x <-$ PRF_DRBG_G3_3; ret (snd x)].
+  Theorem PRF_DRBG_G3_2_3_close : 
+  | Pr[x <-$ PRF_DRBG_G3_2; ret (fst x)] - Pr[x <-$ PRF_DRBG_G3_3; ret (fst x)] | <= Pr[x <-$ PRF_DRBG_G3_3; ret (snd x)].
+    
+    rewrite ratDistance_comm.
+    eapply fundamental_lemma_h.
+    symmetry.
+    eapply PRF_DRBG_G3_2_3_badness_same.
 
-     rewrite ratDistance_comm.
-     eapply fundamental_lemma_h.
-     symmetry.
-     eapply PRF_DRBG_G3_2_3_badness_same.
+    intuition.
+    symmetry.
+    apply PRF_DRBG_G3_2_3_eq_until_bad.    
+    
+  Qed.
 
-     intuition.
-     symmetry.
-     unfold PRF_DRBG_G3_2, PRF_DRBG_G3_3.
-     eapply comp_spec_impl_eq.
-     comp_skip.
-     eapply PRF_A_randomFunc_eq_until_bad.
-     comp_simp.
-     eapply comp_spec_ret; intuition.
-     simpl in *; pairInv; intuition; subst;
-     trivial.
-
-     simpl in *.
-     pairInv.
-     rewrite H2.
-     rewrite <- H2 in H6.
-     edestruct H3; intuition; subst.
-     trivial.
+  Theorem PRF_DRBG_G3_3_G4_eq :
+    Pr[ x <-$ PRF_DRBG_G3_3; ret (fst x) ] == Pr[ PRF_DRBG_G4 ].
+    
+    unfold PRF_DRBG_G3_3, PRF_DRBG_G4.
+    simpl.
+    inline_first.
+    eapply comp_spec_eq_impl_eq.
+    comp_skip.
+    eapply (oc_comp_spec_eq _ _ _ _ _ _ (fun x1 x2 => True)); intuition.    
+    comp_skip.
+    eapply comp_spec_ret; intuition.
+    simpl in H1.
+    intuition; subst.
+    comp_simp.
+    inline_first.
+    simpl.
+    comp_skip.
+    simpl; comp_simp.
+    eapply comp_spec_eq_refl.
+    
+  Qed.
   
-   Qed.
+  (* Now we need to compute the probability of the "bad" event.  First we will simplify the game defining this event.*)
 
-   Theorem PRF_DRBG_G3_3_G4_eq :
-     Pr[ x <-$ PRF_DRBG_G3_3; ret (fst x) ] == Pr[ PRF_DRBG_G4 ].
-     
-     unfold PRF_DRBG_G3_3, PRF_DRBG_G4.
-     simpl.
-     inline_first.
-     eapply comp_spec_eq_impl_eq.
-     comp_skip.
-     eapply (oc_comp_spec_eq _ _ _ _ _ _ (fun x1 x2 => True)); intuition.    
-     comp_skip.
-     eapply comp_spec_ret; intuition.
-     simpl in H1.
-     intuition; subst.
-     comp_simp.
-     inline_first.
-     simpl.
-     comp_skip.
-     simpl; comp_simp.
-     eapply comp_spec_eq_refl.
-
-   Qed.
-
-
-   Fixpoint PRF_DRBG_f_bad (v : D)(n : nat) :=
+  (* The state of the random function is no longer necessary.  We can simplify things by changing the oracle interaction into a standard (recursive) computation. *)
+  Fixpoint PRF_DRBG_f_bad (v : D)(n : nat) :=
     match n with
-        | O =>  ret nil
-        | S n' => 
+      | O =>  ret nil
+      | S n' => 
           r <-$ {0,1}^eta;
-            ls' <-$ (PRF_DRBG_f_bad (injD r) n');
-            ret (v :: ls')
+          ls' <-$ (PRF_DRBG_f_bad (injD r) n');
+          ret (v :: ls')
     end.
 
-   Definition PRF_DRBG_G3_bad_1 :=
-     ls <-$ PRF_DRBG_f_bad v_init l;
-     ret (hasDups _ ls).
-
+  Definition PRF_DRBG_G3_bad_1 :=
+    ls <-$ PRF_DRBG_f_bad v_init l;
+    ret (hasDups _ ls).
+  
    Require Import Permutation.
-
+   
+   (* The relational specification on the new computation that produces the bad event.  We prove that the list of values produced by this computation is a permutation of the list produced by the oracle interaction in game 3.  Perhaps this could be an equality of we adjust the model, but a permutation works fine for our purposes, since the only thing that matters is the presence/absence of duplicates in the list. *)  
    Theorem PRF_DRBG_f_bad_spec : 
      forall n v ls,
      comp_spec (fun x1 x2 => Permutation (fst (split (snd x1))) ((fst (split ls)) ++ x2))
@@ -558,6 +567,35 @@ Section PRF_DRBG.
      eapply Permutation_refl.
    Qed.
 
+   Theorem Permutation_hasDups : 
+     forall (A : Set)(eqd : EqDec A)(ls1 ls2 : list A),
+       Permutation ls1 ls2 ->
+       hasDups eqd ls1 = hasDups eqd ls2.
+     
+     intuition.
+     case_eq ( hasDups eqd ls1); intuition.
+     apply hasDups_true_not_NoDup in H0.
+     intuition.
+     case_eq (hasDups eqd ls2); intuition.
+     apply hasDups_false_NoDup in H1; intuition.
+     
+     exfalso.
+     eapply H0.
+     eapply permutation_NoDup.
+     eapply Permutation_sym.
+     eauto.
+     trivial.
+     
+     eapply hasDups_false_NoDup in H0; intuition.
+     case_eq (hasDups eqd ls2); intuition.
+     apply hasDups_true_not_NoDup in H1.
+     exfalso.
+     apply H1.
+     eapply permutation_NoDup;
+       eauto.
+     
+   Qed.
+
    Theorem PRF_DRBG_G3_bad_equiv : 
      Pr[x <-$ PRF_DRBG_G3_3; ret (snd x)] == Pr[PRF_DRBG_G3_bad_1].
 
@@ -575,40 +613,12 @@ Section PRF_DRBG.
      simpl.
      eapply comp_spec_ret; intuition.
 
-     Theorem Permutation_hasDups : 
-       forall (A : Set)(eqd : EqDec A)(ls1 ls2 : list A),
-         Permutation ls1 ls2 ->
-         hasDups eqd ls1 = hasDups eqd ls2.
-
-       intuition.
-       case_eq ( hasDups eqd ls1); intuition.
-       apply hasDups_true_not_NoDup in H0.
-       intuition.
-       case_eq (hasDups eqd ls2); intuition.
-       apply hasDups_false_NoDup in H1; intuition.
-       
-       exfalso.
-       eapply H0.
-       eapply permutation_NoDup.
-       eapply Permutation_sym.
-       eauto.
-       trivial.
-
-       eapply hasDups_false_NoDup in H0; intuition.
-       case_eq (hasDups eqd ls2); intuition.
-       apply hasDups_true_not_NoDup in H1.
-       exfalso.
-       apply H1.
-       eapply permutation_NoDup;
-       eauto.
-
-     Qed.
-
      eapply Permutation_hasDups.
      trivial.
 
    Qed.
 
+   (* In the next simplification, we remove the v input from the recursive function, and simply put the random values in the list. *)
    Fixpoint PRF_DRBG_f_bad_2 (n : nat) :=
     match n with
         | O =>  ret nil
@@ -622,6 +632,7 @@ Section PRF_DRBG.
      ls <-$ PRF_DRBG_f_bad_2 (pred l);
      ret (hasDups _ (v_init :: (map injD ls))).
 
+   (* This new recursive computation is similar to the previous one---we just need to shift everything over by one place, and map the injection over the output. *)
    Theorem PRF_DRBG_f_bad_2_equiv : 
      forall n v, 
      comp_spec (fun x1 x2 => x1 = v :: (map injD x2))
@@ -657,6 +668,7 @@ Section PRF_DRBG.
   
    Qed.
 
+   (* The previous recursive function is equivalent to mapping the computation that produces random values over a list of the appropriate length.  The form thet uses compMap can be unified with some existing theory to compute the probability of the event. *)
    Definition PRF_DRBG_G3_bad_3 :=
      ls <-$ compMap _ (fun _ => {0, 1}^eta) (forNats (pred l));
      ret (hasDups _ (v_init :: (map injD ls))).
@@ -690,6 +702,29 @@ Section PRF_DRBG.
 
    Qed.
 
+   Theorem hasDups_inj_equiv : 
+     forall (A B : Set)(eqda : EqDec A)(eqdb : EqDec B)(lsa : list A)(inj : A -> B),
+       (forall a1 a2, inj a1 = inj a2 -> a1 = a2) ->
+       hasDups _ lsa = hasDups _ (map inj lsa).
+     
+     induction lsa; intuition; simpl in *.
+     destruct (in_dec (EqDec_dec eqda) a lsa);
+       destruct (in_dec (EqDec_dec eqdb) (inj a) (map inj lsa));
+       intuition.
+     exfalso.
+     eapply n.
+     eapply in_map_iff.
+     econstructor.
+     intuition.
+     eapply in_map_iff in i.
+     destruct i.
+     intuition.
+     apply H in H1.
+     subst.
+     intuition.
+   Qed.
+   
+   (* Don't apply the injection to the random values and initial input. *)
    Definition PRF_DRBG_G3_bad_4 :=
      ls <-$ compMap _ (fun _ => {0, 1}^eta) (forNats (pred l));
      ret (hasDups _ (r_init :: ls)).
@@ -703,28 +738,6 @@ Section PRF_DRBG.
      eapply comp_spec_ret; intuition.
      unfold v_init.
 
-     Theorem hasDups_inj_equiv : 
-       forall (A B : Set)(eqda : EqDec A)(eqdb : EqDec B)(lsa : list A)(inj : A -> B),
-         (forall a1 a2, inj a1 = inj a2 -> a1 = a2) ->
-         hasDups _ lsa = hasDups _ (map inj lsa).
-
-       induction lsa; intuition; simpl in *.
-       destruct (in_dec (EqDec_dec eqda) a lsa);
-       destruct (in_dec (EqDec_dec eqdb) (inj a) (map inj lsa));
-       intuition.
-       exfalso.
-       eapply n.
-       eapply in_map_iff.
-       econstructor.
-       intuition.
-       eapply in_map_iff in i.
-       destruct i.
-       intuition.
-       apply H in H1.
-       subst.
-       intuition.
-     Qed.
-
      symmetry.
      erewrite (hasDups_inj_equiv _ _ (r_init :: b)).
      simpl. eauto.
@@ -732,15 +745,15 @@ Section PRF_DRBG.
    Qed.
 
    
-
-   (* We need a form of the dupProb theorem that allows the first item in the list to be fixed. *)
+   (* HasDups.v has a theorem that computes the probability of duplicates in a list of random values.  We need a form of the dupProb theorem that allows the first item in the list to be fixed.  *)
    Theorem dupProb_const : 
     forall (X : Set)(ls : list X)(v : Bvector eta),
       Pr[x <-$ compMap _ (fun _ => {0, 1}^eta) ls; ret (hasDups _ (v :: x))] <= 
       ((S (length ls)) ^ 2 / 2 ^ eta).
 
-
      intuition.
+     (* Either the list of random values has duplicates, or v is in this list.  The probability value that we want is (at most) the sum of the probabilities of these two events.  The evalDist_orb_le theorem allows us to reason about them separately.  Put the game in a form that unifies with this theorem. *)
+
      assert (Pr[x <-$ compMap (Bvector_EqDec eta) (fun _ : X => { 0 , 1 }^eta) ls;
     ret hasDups (Bvector_EqDec eta) (v :: x) ] 
                ==
@@ -760,9 +773,13 @@ Section PRF_DRBG.
 
      eapply leRat_trans.
      apply evalDist_orb_le.
+
+     (* Use a theorem from the library to determine the probability that v is present in the random list. *)
      rewrite FixedInRndList_prob.
+     (* Now determine the probability that there are duplicates in the random list. *)
      rewrite dupProb.
      
+     (* The rest is just arithmetic. *)
      simpl.
      rewrite mult_1_r.
      cutrewrite ( S (length ls + length ls * S (length ls)) =  (S (length ls) + length ls * S (length ls)))%nat.
@@ -778,7 +795,7 @@ Section PRF_DRBG.
      eapply mult_le_compat; omega.
      trivial.
      omega.
-  Qed.
+   Qed.
 
    Theorem PRF_DRBG_G3_bad_4_small :
       Pr[PRF_DRBG_G3_bad_4] <= (l ^ 2 / 2 ^ eta).
@@ -795,6 +812,7 @@ Section PRF_DRBG.
  
    Qed.
 
+   (* Combine all of the results related to the G3 games to show that G3 and G4 are close. *)
    Theorem PRF_DRBG_G3_G4_close : 
      | Pr[ PRF_DRBG_G3 ] - Pr[  PRF_DRBG_G4 ] | <= (l^2 / 2^eta).
 
@@ -810,6 +828,7 @@ Section PRF_DRBG.
 
    Qed.
 
+   (* Finally, show that G4 is equivalent to the second game in the DRBG security definition. *)
    Theorem PRF_DRBG_f_G2_compMap_spec :
      forall n v, 
      comp_spec (fun x1 x2 => fst x1 = x2)
@@ -826,7 +845,6 @@ Section PRF_DRBG.
      comp_skip.
      eapply comp_spec_ret; intuition.
    Qed.
-
 
   Theorem PRF_DRBG_G4_DRBG_equiv : 
     Pr[PRF_DRBG_G4] == Pr[DRBG_G1 RndOut A].
@@ -847,6 +865,7 @@ Section PRF_DRBG.
     reflexivity.
   Qed.
 
+  (* The final security result showing that the advantage of the adversary against the DRBG is at most the advantage of the constructed adversary against the PRF, and some negligible value. *)
 
   Theorem PRF_DRBG_Adv_small : 
     DRBG_Advantage RndKey RndOut PRF_DRBG A <=  
