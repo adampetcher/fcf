@@ -2375,7 +2375,7 @@ Theorem prob_or_le_sum :
   intuition.
   destruct a; simpl.
   destruct (EqDec_dec bool_EqDec true true).
-  repeat rewrite ratMult_1_r.
+  rewrite ratMult_1_r.
   eapply ratMult_leRat_compat; intuition.
   eapply leRat_trans.
   eapply sumList_le.
@@ -2383,11 +2383,9 @@ Theorem prob_or_le_sum :
   eapply eqRat_impl_leRat.
   eapply ratMult_1_r.
   eapply evalDist_sum_le_1.
-  rewrite ratMult_1_r.
-  eapply ratMult_leRat_compat; intuition.
   
-  destruct ( EqDec_dec bool_EqDec false true).
-  discriminate.
+  intuition.
+
   rewrite ratMult_0_r.
   eapply rat0_le_all.
   

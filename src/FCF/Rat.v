@@ -287,16 +287,6 @@ Add Parametric Relation : Rat eqRat
 Require Import RelationClasses.
 Require Import Coq.Classes.Morphisms.
 
-(*
-Add Parametric Morphism : leRat
-  with signature (leRat --> leRat ==> Basics.impl)
-  as leRat_mor.
-Proof.
-  unfold Basics.impl.
-Admitted.
-*)
-
-
 Global Instance Subrelation_eq_le : subrelation eqRat leRat.
 repeat red.
 intuition.
@@ -304,7 +294,23 @@ eapply eqRat_impl_leRat.
 trivial.
 Qed.
 
+Global Instance eqRat_resp_leRat : 
+  forall x,
+    Proper (eqRat ==> Basics.flip Basics.impl)
+                                  (leRat x).
 
+intuition.
+repeat red; intuition.
+simpl.
+unfold respectful.
+intuition.
+eapply leRat_trans.
+eapply H0.
+eapply eqRat_impl_leRat.
+symmetry.
+trivial.
+
+Qed.
 
 Local Open Scope rat_scope.
 Theorem rat0_le_all : forall r,

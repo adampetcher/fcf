@@ -3292,11 +3292,6 @@ Lemma sumList_distance_prod : forall (A : Set)(ls : list A)(f f1 f2 : A -> Rat),
   intuition.
   
   repeat rewrite sumList_cons.
-  eapply leRat_trans.
-  Focus 2.
-  eapply eqRat_impl_leRat.
-  rewrite sumList_cons.
-  eapply eqRat_refl.
   rewrite rat_distance_of_sum.
   eapply ratAdd_leRat_compat.
   eapply eqRat_impl_leRat.
