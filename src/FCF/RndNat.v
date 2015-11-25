@@ -5,6 +5,7 @@ Set Implicit Arguments.
 
 Require Import Crypto.
 Require Import Permutation.
+Require Import NotationV1.
   
 Definition RndNat_unchecked(n : nat) :=
   v <-$ {0,1} ^ (lognat n);

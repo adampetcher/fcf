@@ -1,10 +1,8 @@
 
 
 (* Sampling an element from a finite cyclic group *)
-Require Import Crypto.
+Require Import FCF.
 Require Export GroupTheory.
-Require Import RndNat.
-Require Import ProgramLogic.
 
 Local Open Scope group_scope.
 

@@ -7,6 +7,7 @@ Require Import Fold.
 Require Import Permutation.
 Require Import SemEquiv.
 Require Import DetSem.
+Require Import NotationV1.
 
  
 Local Open Scope rat_scope.

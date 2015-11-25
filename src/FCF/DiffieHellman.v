@@ -3,7 +3,7 @@
 
 Set Implicit Arguments.
 
-Require Import Crypto.
+Require Import FCF.
 Require Import RndNat.
 Require Export GroupTheory.
 

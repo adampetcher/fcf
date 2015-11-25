@@ -1,7 +1,7 @@
 (* Definitions for public key encryption. *)
 
 Set Implicit Arguments.
-Require Import Crypto.
+Require Import FCF.
 
 Local Open Scope rat_scope.
 

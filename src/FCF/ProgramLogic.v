@@ -2,6 +2,7 @@ Set Implicit Arguments.
 
 Require Import Crypto.
 Require Import Bernoulli.
+Require Import NotationV1.
 
 (* stuff that needs to go somewhere else *)
 
@@ -859,7 +860,7 @@ Theorem le_impl_comp_spec :
 
   exists (a <-$ c1;
     b <-$ if (eqb a x) then (ret y) else
-      mDiff <- ratSubtract (evalDist c2 y) (evalDist c1 x);
+      mDiff <- (ratSubtract (evalDist c2 y) (evalDist c1 x));
       c <-$ Bernoulli (mDiff * (ratInverse (ratSubtract 1 (evalDist c1 x))));
       if c then (ret y) else (Repeat c2 (fun z => negb (eqb z y)));
         ret (a, b)).

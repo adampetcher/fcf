@@ -9,6 +9,7 @@ Require Import DistRules.
 Require Import DistSem.
 Require Import StdNat.
 Require Import Fold.
+Require Import NotationV1.
 
 Local Open Scope rat_scope.
 Local Open Scope comp_scope.

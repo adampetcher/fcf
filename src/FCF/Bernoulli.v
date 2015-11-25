@@ -3,6 +3,7 @@ Set Implicit Arguments.
 
 Require Import Crypto.
 Require Import RndNat.
+Require Import NotationV1.
 
 Definition Bernoulli(r : Rat) : Comp bool :=
   match r with

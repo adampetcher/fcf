@@ -10,11 +10,22 @@ Require Import List.
 Require Import Blist.
 Require Import Omega.
 Require Import StdNat.
+Require Import NotationV1.
  
  
 Local Open Scope list_scope.
 Local Open Scope rat_scope.
 
+Ltac simp_in_support := 
+  unfold setLet in *;
+  match goal with
+    | [H : In _ (getSupport (Bind _ _)) |- _ ] =>
+      apply getSupport_Bind_In in H; destruct_exists; intuition
+    | [H : In _ (getSupport (if ?t then _ else _)) |- _ ] => let x := fresh "x" in remember t as x; destruct x
+    | [H : In _ (getSupport (ret _)) |- _ ] => apply getSupport_In_Ret in H; try pairInv; subst
+(*     | [H : false = inRange _ _ |- _] => symmetry in H *)
+    | [H : true = negb ?t |- _ ] => let x := fresh "x" in remember t as x; destruct x; simpl in H; try discriminate
+  end.
 
 (* evalDist is a denotational semantics that produces a distribution instead of a value. *)
 
