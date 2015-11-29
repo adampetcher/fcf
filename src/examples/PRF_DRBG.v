@@ -119,27 +119,14 @@ Section PRF_DRBG.
     forall n v,
       well_formed_oc (PRF_DRBG_f_G2 v n).
 
-    induction n; intuition; simpl in *.
-    econstructor.
-    wftac.
-    econstructor.
-    econstructor.
-    intuition.
-    econstructor.
-    eauto.
-    intuition.
-    econstructor.
-    wftac.
+    induction n; intuition; simpl in *;
+    fcf_well_formed.
   Qed.
 
   Theorem PRF_A_wf : well_formed_oc PRF_A.
 
-    unfold PRF_A.
-    econstructor.
+    unfold PRF_A; fcf_well_formed.
     apply PRF_DRBG_f_G2_wf.
-    intuition.
-    econstructor.
-    apply A_wf.
 
   Qed.
 
@@ -158,42 +145,42 @@ Section PRF_DRBG.
             ret (r :: ls)
     end.
 
-   Definition PRF_DRBG_G1_1 :=
+  Definition PRF_DRBG_G1_1 :=
     s <-$ RndKey ;
     ls <-$ PRF_DRBG_f_G1_1 v_init l s;
     A ls.
-
-   Theorem  PRF_DRBG_f_G1_1_eq_ret : 
-     forall k n v,
+  
+  Theorem  PRF_DRBG_f_G1_1_eq_ret : 
+    forall k n v,
        comp_spec eq (PRF_DRBG_f_G1_1 v n k) (ret (PRF_DRBG_f v n k)).
+    
+    induction n; intuition; simpl in *.
+    
+    (* comp_spec eq is registered as a setoid, so intuition will discharge simple goals. *)
+    fcf_reflexivity.
+    
+    fcf_simp.
+    fcf_transitivity.
+    fcf_skip_eq.
+    fcf_reflexivity.
+    fcf_simp.
+    fcf_reflexivity.
+  Qed.
 
-     induction n; intuition; simpl in *.
+  Theorem PRF_DRBG_G1_1_equiv :
+    Pr[PRF_DRBG_G1] == Pr[PRF_DRBG_G1_1].
+    
+    unfold PRF_DRBG_G1, PRF_DRBG_G1_1.
+    
+     fcf_skip.
+     fcf_to_prhl_eq.
+     fcf_symmetry.
+     fcf_transitivity.
+     fcf_with PRF_DRBG_f_G1_1_eq_ret fcf_skip_eq.
+     fcf_reflexivity.
 
-     eapply comp_spec_eq_refl.
-
-     comp_simp.
-     eapply comp_spec_eq_trans.
-     eapply comp_spec_seq_eq; eauto with inhabited.
-     intuition.
-     eapply comp_spec_eq_refl.
-     comp_simp.
-     eapply comp_spec_eq_refl.
-   Qed.
-
-   Theorem PRF_DRBG_G1_1_equiv :
-     Pr[PRF_DRBG_G1] == Pr[PRF_DRBG_G1_1].
-
-     unfold PRF_DRBG_G1, PRF_DRBG_G1_1.
-     comp_skip.
-     eapply comp_spec_eq_impl_eq.
-     eapply comp_spec_eq_symm.
-     eapply comp_spec_eq_trans.
-     eapply comp_spec_seq_eq; eauto with inhabited.
-     eapply  PRF_DRBG_f_G1_1_eq_ret.
-     intuition.
-     eapply comp_spec_eq_refl.
-     comp_simp.
-     eapply comp_spec_eq_refl.
+     fcf_simp.
+     fcf_reflexivity.
 
    Qed.
 
@@ -205,46 +192,49 @@ Section PRF_DRBG.
 
      induction n; intuition; simpl in *.
 
-     comp_simp.
-     eapply comp_spec_ret.
-     trivial.
+     fcf_simp.
+     fcf_spec_ret.
 
-     comp_skip.
+     fcf_skip.
      unfold f_oracle.
+
+     (* we are left with a unification variable for the specification, we can supply a value for it by specializing the appropriate theorem. *)
      eapply (comp_spec_ret _ _ (fun x1 x2 => x1 = fst x2)).
      trivial.
+
      simpl in *.
      intuition; subst.
-     comp_skip.
-     comp_simp.
-     eapply comp_spec_ret; intuition.
+
+     fcf_skip.
+     fcf_simp.
+     fcf_spec_ret.
 
    Qed.
 
   Theorem PRF_DRBG_G1_G2_equiv : 
     Pr[ PRF_DRBG_G1 ] == Pr[ PRF_DRBG_G2 ].
 
+    (* equality for rational numbers is a setoid, so we can rewrite with it. *)
     rewrite PRF_DRBG_G1_1_equiv.
     unfold  PRF_DRBG_G1_1,  PRF_DRBG_G2.
     unfold PRF_A.
     simpl.
-    comp_skip.
-    inline_first.
+    fcf_skip.
 
-    eapply comp_spec_eq_impl_eq.
-    comp_skip.
-    eapply PRF_DRBG_f_G1_1_G2_equiv.
-    simpl in *.
-    subst.
-    comp_simp.
+    fcf_inline_first.
+    fcf_to_prhl_eq.
+    
+    fcf_with PRF_DRBG_f_G1_1_G2_equiv fcf_skip.
+
+    fcf_simp.
     simpl.
-    inline_first.
-    eapply eq_impl_comp_spec_eq.
-    intuition.
-    rewrite <- evalDist_right_ident.
-    comp_skip.
-    comp_simp.
-    reflexivity.
+    fcf_inline_first.
+
+    fcf_ident_expand_l.
+    fcf_skip.
+    fcf_simp.
+    fcf_reflexivity.
+
   Qed.
 
   (* Step 3: replace the PRF with a random function *)
@@ -292,8 +282,8 @@ Section PRF_DRBG.
     unfold randomFunc, randomFunc_withDups.
     rewrite H.
     case_eq (arrayLookup D_EqDec x2 a); intuition.
-    comp_simp.
-    eapply comp_spec_ret; intuition.
+    fcf_simp.
+    fcf_spec_ret.
     simpl.
     case_eq (eqb a0 a); intuition.
     rewrite eqb_leibniz in H1.
@@ -301,8 +291,8 @@ Section PRF_DRBG.
     rewrite H.
     trivial.
 
-    comp_skip.
-    eapply comp_spec_ret; intuition.
+    fcf_skip.
+    fcf_spec_ret.
     simpl.
     rewrite H.
     trivial.
@@ -313,14 +303,16 @@ Section PRF_DRBG.
     Pr[PRF_DRBG_G3] == Pr[PRF_DRBG_G3_1].
     
     unfold PRF_DRBG_G3, PRF_DRBG_G3_1.
-    eapply comp_spec_eq_impl_eq.
-    comp_skip.
-    eapply (oc_comp_spec_eq _ _ _ _ _ _ (fun x1 x2 => forall a, arrayLookup _ x1 a = arrayLookup _ x2 a)); intuition.
+    fcf_to_prhl_eq.
+
+    fcf_skip.
+
+    eapply (fcf_oracle_eq (fun x1 x2 => forall a, arrayLookup _ x1 a = arrayLookup _ x2 a)); intuition.
     apply randomFunc_withDups_spec; intuition.
 
-    comp_simp.
+    fcf_simp.
     simpl in H1; intuition; subst.
-    eapply comp_spec_eq_refl.
+    fcf_reflexivity.
 
   Qed.
 
@@ -334,14 +326,15 @@ Section PRF_DRBG.
 
     unfold PRF_DRBG_G3_1, PRF_DRBG_G3_2.
     simpl.
-    inline_first.
-    comp_skip.
-    comp_simp.
-    inline_first.
-    comp_skip.
-    comp_simp.
+    fcf_inline_first.
+    fcf_skip.
+    fcf_simp.
+    fcf_inline_first.
+    fcf_skip.
+    fcf_simp.
     simpl.
-    reflexivity.
+    fcf_reflexivity.
+
   Qed.
 
   (* Obtain a new random value for all inputs.  This game is only equal to the previous game when there are no duplicates in the inputs. *)
@@ -362,26 +355,22 @@ Section PRF_DRBG.
              (fun (ls : list (D * Bvector eta)) (x : D) =>
          r <-$ { 0 , 1 }^eta; ret (r, (x, r) :: ls)) nil).
     
-    
-    eapply (oc_comp_spec_eq_until_bad _ _ _ _ (fun x => hasDups _ (fst (split x))) (fun x => hasDups _ (fst (split x))) eq); intuition.
+    eapply (fcf_oracle_eq_until_bad (fun x => hasDups _ (fst (split x))) (fun x => hasDups _ (fst (split x))) eq); intuition.
+    apply PRF_A_wf.
     
     unfold randomFunc_withDups.
     destruct ( arrayLookup D_EqDec a b);
-    wftac.
+    fcf_well_formed.
 
-    wftac.
+    fcf_well_formed.
 
     subst.
-
     unfold randomFunc_withDups.
-
     case_eq (arrayLookup _ x2 a); intuition. 
-    eapply comp_spec_irr_r; intuition.
-    wftac.
-    comp_simp.
-    eapply comp_spec_ret.
-    intuition.
-    simpl.   
+    fcf_irr_r.
+    fcf_simp.
+    fcf_spec_ret; simpl.
+ 
     remember (split x2) as z.
     destruct z.
     simpl in *.
@@ -418,27 +407,23 @@ Section PRF_DRBG.
     simpl in *.
     intuition.
     
-    comp_skip.
-    eapply comp_spec_ret.
-    intuition.
+    fcf_skip.
+    fcf_spec_ret.
 
     unfold randomFunc_withDups in *.
-    repeat simp_in_support.
+    fcf_simp_in_support.
     simpl.
-    remember (split c) as z.
+    remember (split c0) as z.
     destruct z.
     simpl in *.
     destruct (in_dec (EqDec_dec D_EqDec) d l0); intuition.
 
-    repeat simp_in_support.
+    fcf_simp_in_support.
     simpl in *.
-    remember (split c) as z.
+    remember (split c0) as z.
     destruct z.
     simpl in *.
     destruct (in_dec (EqDec_dec D_EqDec) d l0); intuition.
-
-    Grab Existential Variables.
-    apply PRF_A_wf.
 
   Qed.
 
@@ -448,16 +433,16 @@ Section PRF_DRBG.
     Pr  [x <-$ PRF_DRBG_G3_3; ret snd x ].
     
     unfold PRF_DRBG_G3_2, PRF_DRBG_G3_3.
-    comp_inline_l.
-    comp_inline_r.
-    eapply comp_spec_eq_impl_eq.
-    comp_skip.
-    eapply PRF_A_randomFunc_eq_until_bad.
+    fcf_inline_l.
+    fcf_inline_r.
+    fcf_to_prhl_eq.
+    fcf_skip.
+    apply PRF_A_randomFunc_eq_until_bad.
     
-    comp_simp.
+    fcf_simp.
     intuition.
     simpl in *.
-    eapply comp_spec_ret; intuition.
+    fcf_spec_ret.
   Qed.
 
   Theorem PRF_DRBG_G3_2_3_eq_until_bad : 
@@ -466,11 +451,11 @@ Section PRF_DRBG.
 
     intuition.
     unfold PRF_DRBG_G3_2, PRF_DRBG_G3_3.
-    eapply comp_spec_impl_eq.
-    comp_skip.
-    eapply PRF_A_randomFunc_eq_until_bad.
-    comp_simp.
-    eapply comp_spec_ret; intuition.
+    fcf_to_prhl.
+    fcf_skip.
+    apply PRF_A_randomFunc_eq_until_bad.
+    fcf_simp.
+    fcf_spec_ret.
     simpl in *; pairInv; intuition; subst;
     trivial.
     
@@ -482,14 +467,15 @@ Section PRF_DRBG.
     trivial.
 
   Qed.
-
+  
   Theorem PRF_DRBG_G3_2_3_close : 
   | Pr[x <-$ PRF_DRBG_G3_2; ret (fst x)] - Pr[x <-$ PRF_DRBG_G3_3; ret (fst x)] | <= Pr[x <-$ PRF_DRBG_G3_3; ret (snd x)].
     
     rewrite ratDistance_comm.
-    eapply fundamental_lemma_h.
+    fcf_fundamental_lemma.
+
     symmetry.
-    eapply PRF_DRBG_G3_2_3_badness_same.
+    apply PRF_DRBG_G3_2_3_badness_same.
 
     intuition.
     symmetry.
@@ -502,22 +488,23 @@ Section PRF_DRBG.
     
     unfold PRF_DRBG_G3_3, PRF_DRBG_G4.
     simpl.
-    inline_first.
-    eapply comp_spec_eq_impl_eq.
-    comp_skip.
-    eapply (oc_comp_spec_eq _ _ _ _ _ _ (fun x1 x2 => True)); intuition.    
-    comp_skip.
-    eapply comp_spec_ret; intuition.
+    fcf_inline_first.
+    fcf_to_prhl_eq.
+    fcf_skip.
+    eapply (fcf_oracle_eq (fun x1 x2 => True)); intuition.    
+    fcf_skip.
+    fcf_spec_ret.
     simpl in H1.
     intuition; subst.
-    comp_simp.
-    inline_first.
+    fcf_simp.
+    fcf_inline_first.
     simpl.
-    comp_skip.
-    simpl; comp_simp.
-    eapply comp_spec_eq_refl.
+    fcf_skip.
+    simpl; fcf_simp.
+    fcf_reflexivity.
     
   Qed.
+
   
   (* Now we need to compute the probability of the "bad" event.  First we will simplify the game defining this event.*)
 
@@ -547,73 +534,44 @@ Section PRF_DRBG.
      (PRF_DRBG_f_bad v n).
 
      induction n; intuition; simpl in *.
-     comp_simp.
-     eapply comp_spec_ret; intuition.
+     fcf_simp.
+     fcf_spec_ret.
      simpl.
      rewrite app_nil_r.
-     eapply Permutation_refl.
+     apply Permutation_refl.
 
-     inline_first.
-     comp_skip.
-     comp_skip.
-     eapply comp_spec_ret; intuition.
+     fcf_inline_first.
+     fcf_skip.
+     fcf_skip.
+     fcf_spec_ret.
      simpl in H3.
      simpl.
      destruct (split ls).
      simpl in H3. simpl.
      eapply Permutation_trans.
-     eapply H3.
-     eapply Permutation_cons_app.
-     eapply Permutation_refl.
+     apply H3.
+     apply Permutation_cons_app.
+     apply Permutation_refl.
    Qed.
 
-   Theorem Permutation_hasDups : 
-     forall (A : Set)(eqd : EqDec A)(ls1 ls2 : list A),
-       Permutation ls1 ls2 ->
-       hasDups eqd ls1 = hasDups eqd ls2.
-     
-     intuition.
-     case_eq ( hasDups eqd ls1); intuition.
-     apply hasDups_true_not_NoDup in H0.
-     intuition.
-     case_eq (hasDups eqd ls2); intuition.
-     apply hasDups_false_NoDup in H1; intuition.
-     
-     exfalso.
-     eapply H0.
-     eapply permutation_NoDup.
-     eapply Permutation_sym.
-     eauto.
-     trivial.
-     
-     eapply hasDups_false_NoDup in H0; intuition.
-     case_eq (hasDups eqd ls2); intuition.
-     apply hasDups_true_not_NoDup in H1.
-     exfalso.
-     apply H1.
-     eapply permutation_NoDup;
-       eauto.
-     
-   Qed.
 
    Theorem PRF_DRBG_G3_bad_equiv : 
      Pr[x <-$ PRF_DRBG_G3_3; ret (snd x)] == Pr[PRF_DRBG_G3_bad_1].
 
      unfold PRF_DRBG_G3_3, PRF_DRBG_G3_bad_1.
      simpl.
-     inline_first.
-     
-     eapply comp_spec_eq_impl_eq.
-     comp_skip.
-     eapply PRF_DRBG_f_bad_spec.
+     fcf_inline_first.
+     fcf_to_prhl_eq.
+     fcf_skip.
+     apply PRF_DRBG_f_bad_spec.
      simpl in H1.
-     inline_first.
-     comp_irr_l.
-     comp_simp.
+     fcf_inline_first.
+     fcf_irr_l.
+     fcf_simp.
      simpl.
-     eapply comp_spec_ret; intuition.
+     fcf_spec_ret.
 
-     eapply Permutation_hasDups.
+     apply Permutation_hasDups.
      trivial.
 
    Qed.
@@ -640,13 +598,13 @@ Section PRF_DRBG.
                (PRF_DRBG_f_bad_2 n).
 
      induction n; intuition; simpl in *.
-     comp_irr_l.
-     comp_simp.
-     eapply comp_spec_ret; intuition.
+     fcf_irr_l.
+     fcf_simp.
+     fcf_spec_ret.
 
-     comp_skip.
-     comp_skip.
-     eapply comp_spec_ret; intuition.
+     fcf_skip.
+     fcf_skip.
+     fcf_spec_ret.
 
    Qed.
 
@@ -654,19 +612,22 @@ Section PRF_DRBG.
      Pr[PRF_DRBG_G3_bad_1] == Pr[PRF_DRBG_G3_bad_2].
 
      unfold PRF_DRBG_G3_bad_1, PRF_DRBG_G3_bad_2.
-     eapply comp_spec_eq_impl_eq.
-     destruct l; simpl; intuition.
-     comp_simp.
-     simpl.
-     eapply comp_spec_eq_refl.
+     fcf_to_prhl_eq.
 
-     comp_skip.
-     eapply PRF_DRBG_f_bad_2_equiv.
+     destruct l; simpl; intuition.
+     fcf_simp.
+     simpl.
+     fcf_reflexivity.
+
+     fcf_skip.
+     apply PRF_DRBG_f_bad_2_equiv.
      simpl in H1.
      subst.
-     eapply comp_spec_ret; intuition.
+
+     fcf_spec_ret.
   
    Qed.
+
 
    (* The previous recursive function is equivalent to mapping the computation that produces random values over a list of the appropriate length.  The form thet uses compMap can be unified with some existing theory to compute the probability of the event. *)
    Definition PRF_DRBG_G3_bad_3 :=
@@ -681,12 +642,12 @@ Section PRF_DRBG.
         (forNats n)).
 
      induction n; intuition; simpl in *.
-     eapply comp_spec_eq_refl.
-     comp_skip.
-     comp_skip.
-     eapply IHn.
+     fcf_reflexivity.
+     fcf_skip.
+     fcf_skip.
+     apply IHn.
      subst.
-     eapply comp_spec_eq_refl.
+     fcf_reflexivity.
 
    Qed.
 
@@ -694,34 +655,10 @@ Section PRF_DRBG.
      Pr[PRF_DRBG_G3_bad_2] == Pr[PRF_DRBG_G3_bad_3].
 
      unfold PRF_DRBG_G3_bad_2, PRF_DRBG_G3_bad_3.
-     eapply comp_spec_eq_impl_eq.
-     comp_skip.
-     eapply PRF_DRBG_f_bad_2_compMap_equiv.
-     subst.
-     eapply comp_spec_eq_refl.
+     fcf_to_prhl_eq.
+     pose proof PRF_DRBG_f_bad_2_compMap_equiv.
+     fcf_skip.
 
-   Qed.
-
-   Theorem hasDups_inj_equiv : 
-     forall (A B : Set)(eqda : EqDec A)(eqdb : EqDec B)(lsa : list A)(inj : A -> B),
-       (forall a1 a2, inj a1 = inj a2 -> a1 = a2) ->
-       hasDups _ lsa = hasDups _ (map inj lsa).
-     
-     induction lsa; intuition; simpl in *.
-     destruct (in_dec (EqDec_dec eqda) a lsa);
-       destruct (in_dec (EqDec_dec eqdb) (inj a) (map inj lsa));
-       intuition.
-     exfalso.
-     eapply n.
-     eapply in_map_iff.
-     econstructor.
-     intuition.
-     eapply in_map_iff in i.
-     destruct i.
-     intuition.
-     apply H in H1.
-     subst.
-     intuition.
    Qed.
    
    (* Don't apply the injection to the random values and initial input. *)
@@ -733,9 +670,9 @@ Section PRF_DRBG.
      Pr[PRF_DRBG_G3_bad_3] == Pr[PRF_DRBG_G3_bad_4].
 
      unfold PRF_DRBG_G3_bad_3, PRF_DRBG_G3_bad_4.
-     eapply comp_spec_eq_impl_eq.
-     comp_skip.
-     eapply comp_spec_ret; intuition.
+     fcf_to_prhl_eq.
+     fcf_skip.
+     fcf_spec_ret.
      unfold v_init.
 
      symmetry.
@@ -744,7 +681,6 @@ Section PRF_DRBG.
      trivial.
    Qed.
 
-   
    (* HasDups.v has a theorem that computes the probability of duplicates in a list of random values.  We need a form of the dupProb theorem that allows the first item in the list to be fixed.  *)
    Theorem dupProb_const : 
     forall (X : Set)(ls : list X)(v : Bvector eta),
@@ -754,22 +690,16 @@ Section PRF_DRBG.
      intuition.
      (* Either the list of random values has duplicates, or v is in this list.  The probability value that we want is (at most) the sum of the probabilities of these two events.  The evalDist_orb_le theorem allows us to reason about them separately.  Put the game in a form that unifies with this theorem. *)
 
-     assert (Pr[x <-$ compMap (Bvector_EqDec eta) (fun _ : X => { 0 , 1 }^eta) ls;
-    ret hasDups (Bvector_EqDec eta) (v :: x) ] 
-               ==
-               Pr[x <-$ compMap (Bvector_EqDec eta) (fun _ : X => { 0 , 1 }^eta) ls;
-    ret ((if (in_dec (EqDec_dec _) v x) then true else false) || (hasDups (Bvector_EqDec eta) x)) ] 
+     fcf_rewrite_l (Pr[x <-$ compMap (Bvector_EqDec eta) (fun _ : X => { 0 , 1 }^eta) ls;
+                      ret ((if (in_dec (EqDec_dec _) v x) then true else false) || (hasDups (Bvector_EqDec eta) x)) ] 
                  ).
-     comp_skip.
+     fcf_skip.
      simpl.
      destruct ( in_dec (EqDec_dec (Bvector_EqDec eta)) v x).
      simpl.
      intuition.
      rewrite orb_false_l.
      intuition.
-
-     rewrite H.
-     clear H.
 
      rewrite evalDist_orb_le.
 
@@ -832,33 +762,31 @@ Section PRF_DRBG.
      (compMap (Bvector_EqDec eta) (fun _ : nat => { 0 , 1 }^eta) (forNats n)).
 
      induction n; intuition; simpl in *.
-     comp_simp.
-     eapply comp_spec_ret; intuition.
+     fcf_simp.
+     fcf_spec_ret.
      
-     inline_first.
-     comp_skip.
-     comp_skip.
-     eapply comp_spec_ret; intuition.
+     fcf_inline_first.
+     fcf_skip.
+     fcf_skip.
+     fcf_spec_ret.
    Qed.
-
+       
   Theorem PRF_DRBG_G4_DRBG_equiv : 
     Pr[PRF_DRBG_G4] == Pr[DRBG_G1 RndOut A].
 
     unfold PRF_DRBG_G4, DRBG_G1, RndOut, PRF_A.
     simpl.
-    inline_first.
-    eapply comp_spec_eq_impl_eq.
-    comp_skip.
-    eapply PRF_DRBG_f_G2_compMap_spec.
-    simpl in H1; subst.
-    inline_first.
-    eapply eq_impl_comp_spec_eq; intuition.
-    symmetry.
-    rewrite <- evalDist_right_ident.
-    comp_skip.
-    comp_simp.
-    reflexivity.
+    fcf_inline_first.
+    fcf_to_prhl_eq.
+    fcf_with PRF_DRBG_f_G2_compMap_spec fcf_skip.
+   
+    simpl.
+    fcf_inline_first.
+    fcf_ident_expand_r.
+    fcf_skip.
+
   Qed.
+
 
   (* The final security result showing that the advantage of the adversary against the DRBG is at most the advantage of the constructed adversary against the PRF, and some negligible value. *)
 

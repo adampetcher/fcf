@@ -106,9 +106,5 @@ Theorem oc_compMap_wf :
   
   induction ls; intuition; simpl in *;
   econstructor; wftac; intuition.
-  econstructor. eauto.
-  intuition.
-  econstructor.
-  wftac.
   
 Qed.
