@@ -427,14 +427,13 @@ Section PRF_DRBG.
 
   Qed.
 
-
   Theorem PRF_DRBG_G3_2_3_badness_same : 
     Pr  [x <-$ PRF_DRBG_G3_2; ret snd x ] ==
     Pr  [x <-$ PRF_DRBG_G3_3; ret snd x ].
     
     unfold PRF_DRBG_G3_2, PRF_DRBG_G3_3.
-    fcf_inline_l.
-    fcf_inline_r.
+    fcf_inline fcf_left.
+    fcf_inline fcf_right.
     fcf_to_prhl_eq.
     fcf_skip.
     apply PRF_A_randomFunc_eq_until_bad.

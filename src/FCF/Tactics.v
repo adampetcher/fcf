@@ -11,10 +11,10 @@ Require Import ProgramLogic.
 (** This file contains the most commonly-used tactics and theorems in FCF.  In most cases, tactics are provided which apply the appropriate theorem, but in a few cases the theorem from the FCF library must be applied directly.  In general, a single tactic is provided that can be used on goals related to probability as well as goals in the program logic.  The tactic will examine the goal and apply the appropriate form of the required theorem.  *)
 
 (** * Basic One-sided Tactics *)
-(** These tactics are used to perform simple transformations on a probabilistic program.  Each tactic expects the goal to be a relation on a pair of programs and the tactic takes a single argument (either left_program or right_program) to indicate whether the program on the left or the program on the right should be modified.  These tactics always modify the first instruction of the specified program, and the comp_at tactical can be used to modify statements at other positions. *)
+(** These tactics are used to perform simple transformations on a probabilistic program.  Each tactic expects the goal to be a relation on a pair of programs and the tactic takes a single argument (either fcf_left or fcf_right) to indicate whether the program on the left or the program on the right should be modified.  These tactics always modify the first instruction of the specified program, and the comp_at tactical can be used to modify statements at other positions. *)
 
-Definition right_program := rightc.
-Definition left_program := leftc.
+Notation fcf_right := rightc.
+Notation fcf_left := leftc.
 
 (** ** fcf_inline *)
 (** The fcf_inline tactic applies monad associativity to replace (x <- (y <- p1; p2); p3) with (y <- p1; x <- p2; p3).  Note that the fcf_inline_first will repeatedly invoke this tactic to inline the first nested program on both sides of the relation. *)
@@ -149,8 +149,20 @@ Ltac fcf_spec_ret :=
 
 
 (** * Tacticals *)
+(** ** fcf_at *)
+(** The fcf_at tactical is used to apply some other tactic at a certain position in a program.   *)
+(** *** Arguments *)
+(** t -- any tactic that operates on the first statement in a program and accepts an argument indicating which program (fcf_left or fcf_right) should be modified.  Only the name of the tactic should be supplied *)
+(** s -- the side of the relation (i.e. which program) should be modified.  Either fcf_left or fcf_right. *)
+(** l -- the "line" number, or statement number where the tactic should be applied.  *)
 Ltac fcf_at t s l := comp_at t s l.
 
+
+(** ** fcf_with *)
+(** The fcf_with tactical brings a fact in the environment and then invokes another tactic.  This tactical is useful for tactics like fcf_skip that look in the environment for an appropriate fact relating a pair of programs.  *)
+(** *** Arguments *)
+(** pf -- the name of some fact (theorem or hypothesis) that is not present in the current set of hypotheses.  *)
+(** t -- the tactic to execute with the additional fact in the environment. *)
 Ltac fcf_with pf t :=
     let x := fresh "x" in
     pose proof pf as x;
@@ -158,16 +170,36 @@ Ltac fcf_with pf t :=
       clear x.
 
 (** * Other probabilistic tactics *)
+(** ** fcf_fundamental_lemma *)
+(** The fcf_fundamental_lemma tactic applies the fundamental lemma to prove that the distance between two terms is bounded by the probability of some "bad" event.  This tactic applies to goals of the form (| Pr[x <- p1; ret (fst x)] - Pr[x <- p2; ret (fst x)] | <= Pr[x <- p1; ret (snd x)]).  The programs p1 and p2 both return a pair of values, where the first is some value of interest, and the second is a bool indicating that some "bad" event occurred.  This tactic applies the fundamental lemma and produces two proof obligations.  The first obligation is to show that the probability of the "bad" event is the same in both games.  The second obligation is to show that the distributions on the events of interest are the same unless the "bad" event occurs. *)
+(** Supporting theory: fundamental_lemma_h *)
 Ltac fcf_fundamental_lemma := apply fundamental_lemma_h.
 
+
+(** ** fcf_compute *)
+(** The fcf_compute tactic will discharge simple goals related to the calculation of probability values.  The reasoning of this tactic is not very sophisticated---it merely applies the denotational semantics, simplifies, performs some case splits, and applies the underlying logic.  *)
+(** Example:
+Theorem fcf_compute_example :
+  Pr[x <-$ {0, 1}; y <-$ {0, 1}; ret (x && y)] == 1/4.
+  fcf_compute.
+Qed. 
+*)
 Ltac fcf_compute := dist_compute.
 
 (** * Other non-probabilistic tactics *)
+(** ** fcf_well_formed *)
+(** The fcf_well_formed tactic simplifies and attempts to automatically discharge goals related to the well-formedness of programs.  If the goal looks like "well_formed_comp p1" or "well_formed_oc p1", then this tactic can often be used to discharge the goal or make progress toward proving it.  *)
 Ltac fcf_well_formed := wftac.
 
+(** ** fcf_simp_in_support *)
+(** Many FCF theorems and tactics will add assumptions to the environment stating that some value is in the support of some distribution defined by a probabilistic program.  This hypothesis carries no probabilistic information, but it may provide some useful set-theoretic information.  The simp_in_support tactic will automatically destruct these hypotheses and extract this set-theoretic information.  This extraction will often result in the introduction of new variables (e.g. destructing a sequence in this manner will introduce a variable describing the value after the first statement in the sequence is executed).  *)  
 Ltac fcf_simp_in_support := repeat simp_in_support.
 
-(** Program logic theorems. *)
+(** * Theorems *)
+(** The theorems in this section are provided here because it may be more convenient to apply them directly, rather than invoking the tactic that applies them.  In some cases, no such tactic is provided.  This is due to way Coq handles implicit arguments and tactic invocation, and the fact that it is sometimes more convenient to simply apply the desired theorem directly.  *)
+
+(** ** fcf_spec_seq *)
+(** The fcf_spec_seq theorem behaves like the tactic fcf_skip.  Importantly, this theorem accepts the relational predicate that must hold after the first pair of games is executed.  It can often be valuable to specify this predicate in the sequence rule to avoid having to fill it in later.  *)
 Theorem fcf_spec_seq : 
   forall {A B : Set} (P' : A -> B -> Prop) {C D : Set} P{eqda : EqDec A}{eqdb : EqDec B}{eqdc : EqDec C}{eqdd : EqDec D}(c1 : Comp A)(c2 : Comp B) (c : C) (d : D)
     (f1 : A -> Comp C)(f2 : B -> Comp D),
@@ -180,9 +212,10 @@ Theorem fcf_spec_seq :
 
 Qed.
 
-(** * Oracle interaction theorems. *)
+(** ** fcf_oracle_eq *)
+(** The fcf_oracl_eq theorem is used to replace an oracle with an observationally equivalent oracle.  This theorem accepts a relational predicate that specifies an invariant on the states of the oracles.  The resulting proof obligations will be to show that the invariant holds on the initial state, and the when the invariant holds on any state, the oracles produce identical output for all inputs and the invariant still holds on the resulting state. *)
 Theorem fcf_oracle_eq :
-  forall (S1 S2 : Set)(P : S1 -> S2 -> Prop)(A B C : Set) (c : OracleComp A B C) 
+  forall {S1 S2 : Set}(P : S1 -> S2 -> Prop)(A B C : Set) (c : OracleComp A B C) 
          (eqdb : EqDec B) (eqdc : EqDec C) 
          (o1 : S1 -> A -> Comp (B * S1)) (o2 : S2 -> A -> Comp (B * S2))
          (eqds1 : EqDec S1) (eqds2 : EqDec S2) (s1 : S1) 
@@ -203,8 +236,10 @@ Theorem fcf_oracle_eq :
   
 Qed.
 
+(** ** fcf_oracle_eq_until_bad *)
+(** The fcf_oracle_eq_until_bad theorem is similar to fcf_oracle_eq, except it allows the state of the oracles to go "bad", and the resulting fact is that the oracles are indistinguishable unless this bad event occurs.  This fact can be used with the fundamental lemma to bound the distance between a pair of program/oracle interactions. *)
 Theorem fcf_oracle_eq_until_bad : 
-  forall (S1 S2 : Set)(bad1 : S1 -> bool)
+  forall {S1 S2 : Set}(bad1 : S1 -> bool)
          (bad2 : S2 -> bool)(inv : S1 -> S2 -> Prop)(A B C : Set) (c : OracleComp A B C),
     well_formed_oc c ->
     forall (eqdb : EqDec B) (eqdc : EqDec C) 
