@@ -641,6 +641,7 @@ Section PRF_Encryption_concrete.
 
       
       assert (length l <= q1)%nat.
+
       eapply qam_count;
       eauto.
       eapply RF_Encrypt_length_incr.

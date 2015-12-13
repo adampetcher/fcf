@@ -491,20 +491,9 @@ Section RndInList.
     eapply leRat_trans.
     Focus 2.
     eapply eqRat_impl_leRat.
-    
-    Theorem rat_num_S' : 
-      forall n d,
-        (RatIntro (S n) d == (RatIntro 1 d) + RatIntro n d)%rat.
-
-      intuition.
-      rattac.
-      rewrite mult_plus_distr_r.
-      f_equal.
-      eapply mult_assoc.
-    Qed.
 
     symmetry.
-    eapply rat_num_S'.
+    eapply rat_num_S.
     eapply ratAdd_leRat_compat.
     rewrite (@sumList_exactly_one _ a).
     eapply leRat_refl.

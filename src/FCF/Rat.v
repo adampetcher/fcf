@@ -3566,3 +3566,41 @@ Theorem eqRat_refl_eq :
   intuition.
   
 Qed.
+
+Theorem rat_num_S : 
+  forall n d,
+    (RatIntro (S n) d == (RatIntro 1 d) + RatIntro n d)%rat.
+  
+  intuition.
+  rattac.
+  rewrite mult_plus_distr_r.
+  f_equal.
+  eapply mult_assoc.
+Qed.
+
+Theorem distance_le_prod_f :
+  forall (f : nat -> Rat) k,
+    (forall i, | (f i) - (f (S i)) | <= k) ->
+    forall q0,
+| (f 0%nat) - (f q0) | <= q0/1 * k.
+  
+  induction q0; intuition.
+  assert (| f 0%nat - f 0%nat | == 0).
+  rewrite <- ratIdentityIndiscernables.
+  reflexivity.
+  rewrite H0.
+  eapply rat0_le_all.
+  
+  eapply leRat_trans.
+  eapply ratTriangleInequality.
+  rewrite IHq0.
+  rewrite H.
+  
+  rewrite rat_num_S.
+  rewrite ratMult_distrib_r.
+  rewrite ratAdd_comm.
+  eapply ratAdd_leRat_compat.
+  rewrite ratMult_1_l.
+  reflexivity.
+  reflexivity.
+Qed.
