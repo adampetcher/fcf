@@ -1,3 +1,6 @@
+(* Copyright 2012-2015 by Adam Petcher.				*
+ * Use of this source code is governed by the license described	*
+ * in the LICENSE file at the root of the source tree.		*)
  (* Equivalance between the oracle machine semantics and the probabilistic semantics. *)
 
 Set Implicit Arguments.

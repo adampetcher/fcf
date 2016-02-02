@@ -1,3 +1,6 @@
+(* Copyright 2012-2015 by Adam Petcher.				*
+ * Use of this source code is governed by the license described	*
+ * in the LICENSE file at the root of the source tree.		*)
 
 (* Some initial work on sigma protocols.  The goal is to prove that any sigma protocol is a proof of knowledge.  There is some interesting theory in here (e.g. the "emergency break" theorem), but it is far form complete.  
 

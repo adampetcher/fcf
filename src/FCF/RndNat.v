@@ -1,3 +1,6 @@
+(* Copyright 2012-2015 by Adam Petcher.				*
+ * Use of this source code is governed by the license described	*
+ * in the LICENSE file at the root of the source tree.		*)
 
 (* RndNat -- a computation that returns a random nat uniformly distributed in a specified range. *)
 

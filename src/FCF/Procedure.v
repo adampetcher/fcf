@@ -1,3 +1,6 @@
+(* Copyright 2012-2015 by Adam Petcher.				*
+ * Use of this source code is governed by the license described	*
+ * in the LICENSE file at the root of the source tree.		*)
 
 (* Definitions and theory related to "procedures" -- functions that return computations and special forms of the same.  
 *)

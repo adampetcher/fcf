@@ -1,3 +1,6 @@
+(* Copyright 2012-2015 by Adam Petcher.				*
+ * Use of this source code is governed by the license described	*
+ * in the LICENSE file at the root of the source tree.		*)
 
 (* Definitions related to pseudoradom functions.  This file copies some items from ConstructedFunc.v, so we probably need to refactor this in the future. *)
 

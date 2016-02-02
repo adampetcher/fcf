@@ -1,3 +1,6 @@
+(* Copyright 2012-2015 by Adam Petcher.				*
+ * Use of this source code is governed by the license described	*
+ * in the LICENSE file at the root of the source tree.		*)
 (* A generic one-time pad that can be reused in other proofs. Also included are specializations for bit vectors and finite cyclic groups. *)
 
 Set Implicit Arguments.

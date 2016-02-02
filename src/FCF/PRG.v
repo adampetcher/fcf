@@ -1,3 +1,6 @@
+(* Copyright 2012-2015 by Adam Petcher.				*
+ * Use of this source code is governed by the license described	*
+ * in the LICENSE file at the root of the source tree.		*)
 (* Construction of a pseudorangom generator from a one-way permutations on bit vector with an associated hard core predicate. *)
 
 Set Implicit Arguments.
