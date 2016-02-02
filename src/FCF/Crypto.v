@@ -1,7 +1,3 @@
-(* Copyright 2012-2015 by Adam Petcher.				*
- * Use of this source code is governed by a BSD-style		*
- * license that can be found in the LICENSE file at the root	*
- * of the source tree.						*)
 (* A top-level module that exports all of the common components of the framework. *)
 
 Require Export DistRules.

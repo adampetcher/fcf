@@ -1,7 +1,3 @@
-(* Copyright 2012-2015 by Adam Petcher.				*
- * Use of this source code is governed by a BSD-style		*
- * license that can be found in the LICENSE file at the root	*
- * of the source tree.						*)
 
 
 (* A simple symmetric encryption scheme based on a pseudorandom function, and a proof that the scheme is secure according to IND-CPA. *)

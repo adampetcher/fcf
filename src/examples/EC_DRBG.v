@@ -1,7 +1,3 @@
-(* Copyright 2012-2015 by Adam Petcher.				*
- * Use of this source code is governed by a BSD-style		*
- * license that can be found in the LICENSE file at the root	*
- * of the source tree.						*)
 
 (* An exercise to prove the security of the (academic version of) Dual_EC_DRBG.  Taken from http://eprint.iacr.org/2007/048. *)
 
