@@ -1,3 +1,7 @@
+(* Copyright 2012-2015 by Adam Petcher.				*
+ * Use of this source code is governed by a BSD-style		*
+ * license that can be found in the LICENSE file at the root	*
+ * of the source tree.						*)
 (* This file contains an earlier version of state-related definitions.  The theory from this file should be moved to Procedure.v *)
 
 Set Implicit Arguments.

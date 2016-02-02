@@ -1,3 +1,7 @@
+(* Copyright 2012-2015 by Adam Petcher.				*
+ * Use of this source code is governed by a BSD-style		*
+ * license that can be found in the LICENSE file at the root	*
+ * of the source tree.						*)
 Set Implicit Arguments.
 
 (* An attempt at uniform notation.  It works okay for writing definitions, but eventually you have to leave the monad in a proof, and then you lose the notation.  So this approach probably won't work very well. *)

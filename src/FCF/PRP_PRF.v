@@ -1,3 +1,7 @@
+(* Copyright 2012-2015 by Adam Petcher.				*
+ * Use of this source code is governed by a BSD-style		*
+ * license that can be found in the LICENSE file at the root	*
+ * of the source tree.						*)
 (* The PRP PRF switching lemma.  This proof uses the outdated state-related definitions.  We need to update this proof to use the definitions and theory in Procedure.v *)
 
 Set Implicit Arguments.

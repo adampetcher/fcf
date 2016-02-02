@@ -1,3 +1,7 @@
+(* Copyright 2012-2015 by Adam Petcher.				*
+ * Use of this source code is governed by a BSD-style		*
+ * license that can be found in the LICENSE file at the root	*
+ * of the source tree.						*)
 
 (* An argument that is used to prove that the "two worlds" style of security definition is equivalent to the "coin flipping" style. *)
 
