@@ -39,11 +39,11 @@ Definition indicator(A : Set)(P : A -> bool) :=
 
 Fixpoint evalDist(A : Set)(c : Comp A) : Distribution A :=
   match c with
-    | Ret _ eqd a => fun a' => if (eqd a a') then 1 else 0
-    | Bind _ _ c1 c2 => fun a => 
+    | Ret eqd a => fun a' => if (eqd a a') then 1 else 0
+    | Bind c1 c2 => fun a => 
       sumList (getSupport c1) (fun b => (evalDist c1 b) * (evalDist (c2 b) a))
     | Rnd n => fun v => 1 / (expnat 2 n)
-    | Repeat _ c P => fun a => (indicator P a) * (ratInverse (sumList (filter P (getSupport c)) (evalDist c))) * (evalDist c a)
+    | Repeat c P => fun a => (indicator P a) * (ratInverse (sumList (filter P (getSupport c)) (evalDist c))) * (evalDist c a)
   end.
 
 Definition dist_sem_eq(A : Set)(c1 c2 : Comp A) :=
@@ -69,6 +69,27 @@ Lemma getSupport_NoDup : forall (A : Set)(c : Comp A),
   eapply filter_NoDup.
   eapply getSupport_NoDup.
 
+Qed.
+
+Lemma filter_not_In : forall (A : Set)(ls : list A)(P : A -> bool) a,
+                        (~In a ls) \/ P a = false <->
+                        ~In a (filter P ls).
+  
+    intuition.
+    eapply H1.
+    eapply filter_In; eauto.
+    assert (P a = true -> False).
+    intuition.
+    congruence.
+    eapply H.
+    eapply filter_In; eauto.
+    
+    case_eq (P a); intuition.
+    left.
+    intuition.
+    eapply H.
+    eapply filter_In; eauto.
+    
 Qed.
 
 Theorem getSupport_In_evalDist : forall (A : Set)(c : Comp A)(a : A),
@@ -129,27 +150,6 @@ Theorem getSupport_In_evalDist : forall (A : Set)(c : Comp A)(a : A),
   rewrite H1 in H0.
   eapply rat1_ne_rat0.
   trivial.
-  
-  Lemma filter_not_In : forall (A : Set)(ls : list A)(P : A -> bool) a,
-    (~In a ls) \/ P a = false <->
-    ~In a (filter P ls).
-
-    intuition.
-    eapply H1.
-    eapply filter_In; eauto.
-    assert (P a = true -> False).
-    intuition.
-    congruence.
-    eapply H.
-    eapply filter_In; eauto.
-
-    case_eq (P a); intuition.
-    left.
-    intuition.
-    eapply H.
-    eapply filter_In; eauto.
-
-  Qed.
 
   eapply filter_not_In.
   eauto.
@@ -718,10 +718,10 @@ Qed.
 Fixpoint evalDist_OC(A B C: Set)(c : OracleComp A B C): forall(S : Set), EqDec S -> (S -> A -> Comp (B * S)) -> S -> Comp (C * S) :=
   match c in (OracleComp A B C) return (forall(S : Set), EqDec S -> (S -> A -> Comp (B * S)) -> S -> Comp (C * S))
     with
-    | OC_Query A' B' a => 
+    | @OC_Query A' B' a => 
       fun (S : Set)(eqds : EqDec S)(o : S -> A' -> Comp (B' * S))(s : S) =>  
         o s a
-    | OC_Run A'' B'' C' A' B' S' eqds' eqda'' eqdb'' c' o' s' =>
+    | @OC_Run A'' B'' C' A' B' S' eqds' eqda'' eqdb'' c' o' s' =>
       fun (S : Set)(eqds : EqDec S)(o : S -> A' -> Comp (B' * S))(s : S) =>
       p <-$ evalDist_OC c' (pair_EqDec eqds' eqds) (fun x y => p <-$ evalDist_OC (o' (fst x) y) _ o (snd x); ret (fst (fst p), (snd (fst p), snd p))) (s', s);
       Ret 
@@ -730,12 +730,12 @@ Fixpoint evalDist_OC(A B C: Set)(c : OracleComp A B C): forall(S : Set), EqDec S
         _) _ ))
       (fst p, fst (snd p), snd (snd p))
 
-    | OC_Ret A' B' C' c => 
+    | @OC_Ret A' B' C' c => 
       fun (S : Set)(eqds : EqDec S)(o : S -> A' -> Comp (B' * S))(s : S) =>
       x <-$ c; Ret 
       (EqDec_dec (pair_EqDec (comp_EqDec c) _ ))
       (x, s)
-    | OC_Bind A' B' C' C'' c' f' =>
+    | @OC_Bind A' B' C' C'' c' f' =>
       fun (S : Set)(eqds : EqDec S)(o : S -> A' -> Comp (B' * S))(s : S) =>
       [z, s'] <-$2 evalDist_OC c' _ o s;
       evalDist_OC (f' z) _ o s'

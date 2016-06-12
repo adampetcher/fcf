@@ -705,6 +705,29 @@ Theorem eqRat_terms : forall n1 d1 n2 d2,
   rattac.
 Qed.
 
+Lemma leRat_mult : forall n1 n2 d1 d2 (pf1 : d1 > 0) (pf2 : d2 > 0),
+                     RatIntro n1 (exist (fun d => d > 0) _ pf1) <= RatIntro n2 (exist (fun d => d > 0) _ pf2) ->
+                     (n1 * d2 <= n2 * d1)%nat.
+  
+  rattac.
+Qed.
+
+Lemma nat_minus_eq : forall (n1 n2 : nat),
+                       (n1 <= n2)%nat ->
+                       n2 - n1 = O ->
+                       n1 = n2.
+
+  intuition. 
+Qed.
+
+
+Lemma bleRat_total : forall r1 r2,
+                       bleRat r1 r2 = false -> bleRat r2 r1 = true.
+  
+  intuition.
+  unfold bleRat in *.
+  rattac.
+Qed.
 
 Theorem ratIdentityIndiscernables : forall r1 r2,
   r1 == r2 <->
@@ -737,21 +760,6 @@ Theorem ratIdentityIndiscernables : forall r1 r2,
   assert ((RatIntro n4 (exist (fun n : nat => n > 0) x0 g0)) <= (RatIntro n3 (exist (fun n : nat => n > 0) x g))).
   unfold leRat.
   trivial.
-
-  Lemma leRat_mult : forall n1 n2 d1 d2 (pf1 : d1 > 0) (pf2 : d2 > 0),
-    RatIntro n1 (exist (fun d => d > 0) _ pf1) <= RatIntro n2 (exist (fun d => d > 0) _ pf2) ->
-    (n1 * d2 <= n2 * d1)%nat.
-
-    rattac.
-  Qed.
-
-  Lemma nat_minus_eq : forall (n1 n2 : nat),
-    (n1 <= n2)%nat ->
-    n2 - n1 = O ->
-    n1 = n2.
-
-    intuition. 
-  Qed.
   
   eapply nat_minus_eq.
   apply (leRat_mult H2).
@@ -766,14 +774,6 @@ Theorem ratIdentityIndiscernables : forall r1 r2,
   apply mult_is_O in e. intuition.
   symmetry.
   eapply nat_minus_eq; trivial.
-
-  Lemma bleRat_total : forall r1 r2,
-    bleRat r1 r2 = false -> bleRat r2 r1 = true.
-
-    intuition.
-    unfold bleRat in *.
-    rattac.
-  Qed.
 
   apply bleRat_total in H0.
   assert (leRat (RatIntro n4 (exist (fun n : nat => n > 0) x g))
@@ -2640,6 +2640,14 @@ Lemma posnatMult_eq : forall p1 p2,
   trivial.
 Qed.
 
+Theorem mult_gt_zero_if : 
+  forall (a b : nat),
+    a * b > 0 -> (a > 0  /\ b > 0).
+
+  induction a; induction b; intuition.
+
+Qed.
+
 Lemma expRat_terms : forall k n (d : posnat)(p : nz (expnat d k)),
   expRat (RatIntro n d) k == (expnat n k) / (expnat d k).
 
@@ -2652,6 +2660,11 @@ Lemma expRat_terms : forall k n (d : posnat)(p : nz (expnat d k)),
   eapply eqRat_terms.
   intuition.
   eapply posnatMult_eq.
+
+  Grab Existential Variables.
+  destruct p.
+  econstructor.
+  eapply mult_gt_zero_if; eauto.
   
 Qed.
   
@@ -2692,6 +2705,7 @@ Lemma expRat_le_half_exists : forall r,
   econstructor.
   omega.
   eauto.
+
   assert (nz ((expnat (S x) x + x * expnat (S x) x))).
   econstructor.
   assert (expnat (S x) x > O).
@@ -2701,6 +2715,7 @@ Lemma expRat_le_half_exists : forall r,
   eauto.
   remember (x * expnat (S x) x)%nat as a.
   omega.
+
   assert (posnatToNat (pos (2 * (x * expnat x x))) <= posnatToNat (pos (expnat (S x) x + x * expnat (S x) x)))%nat.
   unfold natToPosnat, posnatToNat.
   rewrite mult_assoc.
@@ -2713,10 +2728,12 @@ Lemma expRat_le_half_exists : forall r,
   intuition.
   eapply expnat_base_S_same.
   omega.
+
   eapply leRat_trans.
   eapply leRat_terms.
   rewrite <- (mult_1_l (x * expnat x x)).
   eapply le_refl.
+  unfold natToPosnat, posnatToNat.
   eapply H2.
   assert (nz (x * expnat x x)).
   econstructor.
@@ -2753,8 +2770,14 @@ Lemma expRat_le_half_exists : forall r,
 
   eapply rat_ge_1.
   omega.
-  
 
+  Grab Existential Variables.
+  
+  eapply expnat_nz.
+  destruct p.
+  econstructor.
+  simpl.
+  trivial.
 Qed.
 
 Lemma expRat_half_le_exp_exists : forall d,
@@ -2783,6 +2806,13 @@ Lemma expRat_half_le_exp_exists : forall d,
   edestruct p.
   unfold natToPosnat, posnatToNat.
   eapply le_expnat_2.
+
+  Grab Existential Variables.
+  eapply expnat_nz.
+  econstructor.
+  destruct p.
+  econstructor.
+  intuition.
 
 Qed.
 

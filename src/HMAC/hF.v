@@ -1,6 +1,7 @@
 (* Copyright 2012-2015 by Adam Petcher.				*
  * Use of this source code is governed by the license described	*
  * in the LICENSE file at the root of the source tree.		*)
+
 Set Implicit Arguments.
 
 Require Import FCF.
@@ -918,8 +919,7 @@ Section hF.
     apply (oneVector c).
     eapply comp_spec_ret; intuition.
     
-    intuition.
-
+    intros.
     eapply F_randomFunc_preserves_coll;
     eauto.
 
@@ -1322,3 +1322,4 @@ Section hF.
 
 
 End hF.
+

@@ -775,12 +775,18 @@ Theorem eq_impl_comp_spec :
   simpl in *.
   discriminate.
 
-  Grab Existential Variables.
+  Grab Existential Variables. 
   unfold eq_dec; intuition.
   eapply (EqDec_dec _).
   unfold eq_dec; intuition.
   eapply (EqDec_dec _).
-  
+
+  intuition.
+  intuition.
+  intuition.
+  intuition.
+  intuition.
+
 Qed.
 
 
@@ -1288,6 +1294,12 @@ Theorem le_impl_comp_spec :
   unfold eq_dec; intuition.
   eapply (EqDec_dec _).
 
+  intuition.
+  intuition.
+  intuition.
+  intuition.
+  intuition.
+
 Qed.
 
 (* soundness theorems *)
@@ -1416,6 +1428,11 @@ Theorem eq_impl_comp_spec_eq :
 
   repeat simp_in_support.
   trivial.
+
+  Grab Existential Variables.
+  intuition.
+  intuition.
+  
 Qed.
 
 Theorem comp_spec_eq_refl : 
@@ -1633,17 +1650,19 @@ Theorem comp_spec_iso :
   rewrite eqb_leibniz in H5.
   subst.
   intuition.
-  case_eq (eqb (f b) a); intuition.
   subst.
-  rewrite eqb_refl in H6.
-  discriminate.
+  repeat rewrite eqb_refl.
+  intuition.
   case_eq (eqb (f x) a); intuition.
   rewrite eqb_leibniz in H4.
   subst.
   intuition.
   subst.
-  rewrite eqb_refl in H5.
-  discriminate.
+  repeat rewrite eqb_refl.
+  intuition.
+  rewrite H5.
+  rewrite H4.
+  intuition.
   intuition.
   subst.
   trivial.
@@ -1655,6 +1674,10 @@ Theorem comp_spec_iso :
 
   repeat simp_in_support.
   trivial.
+
+  Grab Existential Variables.
+  intuition.
+  intuition.
 
 Qed.
 

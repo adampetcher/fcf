@@ -2229,7 +2229,8 @@ Theorem repeat_fission' :
   rewrite <- evalDist_right_ident.
   eapply evalDist_seq_eq; intuition.
   rewrite evalDist_left_ident.
-  simpl; intuition.
+  simpl.
+  reflexivity.
   intuition.
   intuition.
   intuition.
@@ -2325,8 +2326,7 @@ Theorem repeat_fission' :
   eapply evalDist_seq_eq; intuition.
   rewrite evalDist_left_ident; intuition.
   simpl.
-  intuition.
- 
+  reflexivity.
 
   case_eq (P2 x); intuition.
   destruct (in_dec (EqDec_dec _) x (getSupport (Bind c f))).

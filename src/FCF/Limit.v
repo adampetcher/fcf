@@ -1076,7 +1076,7 @@ Qed.
 Lemma rat_inf_limit_sqrt:
   forall (f : nat -> Rat -> Prop) (v : Rat),
     rat_inf_limit f v -> 
-    rat_inf_limit (fun n => f (sqrt n)) v.
+    rat_inf_limit (fun n => f (Nat.sqrt n)) v.
 
   intuition.
   eapply rat_inf_limit_mono.

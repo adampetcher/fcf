@@ -560,7 +560,7 @@ Local Open Scope rat_scope.
 
 Theorem RndNat_eq_any : 
   forall (eta : nat)(x : Bvector eta),
-    Pr  [a0 <-$ { 0 , 1 }^eta; ret x ?= a0 ] == 1 / 2^eta.
+    Pr  [a0 <-$ { 0 , 1 }^eta; ret (eqb x a0) ] == 1 / 2^eta.
 
   intuition.
   simpl.

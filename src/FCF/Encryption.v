@@ -156,7 +156,7 @@ Section Encryption_SecretKey_concrete.
       rewrite <- evalDist_right_ident.
       comp_skip.
       comp_simp.
-      intuition.
+      reflexivity.
 
       comp_at comp_inline rightc 1%nat.
       comp_swap_r.
@@ -172,7 +172,7 @@ Section Encryption_SecretKey_concrete.
       rewrite <- evalDist_right_ident.
       comp_skip.
       comp_simp.
-      intuition.
+      reflexivity.
     Qed.                                                     
      
   End IND_CPA_SecretKey_O_concrete_3Proc.
@@ -290,12 +290,12 @@ Section Encryption_SecretKey_concrete.
       eapply leRat_trans.
       eapply Single_impl_ListHybrid.
       intuition.
+      
       wftac.
       eapply oc_comp_wf_inv.
       eauto.
       intuition.
-      eapply EncryptOracle_wf.
-      intuition.
+      unfold EncryptOracle; wftac.
       intuition.
       assert ((fun x => True) s').
       trivial.
@@ -303,6 +303,9 @@ Section Encryption_SecretKey_concrete.
       simpl.
       trivial.
       
+      Focus 4.
+      reflexivity.
+
       intuition.
       wftac.
       unfold EncryptNothingOracle.
@@ -317,8 +320,6 @@ Section Encryption_SecretKey_concrete.
       simpl.
       trivial.
       intuition.
-
-      eauto.
   
       intuition.
       eapply leRat_trans.
@@ -338,8 +339,6 @@ Section Encryption_SecretKey_concrete.
 
       repeat (try comp_skip; try reflexivity; comp_simp; inline_first).
 
-      reflexivity.
-      
     Qed.
 
   End  IND_CPA_SecretKey_OI_impl_O.

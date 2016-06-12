@@ -140,10 +140,10 @@ Qed.
 
 Fixpoint getSupport(A : Set)(c : Comp A) : list A :=
   match c with
-    | Ret _ _ a => a :: nil
-    | Bind A' B' c1 c2 => getUnique (flatten (map (fun b => (getSupport (c2 b))) (getSupport c1))) (bind_eq_dec c1 c2)
+    | Ret _ a => a :: nil
+    | Bind c1 c2 => getUnique (flatten (map (fun b => (getSupport (c2 b))) (getSupport c1))) (bind_eq_dec c1 c2)
     | Rnd n => getAllBvectors n
-    | Repeat _ c1 P => (filter P (getSupport c1))
+    | Repeat c1 P => (filter P (getSupport c1))
   end.
 
 (* Only well-formed computations are guaranteed to terminate. *)
@@ -166,20 +166,31 @@ Inductive well_formed_comp : forall (A : Set), Comp A -> Prop :=
 
 Delimit Scope comp_scope with comp.
 
+Theorem lt_eq_false : 
+  forall n,
+    n < n -> False.
+
+  destruct n; intuition.
+
+Qed.
+
+Lemma length_nz_exists : forall (A : Type)(ls : list A),
+                           length ls > 0 ->
+                           exists a, In a ls.
+  
+  destruct ls; intuition; simpl in *.
+  exfalso.
+  eapply lt_eq_false; eauto.
+  
+  econstructor; eauto.
+Qed.
+
+
 Theorem getSupport_length_nz : forall (A : Set)(c : Comp A),
   well_formed_comp c ->
   length (getSupport c) > 0.
   
   induction 1; intuition; simpl in *.
-  
-  Lemma length_nz_exists : forall (A : Type)(ls : list A),
-    length ls > 0 ->
-    exists a, In a ls.
-    
-    destruct ls; intuition; simpl in *.
-    omega.
-    econstructor; eauto.
-  Qed.
   
   apply length_getUnique_nz.
   apply length_nz_exists in IHwell_formed_comp.

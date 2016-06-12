@@ -190,7 +190,7 @@ Definition of_list_length (A : Set)(m : nat)(ls : list A)(pf : length ls = m) : 
 
 Definition of_sig_list (A : Set)(m : nat)(l : {ls : list A | length ls = m}) : Vector.t A m :=
   match l with
-    | exist ls pf => (of_list_length ls pf)
+    | exist _ ls pf => (of_list_length ls pf)
   end.
 
 Lemma vector_hd_cons_eq : forall(A : Set)(v : Vector.t A 1),
@@ -713,7 +713,7 @@ Lemma vector_cons_eq_inv : forall (A : Set)(n : nat)(a1 a2 : A)(v1 v2 : Vector.t
   Fixpoint tailOpt(A : Set)(n : nat)(v : Vector.t A n) : option (Vector.t A (pred n)):=
     match v with
       | [] => None
-              | Vector.cons _ _ v => Some v
+      | Vector.cons _ _ _ v => Some v
     end.
   
   assert (tailOpt (Vector.cons A a1 n v1) = tailOpt (Vector.cons A a2 n v2)).

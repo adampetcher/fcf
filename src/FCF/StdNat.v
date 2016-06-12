@@ -101,10 +101,9 @@ Defined.
 
 Definition posnat := {n : nat | n > 0}.
 
-
 Definition posnatToNat(p : posnat) :=
   match p with
-    | exist n _ => n
+    | exist _ n _ => n
   end.
 
 Inductive posnatEq : posnat -> posnat -> Prop :=
@@ -115,7 +114,7 @@ Inductive posnatEq : posnat -> posnat -> Prop :=
 
 Definition posnatMult(p1 p2 : posnat) : posnat :=
     match (p1, p2) with
-      | (exist n1 pf1, exist n2 pf2) =>
+      | (exist _ n1 pf1, exist _ n2 pf2) =>
         (exist (fun n => n > 0) (n1 * n2) (mult_gt_0 pf1 pf2))
     end.
 
@@ -174,12 +173,12 @@ Theorem expnat_pos : forall x n,
 
 Qed.
 
-
 Lemma div2_le : forall n,
   le (div2 n) n.
   
   intuition.
-  eapply NPeano.div2_decr.
+
+  eapply PeanoNat.Nat.div2_decr.
   omega.
   
 Qed.
@@ -587,7 +586,7 @@ Qed.
 
 Lemma sqrt_le_lin_gen : forall a b,
   (a <= b ->
-    sqrt a <= b)%nat.
+    Nat.sqrt a <= b)%nat.
   
   intuition.
   eapply le_trans.
@@ -778,8 +777,8 @@ Qed.
 
 Theorem log2_div2 : 
   forall x y,
-    S y = log2 x ->
-    log2 (div2 x) = y.
+    S y = Nat.log2 x ->
+    Nat.log2 (div2 x) = y.
   
   intuition.
   specialize (Nat.log2_double); intuition.
@@ -812,7 +811,7 @@ Theorem log2_div2 :
 Qed.
 
 Lemma log2_0 : 
-  log2 0 = 0.
+  Nat.log2 0 = 0.
   trivial.
 Qed.
 

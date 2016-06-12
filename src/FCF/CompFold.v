@@ -1306,8 +1306,8 @@ Lemma compMap_app :
   rewrite <- evalDist_right_ident.
   comp_skip.
   simpl.
-  intuition.
-  
+  reflexivity.
+
   rewrite <- app_comm_cons.
   unfold compMap.
   fold compMap.
@@ -2509,6 +2509,10 @@ Theorem prob_sum_le :
   
   rewrite prob_or_le_sum.
   eapply ratAdd_leRat_compat; intuition.
+
+  Grab Existential Variables.
+  intuition.
+
 Qed.
 
 Theorem prob_sum_le_mult : 
@@ -2591,9 +2595,10 @@ Theorem Repeat_unroll_n :
   simpl.
   rewrite H2.
   simpl.
-  intuition.
+  reflexivity.
   rewrite IHn.
   comp_skip.
+  reflexivity.
   comp_simp.
   simpl.
   rewrite H2.
