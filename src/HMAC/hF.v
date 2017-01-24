@@ -6,7 +6,7 @@ Set Implicit Arguments.
 
 Require Import FCF.
 Require Import PRF.
-Require Import splitVector.
+Require Import SplitVector.
 Require Import cAU.
 Require Import CompFold.
 

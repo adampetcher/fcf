@@ -7,7 +7,7 @@ Add LoadPath "../FCF".
 
 Require Import FCF.
 Require Import PRF.
-Require Import splitVector.
+Require Import SplitVector.
 
 Require Import HMAC_spec.
 

@@ -100,7 +100,7 @@ Section HMAC_PRF.
         destruct (vector_S a2).
         destruct H2.
         subst.
-        repeat rewrite <- splitVector.Vector_cons_app_assoc in H.
+        repeat rewrite <- SplitVector.Vector_cons_app_assoc in H.
         
         inversion H.
         apply vector_cons_eq in H.
