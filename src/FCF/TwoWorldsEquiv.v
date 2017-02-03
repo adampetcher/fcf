@@ -6,6 +6,7 @@
 
 Set Implicit Arguments.
 
+Require Import FCF.
 Require Import Crypto.
 Require Import Asymptotic.
 
@@ -115,9 +116,6 @@ Theorem evalDist_bool_complement :
   intuition.
   
   eapply evalDist_le_1.
-  unfold eq_dec.
-  eapply (EqDec_dec _).
-  intuition.
 Qed.
 
 Theorem rndBool_bind : 
@@ -178,7 +176,7 @@ Section TwoWorldsEquiv.
       symmetry.
       rewrite <- evalDist_right_ident.
       comp_skip.
-      comp_ute.
+      fcf_compute.
       rewrite H.
       clear H.
       
@@ -187,7 +185,7 @@ Section TwoWorldsEquiv.
       symmetry.
       rewrite <- evalDist_right_ident.
       comp_skip.
-      comp_ute.
+      fcf_compute.
       rewrite H.
       clear H.
       
@@ -209,13 +207,15 @@ Section TwoWorldsEquiv.
       
       eapply evalDist_le_1.
       unfold eq_dec.
-      eapply (EqDec_dec _).
-      wftac.
       
       rewrite <- H at 2.
       
       rewrite ratDistance_add_same_r.
-      intuition.
+      reflexivity.
+
+      Grab Existential Variables.
+      exact _.
+      exact _.
     Qed.
     
     Theorem Def_equiv_2W : 
