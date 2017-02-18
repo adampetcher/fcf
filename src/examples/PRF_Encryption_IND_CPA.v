@@ -304,6 +304,7 @@ Section PRF_Encryption_concrete.
 
     Theorem G2_PRF_A_equiv : 
       Pr[G2] == Pr[[b, _] <-$2 PRF_A _ _ PRFE_RandomFunc nil; ret b].
+      pose proof RF_EncryptOracle_spec as RFE_spec.
       
       unfold G2, PRF_A.
       simpl.
@@ -319,7 +320,7 @@ Section PRF_Encryption_concrete.
       intuition.
       subst.
       
-      eapply RF_EncryptOracle_spec.
+      eapply RFE_spec.
       intuition.
       intuition.
       prog_simp.
@@ -347,7 +348,7 @@ Section PRF_Encryption_concrete.
       intuition.
       subst.
       
-      eapply RF_EncryptOracle_spec.
+      eapply RFE_spec.
       intuition.
       prog_simp.
       simpl.
@@ -475,7 +476,7 @@ Section PRF_Encryption_concrete.
     Theorem G2_2_3_eq_until_bad : 
       forall z,
         evalDist G2_2 (z, false) == evalDist G2_3 (z, false).
-
+      pose proof RF_Encrypt_wf.
       intuition.
       unfold G2_2, G2_3.
 
@@ -505,7 +506,8 @@ Section PRF_Encryption_concrete.
 
     Theorem G2_2_3_badness_same : 
       Pr[x <-$ G2_2; ret (snd x)] == Pr[x <-$ G2_3; ret (snd x)].
-
+      
+      pose proof RF_Encrypt_wf.
       unfold G2_2, G2_3.
       
       do 3 (inline_first; comp_skip; comp_simp).
@@ -588,7 +590,7 @@ Section PRF_Encryption_concrete.
     
     Theorem G2_2_bad_equiv : 
       Pr[x <-$ G2_2; ret snd x] == Pr[G2_2_bad].
-
+      pose proof RF_Encrypt_wf.
       rewrite G2_2_3_badness_same.
 
       unfold G2_3, G2_2_bad.
@@ -619,6 +621,7 @@ Section PRF_Encryption_concrete.
     Require Import RndInList.
 
     Theorem G2_2_bad_small : Pr[x <-$ G2_2; ret snd x] <= q1 / (2 ^ eta).
+      pose proof RF_Encrypt_wf.
 
       rewrite G2_2_bad_equiv.
       unfold G2_2_bad.
@@ -740,20 +743,6 @@ Section PRF_Encryption_concrete.
       
     Qed.
 
-    Theorem G2_4_5_eq_until_bad : 
-      forall z,
-        evalDist G2_4 (z, false) == evalDist G2_5 (z, false).
-
-      intuition.
-      unfold G2_4, G2_5.
-      do 4 (comp_skip; comp_simp).
-
-      eapply comp_spec_impl_eq.
-      eapply comp_spec_seq; eauto with inhabited.
-      eapply (@oc_comp_spec_eq_until_bad _ _ _ _ _ _ _ _ _ _ _ _ _ 
-        (fun a => snd a) (fun a => snd a)
-        (fun a b => forall z,  z <> x -> arrayLookup _ (fst a) z = arrayLookup _ (fst b) z)).
-
       Theorem RF_Encrypt_bad_wf : 
         forall x a b, 
           well_formed_comp (RF_Encrypt_bad x a b).
@@ -764,10 +753,26 @@ Section PRF_Encryption_concrete.
      
       Qed.
 
+    Theorem G2_4_5_eq_until_bad : 
+      forall z,
+        evalDist G2_4 (z, false) == evalDist G2_5 (z, false).
+
+      pose proof @RF_Encrypt_bad_preserved as RF_Encrypt_bad_preserved.
+      pose proof @RF_Encrypt_bad_wf as RF_Encrypt_bad_wf.
       intuition.
-      apply RF_Encrypt_bad_wf.
+      unfold G2_4, G2_5.
+      do 4 (comp_skip; comp_simp).
+
+      eapply comp_spec_impl_eq.
+      eapply comp_spec_seq; eauto with inhabited.
+      eapply (@oc_comp_spec_eq_until_bad _ _ _ _ _ _ _ _ _ _ _ _ _ 
+        (fun a => snd a) (fun a => snd a)
+        (fun a b => forall z,  z <> x -> arrayLookup _ (fst a) z = arrayLookup _ (fst b) z)).
+
+
       intuition.
-      apply RF_Encrypt_bad_wf.
+      solve [intros; apply RF_Encrypt_bad_wf].
+      intuition.
     
       (* Prove that as long as the procedures don't go bad, the invariant holds *)
       intuition.
@@ -853,6 +858,8 @@ Section PRF_Encryption_concrete.
     Theorem G2_4_5_badness_same : 
       Pr[x <-$ G2_4; ret (snd x)] == Pr[x <-$ G2_5; ret (snd x)].
 
+      pose proof @RF_Encrypt_bad_wf as RF_Encrypt_bad_wf.
+      pose proof @RF_Encrypt_bad_preserved as RF_Encrypt_bad_preserved.
       unfold G2_4, G2_5.
       do 4 (inline_first; comp_skip; comp_simp).
       inline_first.
@@ -866,9 +873,7 @@ Section PRF_Encryption_concrete.
         (fun a => snd a) (fun a => snd a)
         (fun a b => forall z,  z <> x -> arrayLookup _ (fst a) z = arrayLookup _ (fst b) z)).
       intuition.
-      eapply RF_Encrypt_bad_wf.
       intuition.
-      eapply RF_Encrypt_bad_wf.
 
       intuition.
       simpl in *; subst.
@@ -912,7 +917,6 @@ Section PRF_Encryption_concrete.
       intros.
       destruct c.
       destruct b.
-      eapply RF_Encrypt_bad_preserved .
       eauto.
       trivial.
 
@@ -943,48 +947,6 @@ Section PRF_Encryption_concrete.
       eauto.
     Qed.
     
-    Theorem G2_4_bad_small : Pr[x <-$ G2_4; ret snd x] <= q2 / (2 ^ eta).
-      
-      unfold G2_4.
-      inline_first;
-      comp_irr_l; wftac.
-      inline_first;
-      comp_irr_l; wftac.
-      eapply oc_comp_wf; intuition.
-      comp_simp.
-      dist_inline_l.
-      comp_irr_l; wftac.
-      comp_inline_l; comp_irr_l; wftac.
-      comp_inline_l.
-      
-      assert ( Pr 
-   [a <-$
-    (A2 s (x, (if x0 then p0 else p) xor x1))
-      (list (Bvector eta * Bvector eta) * bool)%type
-      (pair_EqDec
-         (list_EqDec (pair_EqDec (Bvector_EqDec eta) (Bvector_EqDec eta)))
-         bool_EqDec) (RF_Encrypt_bad x) ((x, x1) :: l, false);
-    x2 <-$ ([b', o]<-2 a; ret (eqb x0 b', snd o)); ret snd x2 ]  ==
-    Pr 
-   [a <-$
-    (A2 s (x, (if x0 then p0 else p) xor x1))
-      (list (Bvector eta * Bvector eta) * bool)%type
-      (pair_EqDec
-         (list_EqDec (pair_EqDec (Bvector_EqDec eta) (Bvector_EqDec eta)))
-         bool_EqDec) (RF_Encrypt_bad x) ((x, x1) :: l, false);
-   ret (snd (snd a))] ).
-
-      comp_skip.
-      comp_simp.
-      simpl.
-      intuition.
-      rewrite H4.
-      clear H4.
-      
-      eapply leRat_trans.
-
-      eapply RndInAdaptive_prob; eauto.
-
       Theorem RF_Encrypt_bad_prob : 
         forall x (a : list (Bvector eta * Bvector eta)) (b : Plaintext),
           (Pr  [d <-$ RF_Encrypt_bad x (a, false) b; ret snd (snd d) ] <= 1 / (2 ^ eta))%rat.
@@ -1025,10 +987,55 @@ Section PRF_Encryption_concrete.
         apply eqbBvector_sound in e; subst; intuition.
         eapply ratMult_0_r.
       Qed.
+
+    Theorem G2_4_bad_small : Pr[x <-$ G2_4; ret snd x] <= q2 / (2 ^ eta).
+      
+      pose proof @RF_Encrypt_wf as RF_Encrypt_wf.
+      pose proof @RF_Encrypt_bad_prob as RF_Encrypt_bad_prob.
+      pose proof @RF_Encrypt_bad_preserved as RF_Encrypt_bad_preserved.
+      unfold G2_4.
+      inline_first;
+      comp_irr_l; wftac.
+      inline_first;
+      comp_irr_l; wftac.
+      eapply oc_comp_wf; intuition.
+      comp_simp.
+      dist_inline_l.
+      comp_irr_l; wftac.
+      comp_inline_l; comp_irr_l; wftac.
+      comp_inline_l.
+      
+      assert ( Pr 
+   [a <-$
+    (A2 s (x, (if x0 then p0 else p) xor x1))
+      (list (Bvector eta * Bvector eta) * bool)%type
+      (pair_EqDec
+         (list_EqDec (pair_EqDec (Bvector_EqDec eta) (Bvector_EqDec eta)))
+         bool_EqDec) (RF_Encrypt_bad x) ((x, x1) :: l, false);
+    x2 <-$ ([b', o]<-2 a; ret (eqb x0 b', snd o)); ret snd x2 ]  ==
+    Pr 
+   [a <-$
+    (A2 s (x, (if x0 then p0 else p) xor x1))
+      (list (Bvector eta * Bvector eta) * bool)%type
+      (pair_EqDec
+         (list_EqDec (pair_EqDec (Bvector_EqDec eta) (Bvector_EqDec eta)))
+         bool_EqDec) (RF_Encrypt_bad x) ((x, x1) :: l, false);
+   ret (snd (snd a))] ).
+
+      comp_skip.
+      comp_simp.
+      simpl.
+      intuition.
+      match goal with [H4:_ |- _ ] => rewrite H4; clear H4 end.
+      
+      eapply leRat_trans.
+
+      eapply RndInAdaptive_prob; eauto.
+
       
       intros.
       destruct a.
-      simpl in H4; subst.
+      simpl in *; subst.
       eapply RF_Encrypt_bad_prob.
 
       intuition.
@@ -1179,6 +1186,7 @@ Section PRF_Encryption_concrete.
     Theorem G5_one_half : 
       Pr[G5] == 1/2.
 
+      pose proof @RF_Encrypt_wf as RF_Encrypt_wf.
       unfold G5.
       
       comp_irr_l.
@@ -1236,20 +1244,8 @@ Section PRF_Encryption_concrete.
     Hypothesis A2_cost_1_correct : cost (fun p => A2 (fst p) (snd p)) A2_cost_1.
     Variable A2_cost_2 : nat -> nat.
     Hypothesis A2_cost_correct : forall x y, oc_cost cost (comp_cost cost) (A2 x y) A2_cost_2.
-  
-    Theorem PRF_A'_cost : 
-      oc_cost cost (comp_cost cost) PRF_A' 
-       (fun x => (A1_cost (x + (5 * eta))) + (A2_cost_2 (x + (5 * eta))) + 
-        x + 5 * A2_cost_1 + 6 + 7 * eta).
 
-      unfold PRF_A'.
-
-      eapply oc_cost_le.
-
-      costtac.
-      eauto.
-
-      Theorem PRFE_Encrypt_OC_cost_1 : 
+    Theorem PRFE_Encrypt_OC_cost_1 : 
         cost PRFE_Encrypt_OC 0.
 
         Transparent PRFE_Encrypt_OC.
@@ -1312,7 +1308,21 @@ Section PRF_Encryption_concrete.
         costtac.
 
         intuition.
-      Qed.
+      Qed.  
+
+    Theorem PRF_A'_cost : 
+      oc_cost cost (comp_cost cost) PRF_A' 
+       (fun x => (A1_cost (x + (5 * eta))) + (A2_cost_2 (x + (5 * eta))) + 
+        x + 5 * A2_cost_1 + 6 + 7 * eta).
+
+      pose proof @PRFE_Encrypt_OC_cost_2 as PRFE_Encrypt_OC_cost_2.
+      pose proof @PRFE_Encrypt_OC_oc_cost as PRFE_Encrypt_OC_oc_cost.
+      unfold PRF_A'.
+
+      eapply oc_cost_le.
+
+      costtac.
+      eauto.
       
       eapply PRFE_Encrypt_OC_cost_1.
       eapply PRFE_Encrypt_OC_cost_2.
