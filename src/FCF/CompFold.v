@@ -2184,14 +2184,10 @@ Theorem list_pred_app_both_if :
    
    intros.
    eapply list_pred_app in H0.
-   destruct H0.
-   rewrite firstn_app in l; intuition.
-   rewrite firstn_ge_all in l; intuition.
-   
-   rewrite H in l0.
-   rewrite skipn_app in l0.
-   trivial.
-
+   rewrite H in H0.
+   rewrite ?firstn_app, ?skipn_app, ?firstn_ge_all,
+     ?minus_diag, ?firstn_O, ?app_nil_r in * by omega.
+   firstorder.
 Qed.
 
 Theorem compMap_seq_map :
