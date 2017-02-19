@@ -12,7 +12,6 @@ Coq 8.6 or 8.5
 
 Then open a simple example from the “src/examples” directory in Proof General.  A good place to start is “ElGamal.v.”  Interactively step through this proof to learn how to develop a simple proof of non-adaptive security in the concrete setting.  PRF_Encryption_IND_CPA.v contains a more complex proof of adaptive security along with a proof in the asymptotic setting.  
 
-`src/ESPADA` contains a proof of security of ESPADA SSE Scheme (but see below for removed files).
 
 The publications describing FCF are available at adam.petcher.net.   
 
@@ -23,29 +22,13 @@ The publications describing FCF are available at adam.petcher.net.
 
 # History
 
-Files that mo longer build have been removed:
+This repository used to contain a proof of security of ESPADA SSE Scheme under
+`src/ESPADA`. This proof is no longer maintained; it is preserved in git
+history.
 
-  deleted:    src/ESPADA/ESPADA_SSE_OXT.v
-  deleted:    src/ESPADA/ESPADA_SSE_OXT_Games.v
-  deleted:    src/ESPADA/ESPADA_SSE_SKS_Secure.v
-  deleted:    src/ESPADA/ESPADA_SSE_SKS_Secure_auto.v
-  deleted:    src/ESPADA/ESPADA_TSet_Correct.v
-  deleted:    src/ESPADA/ESPADA_TSet_Correct_Once.v
-  deleted:    src/ESPADA/ESPADA_TSet_Once.v
-  deleted:    src/ESPADA/ESPADA_TSet_Secure.v
-  deleted:    src/FCF/Class.v
-  deleted:    src/FCF/ConstructedFunc.v
-  deleted:    src/FCF/Encryption_2W.v
-  deleted:    src/FCF/ExpectedPolyTime.v
-  deleted:    src/FCF/ListHybrid.v
-  deleted:    src/FCF/PRP_PRF.v
-  deleted:    src/FCF/Procedure.v
-  deleted:    src/FCF/RandPermSwitching.v
-  deleted:    src/FCF/RndDup.v
-  deleted:    src/FCF/Sigma.v
-  deleted:    src/FCF/State.v
-  deleted:    src/FCF/examples/Commit.v
-  deleted:    src/FCF/examples/EC_DRBG.v
+Some files that no longer fully build are preserved under `src/FCF/Broken`.
+There be dragons, though -- not all of them were ever finished, and some contain
+significant `admit`s.
 
 # Ackowledgements
 
