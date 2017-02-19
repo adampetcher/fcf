@@ -1,19 +1,4 @@
 -R src ""
-src/ESPADA/ESPADA_SSE_OXT.v
-src/ESPADA/ESPADA_SSE_OXT_Games.v
-src/ESPADA/ESPADA_SSE_SKS.v
-src/ESPADA/ESPADA_SSE_SKS_Secure.v
-src/ESPADA/ESPADA_SSE_SKS_Secure_auto.v
-src/ESPADA/ESPADA_SSE_SKS_Secure_tacs.v
-src/ESPADA/ESPADA_TSet.v
-src/ESPADA/ESPADA_TSet_Correct.v
-src/ESPADA/ESPADA_TSet_Correct_Once.v
-src/ESPADA/ESPADA_TSet_Correct_Once_Games.v
-src/ESPADA/ESPADA_TSet_Once.v
-src/ESPADA/ESPADA_TSet_Once_Games.v
-src/ESPADA/ESPADA_TSet_Secure.v
-src/ESPADA/SSE.v
-src/ESPADA/TSet.v
 src/FCF/Admissibility.v
 src/FCF/Array.v
 src/FCF/Asymptotic.v
