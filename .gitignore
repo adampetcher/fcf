@@ -1,3 +1,5 @@
+.nia.cache
+Makefile.coq
 *.vo
 *.v.d
 *.glob

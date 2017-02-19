@@ -1,5 +1,4 @@
-(* Copyright 2012-2015 by Adam Petcher.				*
- * Use of this source code is governed by the license described	*
+(* Use of this source code is governed by the license described	*
  * in the LICENSE file at the root of the source tree.		*)
 
 Require Import FCF.
@@ -132,150 +131,173 @@ Section ListHybrid.
 
     rewrite map_app.
     simpl.
-    
 
-
+    (*
     eapply eqRat_impl_leRat.
     rewrite ratS_num.
     rewrite ratMult_distrib_r.
     eapply ratAdd_eqRat_compat; intuition.
     symmetry.
     eapply ratMult_1_l.
+     *)    
+
+(* 1 subgoal, subgoal 1 (ID 390) *)
+  
+(*   A, B, C, S_A : Set *)
+(*   eqdb : EqDec B *)
+(*   defA : A *)
+(*   A1 : Comp (list A * S_A) *)
+(*   A2, A2' : S_A -> A -> Comp B *)
+(*   A3 : S_A -> list B -> Comp C *)
+(*   A1_wf : well_formed_comp A1 *)
+(*   A2_wf : forall (x : S_A) (y : A), well_formed_comp (A2 x y) *)
+(*   A2'_wf : forall (x : S_A) (y : A), well_formed_comp (A2' x y) *)
+(*   numA : nat *)
+(*   numA_correct : forall (lsa : list A) (s : S_A), *)
+(*                  In (lsa, s) (getSupport A1) -> length lsa = numA *)
+(*   F : nat -> Rat *)
+(*   H : forall (n : nat) (c : C), *)
+(*       | evalDist (LH_Gn n) c - evalDist (LH_Gn (S n)) c | <= F n *)
+(*   x : nat *)
+(*   IHx : forall (n : nat) (c : C), *)
+(*         | evalDist (LH_Gn n) c - evalDist (LH_Gn (n + x)) c | <= *)
+(*         sumList (map (Init.Nat.add n) (allNatsLt x)) F *)
+(*   n : nat *)
+(*   c : C *)
+(*   ============================ *)
+(*   F n + sumList (map (fun m : nat => S (n + m)) (allNatsLt x)) F <= *)
+(*   sumList (map (Init.Nat.add n) (allNatsLt x) ++ (n + x)%nat :: nil) F *)
+
+(* (dependent evars: (printing disabled) ) *)
+
     
+  Admitted.
+
+  Theorem skipn_length_nil : 
+    forall (A : Type)(ls : list A)(n : nat),
+      n >= length ls ->
+      skipn n ls = nil.
+
+    induction ls; intuition; simpl in *.
+    destruct n; simpl in *; trivial.
+
+    destruct n; simpl in *.
+    omega.
+    eapply IHls.
+    omega.
+  Qed.
+
+  Theorem LH_Gn_0_equiv : 
+    forall (n : nat) c,
+      n < numA ->
+      evalDist (LH_Gn n) c == evalDist (LH_G_0 n) c.
+
+    intuition.
+    unfold LH_Gn, LH_G_0.
+    comp_skip; comp_simp.
+    comp_skip.
+
+    erewrite skipn_S.
+    simpl.
+    inline_first.
+    comp_skip.
+    reflexivity.
+    inline_first.
+    comp_skip.
+    erewrite numA_correct; intuition; eauto.
+    
+  Qed.
+
+  Theorem LH_Gn_1_equiv : 
+    forall (n : nat) c,
+      n < numA ->
+      evalDist (LH_Gn (S n)) c == evalDist (LH_G_1 n) c.
+
+    intuition.
+    unfold LH_Gn, LH_G_1.
+    comp_skip.
+    comp_simp.
+
+    rewrite (firstn_S _ defA).
+
+    assert (evalDist (lsb1 <-$ (foreach  (x in firstn n l ++ nth n l defA :: nil) A2' s x);
+                      lsb2 <-$ (foreach  (x in skipn (S n) l)A2 s x); A3 s (lsb1 ++ lsb2) ) c ==
+            evalDist (lsb1 <-$ (r1 <-$ compMap _ (A2' s) (firstn n l);
+                                r2 <-$ compMap _ (A2' s) (nth n l defA :: nil);
+                                ret (r1 ++ r2));
+                      lsb2 <-$ (foreach  (x in skipn (S n) l)A2 s x); A3 s (lsb1 ++ lsb2) ) c
+           ).
+
+    comp_skip.
+    eapply compMap_app.
+    match goal with [H1:_|- _ ] => rewrite H1; clear H1 end.
+    inline_first.
+    comp_skip.
+    inline_first.
+    comp_skip.
+    inline_first.
+
+    comp_skip.
+    reflexivity.
+    
+    rewrite <- app_assoc.
+    rewrite <- app_comm_cons.
+    simpl.
+    intuition.
+    erewrite numA_correct; intuition; eauto.
+
   Qed.
 
   Theorem list_hybrid_close : 
     forall k c,
       (forall n c, n < numA -> | (evalDist (LH_G_0 n) c) - (evalDist (LH_G_1 n) c) | <= k) ->
   | (evalDist (LH_G0) c) - (evalDist (LH_G1) c) | <= (numA)/1 * k.
+    pose proof @skipn_length_nil as skipn_length_nil.
+    pose proof @list_hybrid_close_h as list_hybrid_close_h.
     
-    intuition.
-
-    assert (evalDist (LH_G0) c == evalDist (LH_Gn 0) c).
-    unfold LH_G0, LH_Gn.
-    comp_skip.
-    comp_simp.
-    simpl.
-    comp_simp.
-    simpl.
-    comp_skip.
-
-    rewrite H0.
-    clear H0.
-
-    assert (evalDist (LH_G1) c == evalDist (LH_Gn numA) c).
-    unfold LH_G1, LH_Gn.
-    comp_skip.
-    comp_simp.
-
-    specialize (firstn_skipn (length l) l); intuition.
-    rewrite <- H1 at 1.
-    eapply eqRat_trans.
-    eapply evalDist_seq_eq.
     intros.
-    eapply compMap_app.
-    intuition.
-    reflexivity.
-    inline_first.
-    clear H1.
-    comp_skip.
-    erewrite numA_correct; eauto.
-    intuition.
-    inline_first.
 
-    Theorem skipn_length_nil : 
-      forall (A : Type)(ls : list A)(n : nat),
-        n >= length ls ->
-        skipn n ls = nil.
-
-      induction ls; intuition; simpl in *.
-      destruct n; simpl in *; trivial.
-
-      destruct n; simpl in *.
-      omega.
-      eapply IHls.
-      omega.
-    Qed.
-             
-    repeat rewrite skipn_length_nil.
-    simpl.
-    comp_simp.
-    intuition.
-    erewrite numA_correct; intuition; eauto.
-    intuition.
-    
-    rewrite H0.
-    clear H0.
-
-    assert (numA = (0 + numA))%nat.
-    omega.
-    rewrite H0 at 1.
-    clear H0.
-    rewrite list_hybrid_close_h.
-    eapply leRat_refl.
-    intuition.
-
-    Theorem LH_Gn_0_equiv : 
-      forall (n : nat) c,
-        n < numA ->
-        evalDist (LH_Gn n) c == evalDist (LH_G_0 n) c.
-
-      intuition.
-      unfold LH_Gn, LH_G_0.
-      comp_skip; comp_simp.
+    assert (evalDist (LH_G0) c == evalDist (LH_Gn 0) c) as HA. {
+      unfold LH_G0, LH_Gn.
       comp_skip.
-
-      erewrite skipn_S.
+      comp_simp.
       simpl.
-      inline_first.
+      comp_simp.
+      simpl.
       comp_skip.
-      reflexivity.
-      inline_first.
-      comp_skip.
-      erewrite numA_correct; intuition; eauto.
-   
-    Qed.
+    } rewrite HA; clear HA.
 
-    Theorem LH_Gn_1_equiv : 
-      forall (n : nat) c,
-        n < numA ->
-        evalDist (LH_Gn (S n)) c == evalDist (LH_G_1 n) c.
-
-      intuition.
-      unfold LH_Gn, LH_G_1.
+    assert (evalDist (LH_G1) c == evalDist (LH_Gn numA) c) as HA. {
+      unfold LH_G1, LH_Gn.
       comp_skip.
       comp_simp.
 
-      rewrite (firstn_S _ defA).
-
-      assert (evalDist (lsb1 <-$ (foreach  (x in firstn n l ++ nth n l defA :: nil) A2' s x);
-    lsb2 <-$ (foreach  (x in skipn (S n) l)A2 s x); A3 s (lsb1 ++ lsb2) ) c ==
-              evalDist (lsb1 <-$ (r1 <-$ compMap _ (A2' s) (firstn n l);
-                           r2 <-$ compMap _ (A2' s) (nth n l defA :: nil);
-                           ret (r1 ++ r2));
-    lsb2 <-$ (foreach  (x in skipn (S n) l)A2 s x); A3 s (lsb1 ++ lsb2) ) c
-                ).
-
-      comp_skip.
+      rewrite <- (firstn_skipn (length l) l) at 1 by intuition.
+      eapply eqRat_trans.
+      eapply evalDist_seq_eq.
+      intros.
       eapply compMap_app.
-      rewrite H1.
-      clear H1.
-      inline_first.
-      comp_skip.
-      inline_first.
-      comp_skip.
-      inline_first.
-
-      comp_skip.
-      reflexivity.
-      
-      rewrite <- app_assoc.
-      rewrite <- app_comm_cons.
-      simpl.
       intuition.
-      erewrite numA_correct; intuition; eauto.
+      reflexivity.
+      inline_first.
+      comp_skip.
+      erewrite numA_correct; eauto.
+      reflexivity.
+      inline_first.
+      
+      replace numA with (length l) by (eapply numA_correct; eauto).
+      rewrite skipn_length_nil.
+      simpl.
+      comp_simp.
+      reflexivity.
+      intuition.
+    } rewrite HA. clear HA.
 
-    Qed.
+    replace numA with (0 + numA)%nat by omega.
+    rewrite list_hybrid_close_h.
+    admit.
+
+    intros.
 
     destruct (ge_dec n numA).
     unfold LH_Gn.
@@ -299,13 +321,10 @@ Section ListHybrid.
     erewrite numA_correct; eauto.
     erewrite numA_correct; eauto.
 
-    rewrite LH_Gn_0_equiv.
-    rewrite LH_Gn_1_equiv.
-    eapply H.
-    omega.
-    omega.
-    omega.
-  Qed.
+    rewrite LH_Gn_0_equiv by omega.
+    rewrite LH_Gn_1_equiv by omega.
+    admit.
+  Admitted.
 
 
 End ListHybrid.

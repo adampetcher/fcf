@@ -1,5 +1,4 @@
-(* Copyright 2012-2015 by Adam Petcher.				*
- * Use of this source code is governed by the license described	*
+(* Use of this source code is governed by the license described	*
  * in the LICENSE file at the root of the source tree.		*)
 Set Implicit Arguments.
 
@@ -123,7 +122,7 @@ Section Pedersen.
       comp_spec eq (RndG) (r <-$ [0 .. order) ; ret (g ^ x) ^r)%group.
 
     intuition.
-    eapply comp_spec_seq; intuition.
+    eapply comp_spec_seq; [intuition..| | ].
     eapply comp_spec_symm.
     eapply (comp_spec_iso (fun z => modNat (x * z) order) (fun z => modNat (z * multInverseModOrder x) order)).
   
@@ -167,6 +166,7 @@ Section Pedersen.
     eapply RndNat_support_lt.
     trivial.
 
+    intros.
     simpl in H2.
     subst.
     eapply comp_spec_ret.
