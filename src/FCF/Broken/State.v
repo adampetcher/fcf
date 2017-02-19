@@ -1,11 +1,11 @@
-(* Copyright 2012-2015 by Adam Petcher.				*
- * Use of this source code is governed by the license described	*
+(*  Use of this source code is governed by the license described	*
  * in the LICENSE file at the root of the source tree.		*)
 (* This file contains an earlier version of state-related definitions.  The theory from this file should be moved to Procedure.v *)
 
 Set Implicit Arguments.
 
 Require Import Crypto.
+(*
 Require Import ProgramLogic_old.
 
 
@@ -736,3 +736,4 @@ End AdversaryWithOracle_concrete.
 
 Notation "A 'queries' f" := (@runA _ _ _ _ _ A _ _ f)
   (at level 75) : comp_scope.
+*)

@@ -30,7 +30,6 @@ src/FCF/DistRules.v
 src/FCF/DistSem.v
 src/FCF/DistTacs.v
 src/FCF/Encryption.v
-src/FCF/Encryption_2W.v
 src/FCF/Encryption_PK.v
 src/FCF/EqDec.v
 src/FCF/ExpectedPolyTime.v
@@ -41,7 +40,6 @@ src/FCF/GroupTheory.v
 src/FCF/HasDups.v
 src/FCF/Hybrid.v
 src/FCF/Limit.v
-src/FCF/ListHybrid.v
 src/FCF/Lognat.v
 src/FCF/NoDup_gen.v
 src/FCF/NotationV1.v
@@ -53,10 +51,8 @@ src/FCF/PRF.v
 src/FCF/PRF_Convert.v
 src/FCF/PRG.v
 src/FCF/PRP_PRF.v
-src/FCF/Procedure.v
 src/FCF/ProgTacs.v
 src/FCF/ProgramLogic.v
-src/FCF/RandPermSwitching.v
 src/FCF/Rat.v
 src/FCF/RepeatCore.v
 src/FCF/RndDup.v
@@ -66,14 +62,18 @@ src/FCF/RndListElem.v
 src/FCF/RndNat.v
 src/FCF/RndPerm.v
 src/FCF/SemEquiv.v
-src/FCF/Sigma.v
 src/FCF/SplitVector.v
-src/FCF/State.v
 src/FCF/StdNat.v
 src/FCF/Tactics.v
 src/FCF/TwoWorldsEquiv.v
 src/FCF/WC_PolyTime.v
 src/FCF/WC_PolyTime_old.v
+src/FCF/Broken/Encryption_2W.v
+src/FCF/Broken/ListHybrid.v
+src/FCF/Broken/Procedure.v
+src/FCF/Broken/RandPermSwitching.v
+src/FCF/Broken/Sigma.v
+src/FCF/Broken/State.v
 src/FCF/examples/Commit.v
 src/FCF/examples/EC_DRBG.v
 src/FCF/examples/ElGamal.v

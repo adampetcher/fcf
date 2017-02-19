@@ -1,5 +1,4 @@
-(* Copyright 2012-2015 by Adam Petcher.				*
- * Use of this source code is governed by the license described	*
+(* Use of this source code is governed by the license described	*
  * in the LICENSE file at the root of the source tree.		*)
 
 (* An exercise to prove the security of the (academic version of) Dual_EC_DRBG.  Taken from http://eprint.iacr.org/2007/048. *)
@@ -175,6 +174,8 @@ Section Dual_EC_DRBG_V.
     subst.
     comp_irr_l.
 
+  Abort.
+    (*
     Not quite right.  We need to assume something about what the x function leaks about the point.
     In ECC, x leaks the x coordinate of the point.  
 
@@ -225,6 +226,6 @@ Section Dual_EC_DRBG_V.
     
 
   Qed.
-  
+  *)
 
 End Dual_EC_DRBG_V.

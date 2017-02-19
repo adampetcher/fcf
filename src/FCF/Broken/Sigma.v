@@ -1,12 +1,12 @@
-(* Copyright 2012-2015 by Adam Petcher.				*
- * Use of this source code is governed by the license described	*
+(* Use of this source code is governed by the license described	*
  * in the LICENSE file at the root of the source tree.		*)
 
-(* Some initial work on sigma protocols.  The goal is to prove that any sigma protocol is a proof of knowledge.  There is some interesting theory in here (e.g. the "emergency break" theorem), but it is far form complete.  
+(* Some initial work on sigma protocols.  The goal is to prove that any sigma protocol is a proof of knowledge.  There is some interesting theory in here (e.g. the "emergency break" theorem), but it is far form complete.   *)
 
 Set Implicit Arguments.
 
 Require Import Crypto.
+Require Import FCF.
 Require Import RndNat.
 
 Lemma sumList_bool : forall (ls : list bool) f,
@@ -75,8 +75,8 @@ Qed.
 
 Lemma commandTwice : forall (c1 c2 : Comp bool),
   Pr [
-    b1 <- c1;
-    b2 <- c2;
+    b1 <-$ c1;
+    b2 <-$ c2;
     ret (b1 && b2)] == (Pr [c1] * Pr[c2])%rat.
   
   intuition.
@@ -150,23 +150,23 @@ Section SigmaProtocol.
   Variable Response_EqDec : EqDec Response.
 
   Definition Protocol x w :=
-    [s_P, a] <--* P_commit x w;
-    e <- V_challenge x a;
-    z <- P_respond s_P e;
+    [s_P, a] <-$2 P_commit x w;
+    e <-$ V_challenge x a;
+    z <-$ P_respond s_P e;
     ret (a, e, z).
 
   (* The ZK simulator *)
   Variable M : Blist -> Bvector t -> Comp (Commitment * Response).
 
   Definition G_S x :=
-    e <- {0, 1}^t; 
-    [a, z] <--* M x e; 
-    b <- ret (V_accept x a e z);
+    e <-$ {0, 1}^t; 
+    [a, z] <-$2 M x e; 
+    b <-$ ret (V_accept x a e z);
     ret (b, (a, e, z)).
 
   Definition G_P x w :=
-    [a, e, z] <--** Protocol x w;
-    b <- ret (V_accept x a e z);
+    [a, e, z] <-$3 Protocol x w;
+    b <-$ ret (V_accept x a e z);
     ret (b, (a, e, z)).
 
   Class SigmaProtocol
@@ -175,14 +175,14 @@ Section SigmaProtocol.
       w_length : forall x w, R x w = true -> (length w <= poly1 (length x))%nat;
       completeness : forall x w,
           R x w = true ->
-          Pr[[a, e, z] <--** Protocol x w; ret (V_accept x a e z)] == 1;
+          Pr[[a, e, z] <-$3 Protocol x w; ret (V_accept x a e z)] == 1;
       special_soundness : forall x a e e' z z',
         e <> e' ->
         (exists w, In (a, e, z) (getSupport (Protocol x w))) ->
         (exists w, In (a, e', z') (getSupport (Protocol x w))) ->
         V_accept x a e z = true ->
         V_accept x a e' z' = true ->
-        Pr[w <- extract x a e e' z z'; ret (R x w)] == 1; (* Or perhaps just non-negligible *)
+        Pr[w <-$ extract x a e e' z z'; ret (R x w)] == 1; (* Or perhaps just non-negligible *)
       sHVZK : forall x w c,
         evalDist (G_S x) (true, c) == evalDist (G_P x w) (true,c)  
           
@@ -1036,13 +1036,14 @@ Section ProofOfKnowledge.
   Definition P_respond_oracle := Bvector t -> Comp Response.
   Definition rewindable_P_oracle := forall (A : Set)(eqd : EqDec A), (Commitment -> P_respond_oracle -> Comp (A * bool)) -> forall (B: Set), (A -> Commitment -> P_respond_oracle -> Comp B) -> Comp B.
   Definition mk_rewindable_P_oracle x w (A : Set)(eqd : EqDec A)(f1 : Commitment -> P_respond_oracle -> Comp (A * bool))(B : Set)(f2 : A -> Commitment -> P_respond_oracle -> Comp B)  : Comp B :=
-    [p1, p2] <--* Repeat
-    ([s_P, a] <--* P_commit x w; 
-      p <- (f1 a (P_respond s_P));
+    [p1, p2] <-$2 Repeat
+    ([s_P, a] <-$2 P_commit x w; 
+      p <-$ (f1 a (P_respond s_P));
       ret (p, (s_P, a)))
     (fun p => (snd (fst p)));
-    [e, _] <-* p1;
-    [s_P, a] <-* p2;
+    e <- fst p1;
+    s_P <- fst p2;
+    a <- snd p2;
       f2 e a (P_respond s_P).
 
   Hypothesis unit_EqDec : EqDec unit.
@@ -1055,22 +1056,22 @@ Section ProofOfKnowledge.
     (fun a b c => f2 b c).
 
   Definition queryRow (respond_oracle : P_respond_oracle) x a :=
-    e <- V_challenge x a;
-    z <- respond_oracle e;
+    e <-$ V_challenge x a;
+    z <-$ respond_oracle e;
     ret (e, z).
 
   Definition d := 16.
   Definition emergencyBreak (x : Blist)(oracle : P_oracle) :=
-    n <- [0 .. d);
-    b <- oracle _ 
+    n <-$ [0 .. d);
+    b <-$ oracle _ 
     (fun a resp => 
-      [e, z] <--* queryRow resp x a;
+      [e, z] <-$2 queryRow resp x a;
       ret (V_accept x a e z));
     ret (b && eqb n O).
 
   Definition queryRowWithEmergencyBreak (oracle : P_oracle)(resp : P_respond_oracle)(x : Blist) a :=
-    b <- emergencyBreak x oracle;
-    p <- queryRow resp x a;
+    b <-$ emergencyBreak x oracle;
+    p <-$ queryRow resp x a;
     ret (b, p).
 
   Definition to_P_oracle (o : rewindable_P_oracle)(B : Set)(f : Commitment -> P_respond_oracle -> Comp B) :=
@@ -1079,17 +1080,18 @@ Section ProofOfKnowledge.
   Definition acceptance_prob x y := 
     Pr[mk_P_oracle x y 
       (fun a resp => 
-        [e, z] <--* queryRow resp x a;
+        [e, z] <-$2 queryRow resp x a;
         ret (V_accept x a e z))].
 
   Definition heavy (resp : P_respond_oracle) x y a :=
-    (1 / 2) * acceptance_prob x y <= Pr[ [e, z] <--* queryRow resp x a; ret (V_accept x a e z) ].
+    (1 / 2) * acceptance_prob x y <= Pr[ [e, z] <-$2 queryRow resp x a; ret (V_accept x a e z) ].
 
   Definition isHeavy (resp : P_respond_oracle) x y a :=
-    bleRat ((1 / 2) * acceptance_prob x y) (Pr[ [e, z] <--* queryRow resp x a; ret (V_accept x a e z) ]).
+    bleRat ((1 / 2) * acceptance_prob x y) (Pr[ [e, z] <-$2 queryRow resp x a; ret (V_accept x a e z) ]).
 
   Require Import Asymptotic.
 
+  (* TODO: locate [expected_time_at_most] *) (*
   Definition knowledge_soundness(cost : forall (A : Set), A -> Rat -> Prop)(k : Blist -> Rat) :=
     forall x y (pf : nz (length x)),
       exists c, 
@@ -1101,6 +1103,7 @@ Section ProofOfKnowledge.
           (forall s c e, In (s, e) (getSupport (P_commit x y)) -> (expected_time_at_most cost 1 (P_respond s c))) ->
           expected_time_at_most cost ((expRat (length x / 1) c) * ratInverse (ratSubtract e (k x))) (M x oracle) /\
           Pr[y' <- M x oracle; ret (R x y')] == 1.
+*)
   
   (*
   Lemma evalDist_bind_case_split : forall (B : Set)(e : B -> Comp bool) v1 v2 (A : Set)(c : Comp B)(f : B -> Comp A) a,
@@ -1114,14 +1117,14 @@ Section ProofOfKnowledge.
   well_formed_comp c ->
   (forall b, In b (getSupport c) -> (e b) = true -> v1 <= (evalDist (f b) a)) ->
   (forall b, In b (getSupport c) -> (e b) = false -> v2 <= (evalDist (f b) a)) ->
-  let v := Pr[b <- c; ret (e b)]  in
+  let v := Pr[b <-$ c; ret (e b)]  in
     v * v1 + (ratSubtract 1 v) * v2 <= evalDist (Bind c f) a.
   Admitted.
 
   Lemma evalDist_bind_spec_ge : forall (B : Set)(e : B -> bool) v (A : Set)(c : Comp B)(f : B -> Comp A) a,
     well_formed_comp c ->
     (forall b, In b (getSupport c) -> (e b) = true -> v <= (evalDist (f b) a)) ->
-    Pr[b <- c; ret (e b)] * v <= evalDist (Bind c f) a.
+    Pr[b <-$ c; ret (e b)] * v <= evalDist (Bind c f) a.
 
     intuition.
     eapply leRat_trans.
@@ -1192,9 +1195,9 @@ Section ProofOfKnowledge.
   
   
   Theorem emergency_break : forall (A : Set)(c : Comp A)(p1 p2 : A -> bool),
-    Pr [a <- c; ret (p2 a)] <= Pr[a <-c; ret (p1 a)] ->
+    Pr [a <-$ c; ret (p2 a)] <= Pr[a <-$c; ret (p1 a)] ->
     (exists a, In a (getSupport c) /\ (p1 a || p2 a = true)) ->
-      1 / 2 <= Pr[a <- (Repeat c (fun a => (p1 a) || (p2 a))); ret (p1 a)].
+      1 / 2 <= Pr[a <-$ (Repeat c (fun a => (p1 a) || (p2 a))); ret (p1 a)].
     
     intuition.
     simpl in *.
@@ -1396,7 +1399,7 @@ Section ProofOfKnowledge.
   Definition knowledgeExtractor_h(x : Blist)(oracle : rewindable_P_oracle)(rowQuery : (Bvector t * Response) -> Commitment -> P_respond_oracle -> Comp Blist) :=
     (oracle _ _
       (fun a respond_oracle =>
-        [e, z] <--* queryRow respond_oracle x a;
+        [e, z] <-$2 queryRow respond_oracle x a;
         ret ((e, z), V_accept x a e z))
       _
       rowQuery).
@@ -1404,12 +1407,14 @@ Section ProofOfKnowledge.
   (* The following knowledge extractor works with probability 1/4 when acceptance_prob is "large" and the first hit is in a "heavy" row (which happens with probability at least 1/2. *)
   Definition largeRowQuery x oracle :=
     (fun p a respond_oracle =>
-        [e, z] <-* p;
-        p' <- Repeat 
+       e <- fst p;
+       z <- snd p;
+        p' <-$ Repeat 
         (queryRowWithEmergencyBreak (to_P_oracle oracle) respond_oracle x a) 
         (fun p => let (e', z') := snd p in 
           (V_accept x a e' z' && negb (eqb e e')) || fst p);
-        [e', z'] <-* (snd p');
+        e' <- fst ((snd p'));
+        z' <- snd ((snd p'));
         extract x a e e' z z').
 
   Definition knowledgeExtractor_large_h(x : Blist)(oracle : rewindable_P_oracle) :=
@@ -1458,6 +1463,7 @@ Section ProofOfKnowledge.
     cost (V_accept a b c d) 1.
 
 
+  (* TODO: locate [expected_time_at_most] *) (*
   Lemma BoundedRepeat_cost : forall (n : nat)(A : Set)(eqd : EqDec A)(c : Comp A)(P : A -> bool) def v,
     expected_time_at_most cost v c ->
     cost def 0 ->
@@ -1497,16 +1503,19 @@ Section ProofOfKnowledge.
     eapply ratMult_S.
     intuition.
   Qed.
+*)
 
 
   Definition smallRowQuery x :=
     (fun p a respond_oracle =>
-        [e, z] <-* p;
-        p' <- BoundedRepeat _ (expnat 2 (t - 2))
+       e <- fst p; 
+       z <- snd p; 
+        p' <-$ BoundedRepeat _ (expnat 2 (t - 2))
         (queryRow respond_oracle x a) 
         (fun p => let (e', z') := p in 
           (V_accept x a e' z' && negb (eqb e e'))) p;
-        [e', z'] <-* p';
+        e' <- fst p';
+        z' <- snd p';
         extract x a e e' z z').
 
   Definition knowledgeExtractor_small_h(x : Blist)(oracle : rewindable_P_oracle) :=
@@ -1518,10 +1527,12 @@ Section ProofOfKnowledge.
   Definition sigma x y :=
     (ratSubtract ((acceptance_prob x y) * (expnat 2 t / 1)) 1).
 
+  (* TODO: locate [expected_time_at_most] *) (*
   Hypothesis V_challenge_efficient : forall (x : Blist),
     exists v, forall a, 
     expected_time_at_most cost v (V_challenge x a) /\
     at_most_polynomial (length x / 1) v.
+*)
 
 
   (*
@@ -1594,15 +1605,16 @@ Section ProofOfKnowledge.
   Admitted.
   *)
 
-  Check mk_rewindable_P_oracle.
+  (* Check mk_rewindable_P_oracle. *)
 
   
   Theorem knowledgeExtractor_small_h_effective : forall x y,
     expnat 2 t / 1 * ratInverse (sigma x y) <=
     Pr 
-    [v <- knowledgeExtractor_small_h x (mk_rewindable_P_oracle x y); ret R x v].
+    [v <-$ knowledgeExtractor_small_h x (mk_rewindable_P_oracle x y); ret R x v].
   Abort.
 
+  (* TODO: locate [expected_time_at_most] *) (*
   Theorem knowledgeExtractor_small_efficient : forall x y,
     (~(4 / expnat 2 t) <= (acceptance_prob x y)) -> 
     (~ (acceptance_prob x y) <= (1 / expnat 2 t)) ->
@@ -1757,7 +1769,7 @@ Section ProofOfKnowledge.
   Qed.
 
   Theorem knowledgeExtractor_large_h_effective : forall x y,
-    1 / 8 <= Pr[y' <- knowledgeExtractor_large_h x (mk_rewindable_P_oracle x y); ret (R x y')].
+    1 / 8 <= Pr[y' <-$ knowledgeExtractor_large_h x (mk_rewindable_P_oracle x y); ret (R x y')].
   Admitted.
 
   Theorem knowledgeExtractor_large_efficient : forall x y,
@@ -1789,6 +1801,7 @@ Section ProofOfKnowledge.
     simpl.
     eapply leRat_terms; intuition.
   Qed.
+*)
 
   Theorem knowledgeExtractor_small_wf : forall x y ,
     well_formed_comp (knowledgeExtractor_small x (mk_rewindable_P_oracle x y)).
@@ -1798,6 +1811,7 @@ Section ProofOfKnowledge.
     well_formed_comp (knowledgeExtractor_large x (mk_rewindable_P_oracle x y)).
   Admitted.
     
+  (*
   Theorem sigma_knowledge_soundness : knowledge_soundness cost (fun x => 1 / expnat 2 t).
 
     unfold knowledge_soundness.
@@ -2646,4 +2660,5 @@ Section SigmaPar.
     
   
 
-End SigmaPar.
+*)
+End ProofOfKnowledge.

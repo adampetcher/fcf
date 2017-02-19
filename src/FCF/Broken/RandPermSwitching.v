@@ -1,5 +1,4 @@
-(* Copyright 2012-2015 by Adam Petcher.				*
- * Use of this source code is governed by the license described	*
+(* Use of this source code is governed by the license described	*
  * in the LICENSE file at the root of the source tree.		*)
 
 Set Implicit Arguments.
@@ -792,9 +791,9 @@ Section RandPermSwitching.
                                        (fun a => snd a)
                                        (fun a => snd a)
                                        (fun a b => (fst a = fst b))).
-    intuition.
+    intros.
     eapply randomFunc_bad_wf.
-    intuition.
+    intros.
     eapply GenRP_bad_wf.
     admit.
 
@@ -809,26 +808,25 @@ Section RandPermSwitching.
     eapply comp_base_exists; eauto.
     eapply comp_base_exists; eauto.
 
-    case_eq ( fBad a0 a1 b); intuition.
+    destruct ( fBad a0 a1 b) eqn:?.
     comp_irr_r.
     unfold rndNotBad.
     edestruct goodExists.
     eauto.
-    intuition.
+    admit.
     econstructor.
     unfold eq_dec; intuition.
     eapply (EqDec_dec _).
     trivial.
     eapply filter_In; intuition.
     eauto.
-    rewrite H5.
-    trivial.
+    match goal with H5:_|-_ => rewrite H5; reflexivity end.
     eapply comp_spec_ret.
     simpl.
     split.
     intuition.
     intros.
-    rewrite orb_true_r in H4.
+    rewrite orb_true_r in *.
     discriminate.
     eapply comp_spec_ret; intuition.
     intuition.
@@ -854,9 +852,11 @@ Section RandPermSwitching.
     intuition.
     
     Grab Existential Variables.
+    admit.
+    admit.
     trivial.
     
-  Qed.
+  Admitted.
   
   
   Theorem RPS_G_1_2_bad_same :
@@ -1050,8 +1050,8 @@ Section RandPermSwitching.
     eapply repeat_unroll_eq.
     trivial.
     edestruct goodExists; eauto.
-    intuition.
-    econstructor.
+    admit.
+    eexists.
     eapply filter_In; intuition.
     eauto.
     rewrite H2.
@@ -1075,8 +1075,7 @@ Section RandPermSwitching.
     simpl in *.
     intuition; subst.
     eapply comp_spec_eq_refl.
-    
-  Qed.
+  Admitted.
 
   Theorem RPS_G0_1_close :  
   | Pr[RPS_G0] - Pr[RPS_G1] | <= (A2_queries / 1)  * badProb A2_queries.
@@ -1085,5 +1084,4 @@ Section RandPermSwitching.
     rewrite <- RPS_G1_equiv.
     eapply RPS_G_1_2_close.
   Qed.
-
 End RandPermSwitching.
