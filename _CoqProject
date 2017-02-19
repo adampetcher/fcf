@@ -7,7 +7,6 @@ src/FCF/Blist.v
 src/FCF/Class.v
 src/FCF/Comp.v
 src/FCF/CompFold.v
-src/FCF/ConstructedFunc.v
 src/FCF/Crypto.v
 src/FCF/DetSem.v
 src/FCF/DiffieHellman.v
@@ -35,7 +34,6 @@ src/FCF/OracleHybrid.v
 src/FCF/PRF.v
 src/FCF/PRF_Convert.v
 src/FCF/PRG.v
-src/FCF/PRP_PRF.v
 src/FCF/ProgTacs.v
 src/FCF/ProgramLogic.v
 src/FCF/Rat.v
@@ -53,8 +51,10 @@ src/FCF/Tactics.v
 src/FCF/TwoWorldsEquiv.v
 src/FCF/WC_PolyTime.v
 src/FCF/WC_PolyTime_old.v
+src/FCF/Broken/ConstructedFunc.v
 src/FCF/Broken/Encryption_2W.v
 src/FCF/Broken/ListHybrid.v
+src/FCF/Broken/PRP_PRF.v
 src/FCF/Broken/Procedure.v
 src/FCF/Broken/RandPermSwitching.v
 src/FCF/Broken/Sigma.v

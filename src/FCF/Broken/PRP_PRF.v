@@ -1,5 +1,4 @@
-(* Copyright 2012-2015 by Adam Petcher.				*
- * Use of this source code is governed by the license described	*
+(* Use of this source code is governed by the license described	*
  * in the LICENSE file at the root of the source tree.		*)
 (* The PRP PRF switching lemma.  This proof uses the outdated state-related definitions.  We need to update this proof to use the definitions and theory in Procedure.v *)
 
@@ -7,8 +6,9 @@ Set Implicit Arguments.
 
 Require Import Crypto.
 Require Import Permutation.
-Require Import ConstructedFunc.
+Require Import Broken.ConstructedFunc.
 Require Import State.
+Require Import FCF.
 
 Local Open Scope list_scope.
 Local Open Scope array_scope.
@@ -291,6 +291,7 @@ Section PRP_PRF.
 
   Definition Bvector_perms_eq := @perms_eq (Bvector n) _ _ _ (Rnd n).
   
+  (*
   Lemma randomPerm_unroll_bad_inv : 
     comp_spec 
     (fun p1 p2 => (snd p1) = (snd p2) /\ Bvector_perms_eq (fst p1) (fst p2)) 
@@ -469,7 +470,7 @@ Section PRP_PRF.
      trivial.
 
   Qed.
-
+*)
   
   Lemma filter_eq : forall (A : Set)(ls : list A)(P1 P2 : A -> bool),
     (forall a, In a ls -> P1 a = P2 a) ->
@@ -531,6 +532,7 @@ Section PRP_PRF.
 
   Qed.
 
+(*
   Lemma perm_func_bad_spec : 
     comp_spec 
       (fun p1 p2 => checkBad (fst p1) = true /\ checkBad (fst p2) = true /\ well_formed_Bvector_perm (fst p2)) 
@@ -748,6 +750,7 @@ Section PRP_PRF.
     rewrite H7.
     trivial.
   Qed.
+*)
 
   
   Definition randomFunc_eager(p: (list (Bvector n * Bvector n)) * Bvector n) : Comp (list (Bvector n * Bvector n) * Bvector n) :=
@@ -813,6 +816,7 @@ Section PRP_PRF.
     trivial.
   Qed.
 
+(*
   Lemma randomFunc_eager_spec : 
     stateful_comp_spec  
       (fun s1 s2 => (checkBad s1 = true -> checkBad s2 = true) /\ (forall d, s1 # d = (s2 # d)) /\ forall r, inRange _ s1 r = true -> inRange _ s2 r = true) 
@@ -968,6 +972,7 @@ Section PRP_PRF.
         end.
 
   Qed.
+*)
 
   Lemma filter_NoDup_perm : forall (A : Set)(eqd: eq_dec A) u ls,
     NoDup ls ->
@@ -1060,6 +1065,7 @@ Section PRP_PRF.
   (*----------------------  PRP-PRF Switching Lemma Proof Begins Here -----------------*)
   (*************************************************************************************)
 
+(*
   Variable q : nat. (* number of queries *)
   Variable A : AdversaryWithOracle unit bool (Bvector n) (Bvector n) (list (Bvector n * Bvector n)).
   
@@ -1507,6 +1513,7 @@ Section PRP_PRF.
 
   Print Assumptions PRP_PRF_Switching.
 
+*)
 End PRP_PRF.
 
 (*

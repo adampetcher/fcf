@@ -1,5 +1,4 @@
-(* Copyright 2012-2015 by Adam Petcher.				*
- * Use of this source code is governed by the license described	*
+(* Use of this source code is governed by the license described	*
  * in the LICENSE file at the root of the source tree.		*)
 (* A theory of constructed functions and permutations, including random functions and random permutations. *)
 
@@ -8,6 +7,7 @@ Require Import Crypto.
 Require Import Permutation.
 Require Import CompFold. 
 Require Export Array.
+Require Import FCF.
 
 Local Open Scope list_scope.
 Local Open Scope array_scope.
@@ -15,7 +15,7 @@ Local Open Scope array_scope.
 Require Import State.
 
 Definition oracleMap(D R S: Set)(eqds : EqDec S)(eqdr : EqDec R)(oracle : (S * D) -> Comp (S * R))(s : S)(ds : list D) :=
-  compFold _ (fun acc d => [s, rs] <-2 acc; [s, r] <-$2 oracle (s, d); ret (s, rs ++ r :: nil)) (s, nil) ds.
+  compFold _ (fun acc d => [s, r] <-$2 oracle (fst acc, d); ret (fst acc, snd acc ++ r :: nil)) (s, nil) ds.
 
 Section RandomFunc.
 
@@ -71,6 +71,7 @@ Section RandomFunc.
 
   Qed.
 
+  (*
   Section PRF.
 
     Variable eta : nat.
@@ -92,7 +93,6 @@ Section RandomFunc.
       ret b.
 
     Definition PRF_Advantage := | Pr[PRF_G0] - Pr[PRF_G1] |.
-
   End PRF.
   (* A PRF that is secure against a non-adaptive adversary. *)
   Section PRF_NA.
@@ -130,6 +130,7 @@ Section RandomFunc.
         @PRF_NA_Advantage A_state A1 A2 <= epsilon.
       
   End PRF_NA.
+*)
 
 
   (* An iterated PRF security definition.  The adversary supplies several lists of PRF inputs.  The definition chooses a new random key for each list.  *)
