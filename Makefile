@@ -1,9 +1,9 @@
 .PHONY: coq
 coq: Makefile.coq
-	make -f Makefile.coq
+	$(MAKE) -f Makefile.coq
 
 Makefile.coq: Makefile _CoqProject
-	coq_makefile -f _CoqProject  > $@
+	$(COQBIN)coq_makefile -f _CoqProject  > $@
 
 SORT_COQPROJECT = sed 's,[^/]*/,~&,g' | env LC_COLLATE=C sort | sed 's,~,,g'
 .PHONY: update-_CoqProject
@@ -12,5 +12,5 @@ update-_CoqProject::
 
 .PHONY: clean
 clean:
-	make -f Makefile.coq clean || true
+	$(MAKE) -f Makefile.coq clean || true
 	rm -f Makefile.coq || true
