@@ -1401,6 +1401,8 @@ Theorem comp_spec_rnd :
 Qed.
 
 
+
+
 (* facts about equality specifications *)
 Theorem eq_impl_comp_spec_eq : 
   forall (A : Set){eqd1 eqd2 : EqDec A}(c1 c2 : Comp A),
@@ -2297,6 +2299,86 @@ Theorem oc_comp_spec_eq_until_bad :
   eapply H1;
   intuition.
  
+Qed.
+
+Theorem rnd_swap : forall eta a b,
+  comp_spec (fun x y=> (x = y /\ x <> a /\ x <> b) \/ (a = x /\ b = y) \/ (b = x /\ a = y))
+            ({0,1}^eta) ({0,1}^eta).
+
+  intuition.
+  eapply comp_spec_consequence.
+  eapply (comp_spec_iso 
+            (fun x => if (eqb a x) then b else if (eqb b x) then a else x)
+            (fun x => if (eqb a x) then b else if (eqb b x) then a else x) 
+); intuition.
+  
+  (* forward direction *)
+  -
+  case_eq (eqb a x); intuition.
+  rewrite eqb_leibniz in H0; subst.
+
+  case_eq (eqb x b); intuition.
+  rewrite eqb_leibniz in H0; intuition.
+  rewrite eqb_refl.
+  trivial.
+  case_eq (eqb b x); intuition.
+  rewrite eqb_leibniz in H1.
+  subst.
+  rewrite eqb_refl.
+  trivial.
+ 
+  rewrite H1.
+  rewrite H0.
+  trivial.
+  
+  (* backward direction *)
+  -
+  case_eq (eqb a x); intuition.
+  rewrite eqb_leibniz in H0. subst.
+  case_eq (eqb x b); intuition.
+  rewrite eqb_leibniz in H0.
+  intuition.
+  rewrite eqb_refl.
+  intuition.
+
+  case_eq (eqb b x); intuition.
+  rewrite eqb_leibniz in H1.
+  subst.
+  rewrite eqb_refl.
+  trivial.
+  rewrite H1.
+  rewrite H0.
+  trivial.
+
+  (* range of function is correct *)
+  -
+  simpl.
+  apply in_getAllBvectors.
+
+  (* probability is unchanged---follows form uniformity *)
+  -
+  eapply comp_spec_rnd.
+
+  - (*result is correct after isomorphism *)
+  intuition.
+  case_eq (eqb a a0); intuition;
+  rewrite H0 in H.
+  rewrite eqb_leibniz in H0.
+  intuition.
+
+  case_eq (eqb b a0); intuition;
+  rewrite H1 in H.
+  rewrite eqb_leibniz in H1.
+  intuition. 
+
+  left.
+  intuition; subst.
+  subst.
+  rewrite eqb_refl in H0.
+  discriminate.
+  subst.
+  rewrite eqb_refl in H1.
+  discriminate.
 Qed.
 
 Require Import Setoid.

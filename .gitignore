@@ -1,4 +1,5 @@
 nlia.cache
+.nia.cache
 Makefile.coq
 *.vo
 *.v.d
