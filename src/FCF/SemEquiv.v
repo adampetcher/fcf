@@ -5223,4 +5223,4 @@ Theorem det_eq_impl_dist_sem_eq : forall (A : Set)(c1 c2 : Comp A),
 
 Qed.
 
-(*Print Assumptions det_eq_impl_dist_sem_eq.*)
+Print Assumptions det_eq_impl_dist_sem_eq.

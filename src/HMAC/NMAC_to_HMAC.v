@@ -3,7 +3,6 @@
  * in the LICENSE file at the root of the source tree.		*)
 Set Implicit Arguments.
 
-(*Add LoadPath "../FCF".*)
 
 Require Import FCF.
 Require Import PRF.
