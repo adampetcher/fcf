@@ -177,59 +177,57 @@ Theorem getSupport_In_evalDist : forall (A : Set)(c : Comp A)(a : A),
 
 Qed.
 
+Theorem getSupport_not_In_evalDist_h : forall (A : Set)(c : Comp A)(a : A),
+~In a (getSupport c) -> (evalDist c a == 0).
+
+  induction c; intuition; simpl in *.
+  intuition.
+  destruct (e a a0); subst;
+  intuition.
+
+  eapply sumList_0.
+  intuition.
+  eapply ratMult_0.
+  right.
+  eapply H.
+  intuition.
+  eapply H0.
+  eapply (in_getUnique (flatten (map (fun b : B => getSupport (c0 b)) (getSupport c)))).
+  eapply in_flatten.
+  exists (getSupport (c0 a0)).
+  intuition.
+  eapply in_map_iff.
+  exists a0.
+  intuition.
+
+  exfalso.
+  eapply H.
+  eapply in_getAllBvectors.
+
+  apply filter_not_In in H.
+  intuition.
+  
+  eapply ratMult_0.
+  right.
+  eauto.
+  
+  eapply ratMult_0.
+  left.
+  unfold indicator.
+  rewrite H0.
+  rewrite ratMult_0_l.
+  intuition.  
+Qed.
+
 Theorem getSupport_not_In_evalDist : forall (A : Set)(c : Comp A)(a : A),
   ~In a (getSupport c) <-> (evalDist c a == 0).
 
   intuition.
 
-  Theorem getSupport_not_In_evalDist_h : forall (A : Set)(c : Comp A)(a : A),
-  ~In a (getSupport c) -> (evalDist c a == 0).
-
-    induction c; intuition; simpl in *.
-    intuition.
-    destruct (e a a0); subst;
-    intuition.
-
-    eapply sumList_0.
-    intuition.
-    eapply ratMult_0.
-    right.
-    eapply H.
-    intuition.
-    eapply H0.
-    eapply (in_getUnique (flatten (map (fun b : B => getSupport (c0 b)) (getSupport c)))).
-    eapply in_flatten.
-    exists (getSupport (c0 a0)).
-    intuition.
-    eapply in_map_iff.
-    exists a0.
-    intuition.
-
-    exfalso.
-    eapply H.
-    eapply in_getAllBvectors.
-
-    apply filter_not_In in H.
-    intuition.
-    
-    eapply ratMult_0.
-    right.
-    eauto.
-    
-    eapply ratMult_0.
-    left.
-    unfold indicator.
-    rewrite H0.
-    rewrite ratMult_0_l.
-    intuition.
-    
-  Qed.
-
   eapply getSupport_not_In_evalDist_h.
   intuition.
 
   eapply getSupport_In_evalDist; eauto.
-
 Qed.
 
 Theorem getSupport_correct : forall (A : Set)(c : Comp A),

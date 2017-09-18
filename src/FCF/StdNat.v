@@ -203,6 +203,15 @@ Local Open Scope N_scope.
 Definition modNat (n : nat)(p : posnat) : nat :=
   N.to_nat ((N.of_nat n) mod (N.of_nat p)).
 
+Lemma Npos_nz : forall p, 
+  Npos p <> N0.
+
+  destruct p; intuition; simpl in *.
+  inversion H.
+  inversion H.
+  inversion H.
+Qed.
+
 Lemma modNat_plus : forall n1 n2 p,
     (modNat (n1 + n2) p = modNat ((modNat n1 p) + n2) p)%nat.
   
@@ -225,14 +234,6 @@ Lemma modNat_plus : forall n1 n2 p,
   simpl.
   omega.
   
-  Lemma Npos_nz : forall p, 
-    Npos p <> N0.
-
-    destruct p; intuition; simpl in *.
-    inversion H.
-    inversion H.
-    inversion H.
-  Qed.
 
   apply Npos_nz.
 

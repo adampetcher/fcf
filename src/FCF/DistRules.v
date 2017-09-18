@@ -1430,26 +1430,6 @@ Lemma evalDist_bind_case_split :
   destruct (e a0); intuition.
 Qed.
 
-
-
-Theorem evalDist_irr_l : 
-  forall (A B : Set)(c : Comp A)(f : A -> Comp B)(y : B) rel v,
-    RatRel rel ->
-    well_formed_comp c ->
-    (forall x, In x (getSupport c) -> rel (evalDist (f x) y) v) -> 
-    rel (evalDist (Bind c f) y) v.
-
-  intuition.
-  simpl.
-  eapply trans.
-  eapply rel_sumList_compat;
-  intuition.
-  eapply mult_proper.
-  eapply refl.
-  eapply eqRat_refl.
-  eapply H1.
-  trivial.
-
   Lemma rel_sumList_factor_r : 
     forall (A : Set) (f : A -> Rat) (ls : list A) c rel,
       RatRel rel ->
@@ -1477,8 +1457,26 @@ Theorem evalDist_irr_l :
     eapply refl.
     intuition.
     eapply IHls; intuition.
-  Qed.
-  
+Qed. 
+
+Theorem evalDist_irr_l : 
+  forall (A B : Set)(c : Comp A)(f : A -> Comp B)(y : B) rel v,
+    RatRel rel ->
+    well_formed_comp c ->
+    (forall x, In x (getSupport c) -> rel (evalDist (f x) y) v) -> 
+    rel (evalDist (Bind c f) y) v.
+
+  intuition.
+  simpl.
+  eapply trans.
+  eapply rel_sumList_compat;
+  intuition.
+  eapply mult_proper.
+  eapply refl.
+  eapply eqRat_refl.
+  eapply H1.
+  trivial.
+ 
   specialize (rel_sumList_factor_r (evalDist c) (getSupport c) v H); intuition.
 
   eapply trans.
@@ -1488,6 +1486,36 @@ Theorem evalDist_irr_l :
   eapply ratMult_1_l.
   trivial.
 Qed.
+
+Lemma rel_sumList_factor_r_r : 
+  forall (A : Set) (f : A -> Rat) (ls : list A) c rel,
+    RatRel rel ->
+    rel ((sumList ls f) * c) (sumList ls (fun a => (f a) * c)).
+
+  induction ls; intuition; simpl in *.
+  unfold sumList; simpl.
+  eapply refl.
+  eapply ratMult_0_l.
+
+  eapply trans.
+  eapply refl.
+  eapply eqRat_trans.
+  eapply ratMult_eqRat_compat.
+  eapply sumList_cons.
+  eapply eqRat_refl.
+  eapply ratMult_distrib_r.
+
+  eapply trans.
+  Focus 2.
+  eapply refl.
+  symmetry.
+  eapply sumList_cons.
+  simpl.
+  eapply add_proper.
+  eapply refl.
+  intuition.
+  eapply IHls; intuition.
+Qed. 
 
 Theorem evalDist_irr_r : 
   forall (A B : Set)(c : Comp A)(f : A -> Comp B)(y : B) rel v,
@@ -1507,37 +1535,6 @@ Theorem evalDist_irr_r :
   eapply eqRat_refl.
   eapply H1.
   trivial.
-
-  Lemma rel_sumList_factor_r_r : 
-    forall (A : Set) (f : A -> Rat) (ls : list A) c rel,
-      RatRel rel ->
-      rel ((sumList ls f) * c) (sumList ls (fun a => (f a) * c)).
-
-    induction ls; intuition; simpl in *.
-    unfold sumList; simpl.
-    eapply refl.
-    eapply ratMult_0_l.
-
-    eapply trans.
-    eapply refl.
-    eapply eqRat_trans.
-    eapply ratMult_eqRat_compat.
-    eapply sumList_cons.
-    eapply eqRat_refl.
-    eapply ratMult_distrib_r.
-
-    eapply trans.
-    Focus 2.
-    eapply refl.
-    symmetry.
-    eapply sumList_cons.
-    simpl.
-    eapply add_proper.
-    eapply refl.
-    intuition.
-    eapply IHls; intuition.
-  Qed.
-
   
   specialize (rel_sumList_factor_r_r (evalDist c) (getSupport c) v H); intuition.
 

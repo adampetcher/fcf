@@ -558,6 +558,99 @@ Lemma evalDet_lowDistApprox_ls_done_inv : forall (A : Set)(eqd : eq_dec A)(c : C
   trivial.
   
 Qed.
+ 
+Lemma low_tree_approx_same_inv_h : forall n (A : Set)(eqd : eq_dec A)(c : Comp A) ls t,
+  dat_correct_h c ls n t -> 
+  forall a r, 
+    lowDistApprox_ls c a n ls r ->
+    lowDistApproxFromTree eqd t a == r.
+  
+  induction 1; intuition; simpl in *.
+  
+  symmetry.
+  eapply evalDet_lowDistApprox_ls_done_inv; eauto.
+  
+  inversion H0; clear H0; subst.
+  destruct H1; intuition.
+  simpl in *.
+  
+  rewrite <- H3.
+  erewrite pred_count_eq_0 at 1.
+  apply eqRat_symm.
+  apply rat_num_0.
+  Focus 2.
+  eapply H1.
+  Focus 2.
+  eapply H0.
+  intuition.
+  simpl in *.
+  intuition.
+  subst.
+  rewrite app_nil_r in *.
+  eapply H; eauto.
+  
+  destruct H2.
+  destruct H2.
+  intuition.
+  simpl in *.
+  
+  apply rel_map_app_inv in H3.
+  intuition.
+  
+  apply rel_map_map_inv in H4.
+  apply rel_map_map_inv in H6.
+  
+  eapply (pred_count_first_skip) in H2.
+  destruct H2.
+  destruct H2.
+  intuition.
+  
+  rewrite IHdat_correct_h1.
+  Focus 2.
+    
+  econstructor.
+  econstructor.
+  intuition.
+  eapply rel_map_eq.
+  eapply H4.
+  trivial.
+  intuition.
+  rewrite <- app_assoc.
+  simpl.
+  trivial.
+  eapply H3.
+  eapply eqRat_refl.
+  
+  rewrite IHdat_correct_h2.
+  Focus 2.
+  
+  econstructor.
+  econstructor.
+  intuition.
+  eapply rel_map_eq.
+  eapply H6.
+  trivial.
+  intuition.
+  rewrite <- app_assoc.
+  simpl.
+  trivial.
+  eapply H2.
+  eapply eqRat_refl.
+  
+  rewrite <- ratMult_distrib_r.
+  rewrite <- ratAdd_den_same.
+  rewrite H8.
+  rewrite <- ratMult_num_den.
+  rewrite mult_1_r.
+  unfold posnatMult.
+  unfold natToPosnat.
+  rewrite <- H5.
+  eapply eqRat_terms; trivial.
+  unfold natToPosnat, posnatToNat.
+  rewrite mult_comm.
+  simpl.
+  trivial.
+Qed.    
 
 (* The approximation from the tree is the same as the standard approximation. *)
 Theorem low_tree_approx_same_inv : forall n (A : Set)(eqd : eq_dec A)(c : Comp A)(t : DistApproxTree A) (a : A) r,
@@ -565,99 +658,6 @@ Theorem low_tree_approx_same_inv : forall n (A : Set)(eqd : eq_dec A)(c : Comp A
     lowDistApprox c a n r ->
     lowDistApproxFromTree eqd t a == r.   
 
-   
-  Lemma low_tree_approx_same_inv_h : forall n (A : Set)(eqd : eq_dec A)(c : Comp A) ls t,
-    dat_correct_h c ls n t -> 
-    forall a r, 
-      lowDistApprox_ls c a n ls r ->
-      lowDistApproxFromTree eqd t a == r.
-    
-    induction 1; intuition; simpl in *.
-    
-    symmetry.
-    eapply evalDet_lowDistApprox_ls_done_inv; eauto.
-    
-    inversion H0; clear H0; subst.
-    destruct H1; intuition.
-    simpl in *.
-    
-    rewrite <- H3.
-    erewrite pred_count_eq_0 at 1.
-    apply eqRat_symm.
-    apply rat_num_0.
-    Focus 2.
-    eapply H1.
-    Focus 2.
-    eapply H0.
-    intuition.
-    simpl in *.
-    intuition.
-    subst.
-    rewrite app_nil_r in *.
-    eapply H; eauto.
-    
-    destruct H2.
-    destruct H2.
-    intuition.
-    simpl in *.
-    
-    apply rel_map_app_inv in H3.
-    intuition.
-    
-    apply rel_map_map_inv in H4.
-    apply rel_map_map_inv in H6.
-    
-    eapply (pred_count_first_skip) in H2.
-    destruct H2.
-    destruct H2.
-    intuition.
-    
-    rewrite IHdat_correct_h1.
-    Focus 2.
-      
-    econstructor.
-    econstructor.
-    intuition.
-    eapply rel_map_eq.
-    eapply H4.
-    trivial.
-    intuition.
-    rewrite <- app_assoc.
-    simpl.
-    trivial.
-    eapply H3.
-    eapply eqRat_refl.
-    
-    rewrite IHdat_correct_h2.
-    Focus 2.
-    
-    econstructor.
-    econstructor.
-    intuition.
-    eapply rel_map_eq.
-    eapply H6.
-    trivial.
-    intuition.
-    rewrite <- app_assoc.
-    simpl.
-    trivial.
-    eapply H2.
-    eapply eqRat_refl.
-    
-    rewrite <- ratMult_distrib_r.
-    rewrite <- ratAdd_den_same.
-    rewrite H8.
-    rewrite <- ratMult_num_den.
-    rewrite mult_1_r.
-    unfold posnatMult.
-    unfold natToPosnat.
-    rewrite <- H5.
-    eapply eqRat_terms; trivial.
-    unfold natToPosnat, posnatToNat.
-    rewrite mult_comm.
-    simpl.
-    trivial.
-  Qed.    
   
   intuition.
   eapply low_tree_approx_same_inv_h.
@@ -5223,4 +5223,4 @@ Theorem det_eq_impl_dist_sem_eq : forall (A : Set)(c1 c2 : Comp A),
 
 Qed.
 
-Print Assumptions det_eq_impl_dist_sem_eq.
+(*Print Assumptions det_eq_impl_dist_sem_eq.*)

@@ -220,7 +220,25 @@ Lemma in_getSupport_RndNat : forall x k,
   destruct (lt_dec x k); intuition.
 Qed.
 
-
+Lemma RndNat_support_length : 
+  forall n, 
+    length (getSupport (RndNat n)) = n.
+  
+  intuition.
+  rewrite (@Permutation_length _ _ (forNats n)).
+  eapply forNats_length.
+  eapply NoDup_Permutation.
+  eapply getSupport_NoDup.
+  eapply forNats_NoDup.
+  intuition.
+  
+  eapply forNats_In.
+  eapply RndNat_support_lt; intuition.
+  
+  eapply in_getSupport_RndNat.
+  eapply forNats_In; intuition.
+  
+Qed.
 
 Theorem RndNat_prob : 
   forall n i (nzn : nz n),
@@ -244,27 +262,7 @@ Theorem RndNat_prob :
   eapply (@RndNat_uniform _ i).
   eapply RndNat_support_lt; intuition.
   trivial.
-  rewrite sumList_body_const.
-  
-  Lemma RndNat_support_length : 
-    forall n, 
-      length (getSupport (RndNat n)) = n.
-    
-    intuition.
-    rewrite (@Permutation_length _ _ (forNats n)).
-    eapply forNats_length.
-    eapply NoDup_Permutation.
-    eapply getSupport_NoDup.
-    eapply forNats_NoDup.
-    intuition.
-    
-    eapply forNats_In.
-    eapply RndNat_support_lt; intuition.
-    
-    eapply in_getSupport_RndNat.
-    eapply forNats_In; intuition.
-    
-  Qed.
+  rewrite sumList_body_const.  
   
   rewrite RndNat_support_length.
   intuition.

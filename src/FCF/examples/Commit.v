@@ -306,50 +306,9 @@ Section Pedersen.
       [v1, r1] <-2 p1;
       [v2, r2] <-2 p2;
       ret (modNat ((v1 + (modNatAddInverse v2 order)) * (multInverseModOrder (r2 + (modNatAddInverse r1 order)))) order)%nat. 
-    
-    Theorem PedersenComputionallyBinding : 
-      Pr[BindingCommit_G PedersenSetup _ PedersenReveal A] <= 
-      Pr[(@DLP_G _ groupOp _ _ _ g order B)].
-      
-      unfold BindingCommit_G, PedersenSetup, PedersenReveal, B, DLP_G.
-      inline_first.
-      comp_skip.
-      inline_first.
-      comp_skip.
-      reflexivity.
-      comp_simp.
-      
-      Local Opaque evalDist.
-      
-      case_eq (eqb n n1); intuition;
-      simpl.
-      rewrite evalDist_ret_0.
-      eapply rat0_le_all.
-      intuition.
-      
-      case_eq (eqb g0 (g ^ n * (g ^ x) ^ n0)); intuition.
-      simpl.
-      rewrite eqb_leibniz in H3.
-      case_eq ( eqb g0 (g ^ n1 * (g ^ x) ^ n2)); intuition.
-      rewrite eqb_leibniz in H4.
-      subst.
-      
-      
-      case_eq (eqb x
-                   (modNat ((n + modNatAddInverse n1 order) *
-                            multInverseModOrder (n2 + modNatAddInverse n0 order)) order)%nat); intuition.
-      exfalso.
-      eapply eqb_false_iff in H3.
-      eapply H3.
-      clear H3.
-      repeat rewrite groupExp_mult in H4.
-      repeat rewrite <- groupExp_plus in H4.
-      apply groupExp_eq in H4.
-      
-      Local Open Scope nat_scope.
-      
+   Local Open Scope nat_scope. 
       Theorem plus_add_same_r_if : 
-        forall (c a b : nat),
+        forall (c b a : nat), 
           a = b ->
           a + c = b + c.
         
@@ -357,8 +316,6 @@ Section Pedersen.
       
       Qed.
 
-      apply (plus_add_same_r_if (modNatAddInverse n1 order)) in H4.
-      
       Theorem modNat_eq_compat_gen : 
         forall c a b,
           a = b ->
@@ -369,40 +326,15 @@ Section Pedersen.
         intuition.
         
       Qed.
-      
-      eapply (modNat_eq_compat_gen order) in H4.
-      
-      repeat rewrite <- modNat_plus in H4.
-      rewrite <- (plus_comm  (x * n2)) in H4.
-      rewrite <- (plus_assoc _ n1) in H4.
-      rewrite (plus_comm (x * n2)) in H4.
-      symmetry in H4.
-      rewrite modNat_plus in H4.
-      rewrite modNatAddInverse_correct in H4.
-      rewrite plus_0_l in H4.
-      symmetry in H4.
-      rewrite (plus_comm) in H4.
-      rewrite plus_assoc in H4.
-      eapply (plus_add_same_r_if (modNatAddInverse (x * n0) order)) in H4.
-      eapply (modNat_eq_compat_gen order) in H4.
-      rewrite <- modNat_plus in H4.
-      rewrite <- plus_assoc in H4.
-      rewrite plus_comm in H4.
-      rewrite modNat_plus in H4.
-      rewrite modNatAddInverse_correct in H4.
-      rewrite plus_0_l in H4.
-      rewrite <- modNat_plus in H4.
 
       Theorem modNat_0 : 
         forall c,
-          modNat 0 c = 0.
+          modNat 0%nat c = 0%nat.
         
         induction c; intuition; simpl in *.
         
       Qed.
-      
-      
-      
+
       Theorem modNatAddInverse_mult : 
         forall a b c,
           modNat (modNatAddInverse (a * b) c) c = 
@@ -431,13 +363,6 @@ Section Pedersen.
         apply modNat_lt.
       Qed.
 
-      symmetry in H4.
-      rewrite (plus_comm (x * n2)) in H4.
-      rewrite modNat_plus in H4.
-      rewrite modNatAddInverse_mult in H4.
-      rewrite <- modNat_plus in H4.
-      rewrite <- mult_plus_distr_l in H4.
-      
       Theorem modNat_mult_same_r : 
         forall a b c d,
           modNat a d = modNat b d ->
@@ -451,6 +376,83 @@ Section Pedersen.
         rewrite mult_comm.
         intuition.
       Qed.
+
+    Local Close Scope nat_scope.
+
+    Theorem PedersenComputionallyBinding : 
+      Pr[BindingCommit_G PedersenSetup _ PedersenReveal A] <= 
+      Pr[(@DLP_G _ groupOp _ _ _ g order B)].
+      
+      unfold BindingCommit_G, PedersenSetup, PedersenReveal, B, DLP_G.
+      inline_first.
+      comp_skip.
+      inline_first.
+      comp_skip.
+      reflexivity.
+      comp_simp.
+      
+      Local Opaque evalDist.
+      
+      case_eq (eqb n n1); intuition;
+      simpl.
+      rewrite evalDist_ret_0.
+      eapply rat0_le_all.
+      intuition.
+      
+      case_eq (eqb g0 (g ^ n * (g ^ x) ^ n0)); intuition.
+      simpl.
+      rewrite eqb_leibniz in H3.
+      case_eq ( eqb g0 (g ^ n1 * (g ^ x) ^ n2)); intuition.
+      rewrite eqb_leibniz in H4.
+      subst.      
+      
+      case_eq (eqb x
+                   (modNat ((n + modNatAddInverse n1 order) *
+                            multInverseModOrder (n2 + modNatAddInverse n0 order)) order)%nat); intuition.
+      exfalso.
+      eapply eqb_false_iff in H3.
+      eapply H3.
+      clear H3.
+      repeat rewrite groupExp_mult in H4.
+      repeat rewrite <- groupExp_plus in H4.
+      apply groupExp_eq in H4.
+      
+      Local Open Scope nat_scope.
+      
+
+      apply (plus_add_same_r_if (modNatAddInverse n1 order)) in H4.
+      
+      
+      eapply (modNat_eq_compat_gen order) in H4.
+      
+      repeat rewrite <- modNat_plus in H4.
+      rewrite <- (plus_comm  (x * n2)) in H4.
+      rewrite <- (plus_assoc _ n1) in H4.
+      rewrite (plus_comm (x * n2)) in H4.
+      symmetry in H4.
+      rewrite modNat_plus in H4.
+      rewrite modNatAddInverse_correct in H4.
+      rewrite plus_0_l in H4.
+      symmetry in H4.
+      rewrite (plus_comm) in H4.
+      rewrite plus_assoc in H4.
+      eapply (plus_add_same_r_if (modNatAddInverse (x * n0) order)) in H4.
+      eapply (modNat_eq_compat_gen order) in H4.
+      rewrite <- modNat_plus in H4.
+      rewrite <- plus_assoc in H4.
+      rewrite plus_comm in H4.
+      rewrite modNat_plus in H4.
+      rewrite modNatAddInverse_correct in H4.
+      rewrite plus_0_l in H4.
+      rewrite <- modNat_plus in H4.
+      
+      symmetry in H4.
+      rewrite (plus_comm (x * n2)) in H4.
+      rewrite modNat_plus in H4.
+      rewrite modNatAddInverse_mult in H4.
+      rewrite <- modNat_plus in H4.
+      rewrite <- mult_plus_distr_l in H4.
+      
       
       apply (modNat_mult_same_r _ _ (multInverseModOrder (n2 + modNatAddInverse n0 order)))in H4.
       rewrite <- mult_assoc in H4.
@@ -479,7 +481,7 @@ Section Pedersen.
       intuition.
     Qed.
     
-    Print Assumptions PedersenComputionallyBinding.
+    (*Print Assumptions PedersenComputionallyBinding.*)
     
   End PedersenBinding.
 

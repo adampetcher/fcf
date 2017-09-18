@@ -619,6 +619,23 @@ Section PRF_Encryption_concrete.
 
     Require Import RndInList.
 
+    Theorem RF_Encrypt_length_incr : 
+      forall a b c d,
+        In (a, b) (getSupport (RF_Encrypt c d)) ->
+        (length b <= 1 + length c)%nat.
+
+      intuition.
+      unfold RF_Encrypt in *.
+      repeat simp_in_support.
+      destruct x0.
+      repeat simp_in_support.
+      unfold PRFE_RandomFunc, randomFunc in *.
+      destruct (arrayLookup (Bvector_EqDec eta) c x); repeat simp_in_support;
+      simpl in *; omega.
+
+    Qed.
+
+      
     Theorem G2_2_bad_small : Pr[x <-$ G2_2; ret snd x] <= q1 / (2 ^ eta).
       pose proof RF_Encrypt_wf.
 
@@ -628,23 +645,6 @@ Section PRF_Encryption_concrete.
       eapply oc_comp_wf; intuition.
       comp_simp.
      
-      Theorem RF_Encrypt_length_incr : 
-        forall a b c d,
-          In (a, b) (getSupport (RF_Encrypt c d)) ->
-          (length b <= 1 + length c)%nat.
-
-        intuition.
-        unfold RF_Encrypt in *.
-        repeat simp_in_support.
-        destruct x0.
-        repeat simp_in_support.
-        unfold PRFE_RandomFunc, randomFunc in *.
-        destruct (arrayLookup (Bvector_EqDec eta) c x); repeat simp_in_support;
-        simpl in *; omega.
-
-      Qed.
-
-      
       assert (length l <= q1)%nat.
 
       eapply qam_count;
@@ -1718,6 +1718,24 @@ Section PRF_Encryption.
      
     Qed.
 
+    Theorem PRFE_Encrypt_OC_qam : 
+      forall n x (y : Bvector n), queries_at_most (PRFE_Encrypt_OC x y) 1.
+
+      intuition.
+      unfold PRFE_Encrypt_OC.
+      econstructor.
+      econstructor.
+      econstructor.
+      intuition.
+      econstructor.
+      econstructor.
+      intuition.
+      econstructor.
+
+      omega.
+
+    Qed.
+
     Theorem PRF_A'_poly_queries : 
       polynomial_queries_oc _ _ _ 
       (fun n  => PRF_A' (A1 n) (@A2 n)).
@@ -1738,24 +1756,6 @@ Section PRF_Encryption.
       econstructor.
       eauto.
       intuition.
-
-      Theorem PRFE_Encrypt_OC_qam : 
-        forall n x (y : Bvector n), queries_at_most (PRFE_Encrypt_OC x y) 1.
-
-        intuition.
-        unfold PRFE_Encrypt_OC.
-        econstructor.
-        econstructor.
-        econstructor.
-        intuition.
-        econstructor.
-        econstructor.
-        intuition.
-        econstructor.
-
-        omega.
-
-      Qed.
 
       eapply PRFE_Encrypt_OC_qam.
       
@@ -1840,7 +1840,7 @@ Section PRF_Encryption.
     eapply negligible_poly_num; intuition.
   Qed.
 
-  Print Assumptions PRFE_IND_CPA.
+  (*Print Assumptions PRFE_IND_CPA.*)
 
 End PRF_Encryption.
 

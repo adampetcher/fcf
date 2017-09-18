@@ -353,6 +353,25 @@ Section DistSingle_impl_Mult.
     intuition.
   Qed.
   
+  Theorem compMap_computeHybrid_n_equiv : 
+    forall s_A a,
+    Pr  [b <-$ compMap B_EqDec (fun _ : nat => (c1 a)) (forNats n); A2 s_A b ] ==
+    Pr  [x <-$ computeHybrid n n a; A2 s_A x ].
+
+    intuition.
+    unfold computeHybrid.
+    inline_first.
+    comp_skip.
+    
+    inline_first.
+    rewrite minus_diag.
+    unfold forNats.
+    unfold compMap.
+    comp_simp.
+    rewrite app_nil_r.
+    intuition.
+  Qed.
+
   Theorem DistSingle_impl_Mult : 
     DistMult_Adv _ c1 c2 A1 A2 n <= (n / 1) * (DistSingle_Adv c1 c2 B1 B2).
 
@@ -397,25 +416,6 @@ Section DistSingle_impl_Mult.
     comp_simp.
 
     eapply compMap_computeHybrid_0_equiv.
-
-    Theorem compMap_computeHybrid_n_equiv : 
-      forall s_A a,
-      Pr  [b <-$ compMap B_EqDec (fun _ : nat => (c1 a)) (forNats n); A2 s_A b ] ==
-      Pr  [x <-$ computeHybrid n n a; A2 s_A x ].
-
-      intuition.
-      unfold computeHybrid.
-      inline_first.
-      comp_skip.
-      
-      inline_first.
-      rewrite minus_diag.
-      unfold forNats.
-      unfold compMap.
-      comp_simp.
-      rewrite app_nil_r.
-      intuition.
-    Qed.
 
     eapply evalDist_seq; intuition.
     comp_simp.
