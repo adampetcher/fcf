@@ -808,6 +808,6 @@ Section PRF_DRBG.
 
   Qed.
 
-  Print Assumptions PRF_DRBG_Adv_small.
+  (*Print Assumptions PRF_DRBG_Adv_small.*)
 
 End PRF_DRBG.

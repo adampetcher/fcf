@@ -295,6 +295,25 @@ Section hF.
     [b, _] <-$2 A _ _ (F_randomFunc k_in) nil;
     ret b.
 
+  Theorem arrayLookup_f_equiv : 
+    forall (A B C : Set) (eqdb : EqDec B) (x1 : list (B * C)) (x2 : list (A * B * C)) (a : B),
+    list_pred
+       (fun c0 d =>
+        fst c0 = snd (fst d) /\ snd c0 = snd d) x1 x2 ->
+       arrayLookup _ x1 a = arrayLookup_f _ x2 a.
+
+    induction x1; inversion 1; intuition; simpl in *.
+    subst.
+    destruct a.
+    destruct a2.
+    simpl in *.
+    subst.
+    destruct p.
+    simpl.
+    destruct (eqb a0 b0 ); intuition.
+
+  Qed.
+
   Theorem G2_1_2_equiv : 
     Pr[G2_1] == Pr[G2_2].
 
@@ -306,25 +325,6 @@ Section hF.
     econstructor.
     intuition.
     unfold randomFunc_mem, F_randomFunc.
-
-    Theorem arrayLookup_f_equiv : 
-      forall (A B C : Set) (eqdb : EqDec B) (x1 : list (B * C)) (x2 : list (A * B * C)) (a : B),
-      list_pred
-         (fun c0 d =>
-          fst c0 = snd (fst d) /\ snd c0 = snd d) x1 x2 ->
-         arrayLookup _ x1 a = arrayLookup_f _ x2 a.
-
-      induction x1; inversion 1; intuition; simpl in *.
-      subst.
-      destruct a.
-      destruct a2.
-      simpl in *.
-      subst.
-      destruct p.
-      simpl.
-      destruct (eqb a0 b0 ); intuition.
-
-    Qed.
     
     erewrite arrayLookup_f_equiv ; eauto.
     destruct (arrayLookup_f (Bvector_EqDec b) x2 (F x a) ); intuition.
@@ -1018,6 +1018,72 @@ Section hF.
 
   Qed.
 
+  Theorem findCollision_1_correct : 
+    forall (A B : Set) eqd1 eqd2 (ls : list (A * B)) (x1 x2 : A) y,
+    findCollision_1 eqd1 eqd2 ls x1 y = 
+     Some x2 ->
+     x1 <> x2 /\
+     In (x2, y) ls.
+
+    induction ls; intros; simpl in *.
+    discriminate.
+
+    destruct a.
+    case_eq (eqb y b0); intros.
+    rewrite H0 in H.
+    case_eq (eqb x1 a); intros.
+    rewrite H1 in H.
+    simpl in *.
+    eapply IHls in H.
+    intuition.
+
+    rewrite H1 in H.
+    simpl in *.
+    inversion H; clear H; subst.
+    rewrite eqb_leibniz in H0.
+    subst.
+    intuition.
+    subst.
+    rewrite eqb_refl in H1.
+    discriminate.
+    
+    rewrite H0 in H.
+    simpl in *.
+    eapply IHls in H.
+    intuition.
+
+  Qed.
+
+  Theorem findCollision_correct : 
+    forall (A B : Set) eqd1 eqd2 (ls : list (A * B)) (x1 x2 : A) y,
+    findCollision eqd1 eqd2 ls = 
+     Some (x1, x2, y) ->
+     x1 <> x2 /\
+     In (x1, y) ls /\ 
+     In (x2, y) ls.
+
+    induction ls; intros; simpl in *;
+    subst; try discriminate.
+
+    destruct a.
+   
+    case_eq (findCollision_1 eqd1 eqd2 ls a b0); intros.
+    rewrite H0 in H.
+    eapply findCollision_1_correct in H0.
+    intuition.
+    subst.
+    inversion H; clear H; subst.
+    intuition.
+    inversion H; clear H; subst.
+    intuition.
+    inversion H; clear H; subst.
+    intuition.
+
+    rewrite H0 in H.
+    eapply IHls in H.
+    intuition.
+  Qed.
+
   Theorem G2_3_bad_equiv : 
     Pr[x <-$ G2_3; ret (snd x)] == Pr[G2_3_bad].
 
@@ -1074,71 +1140,6 @@ Section hF.
     destruct p.
     simpl in *.
 
-    Theorem findCollision_1_correct : 
-      forall (A B : Set) eqd1 eqd2 (ls : list (A * B)) (x1 x2 : A) y,
-      findCollision_1 eqd1 eqd2 ls x1 y = 
-       Some x2 ->
-       x1 <> x2 /\
-       In (x2, y) ls.
-
-      induction ls; intros; simpl in *.
-      discriminate.
-
-      destruct a.
-      case_eq (eqb y b0); intros.
-      rewrite H0 in H.
-      case_eq (eqb x1 a); intros.
-      rewrite H1 in H.
-      simpl in *.
-      eapply IHls in H.
-      intuition.
-
-      rewrite H1 in H.
-      simpl in *.
-      inversion H; clear H; subst.
-      rewrite eqb_leibniz in H0.
-      subst.
-      intuition.
-      subst.
-      rewrite eqb_refl in H1.
-      discriminate.
-      
-      rewrite H0 in H.
-      simpl in *.
-      eapply IHls in H.
-      intuition.
-
-    Qed.
-
-    Theorem findCollision_correct : 
-      forall (A B : Set) eqd1 eqd2 (ls : list (A * B)) (x1 x2 : A) y,
-      findCollision eqd1 eqd2 ls = 
-       Some (x1, x2, y) ->
-       x1 <> x2 /\
-       In (x1, y) ls /\ 
-       In (x2, y) ls.
-
-      induction ls; intros; simpl in *;
-      subst; try discriminate.
-
-      destruct a.
-     
-      case_eq (findCollision_1 eqd1 eqd2 ls a b0); intros.
-      rewrite H0 in H.
-      eapply findCollision_1_correct in H0.
-      intuition.
-      subst.
-      inversion H; clear H; subst.
-      intuition.
-      inversion H; clear H; subst.
-      intuition.
-      inversion H; clear H; subst.
-      intuition.
-
-      rewrite H0 in H.
-      eapply IHls in H.
-      intuition.
-    Qed.
 
     apply findCollision_correct in H2.
     intuition.

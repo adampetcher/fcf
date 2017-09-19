@@ -3637,6 +3637,34 @@ Lemma nth_nil:
   
 Qed.
 
+Theorem listReplace_None_Permutation : 
+  forall (A : Set) n ls (y : A),
+    nth n ls None = None ->
+    Permutation (getSomes (listReplace ls n (Some y) None)) (y :: (getSomes ls)).
+  
+  induction n; intuition; simpl in *.
+  destruct ls; simpl in *.
+  eapply Permutation_refl.
+  subst.
+  eapply Permutation_refl.
+  
+  destruct ls; simpl in *.
+  eapply (IHn nil).
+  eapply nth_nil.
+  
+  destruct o.
+  eapply Permutation_sym.
+  eapply perm_trans.
+  eapply perm_swap.
+  eapply perm_skip.
+  eapply Permutation_sym.
+  eapply IHn.
+  trivial.
+  eapply IHn.
+  trivial.
+
+Qed.
+
 Theorem listReplace_getSomes_Permutation_h : 
   forall (A : Set) l1' l2,
     Permutation l1' l2 ->
@@ -3651,33 +3679,6 @@ Theorem listReplace_getSomes_Permutation_h :
   
   induction 1; intuition.
   
-  Theorem listReplace_None_Permutation : 
-    forall (A : Set) n ls (y : A),
-      nth n ls None = None ->
-      Permutation (getSomes (listReplace ls n (Some y) None)) (y :: (getSomes ls)).
-    
-    induction n; intuition; simpl in *.
-    destruct ls; simpl in *.
-    eapply Permutation_refl.
-    subst.
-    eapply Permutation_refl.
-    
-    destruct ls; simpl in *.
-    eapply (IHn nil).
-    eapply nth_nil.
-    
-    destruct o.
-    eapply Permutation_sym.
-    eapply perm_trans.
-    eapply perm_swap.
-    eapply perm_skip.
-    eapply Permutation_sym.
-    eapply IHn.
-    trivial.
-    eapply IHn.
-    trivial.
-
-  Qed.
   
   eapply perm_trans.
   eapply listReplace_None_Permutation.
@@ -4040,6 +4041,53 @@ Theorem NoDup_app :
   
 Qed.
 
+Theorem firstn_In : 
+  forall (A : Type) n (ls : list A)(a : A),
+             In a (firstn n ls) ->
+             In a ls.
+  
+  induction n; destruct ls; intuition; simpl in *;
+  intuition.
+Qed.
+
+Theorem pred_firstn_In :
+  forall (A : Set) ls1 ls2,
+    list_pred (fun x0 y : list A => exists n : nat, y = firstn n x0) ls1 ls2 ->
+    forall a,
+      In a (flatten ls2) -> In a (flatten ls1).
+  
+  induction 1; intuition; simpl in *.
+  destruct H.
+  subst.
+  eapply in_app_or in H1.
+  intuition.
+  eapply in_or_app.
+  left.
+  eapply firstn_In.
+  eauto.
+Qed.    
+
+
+Theorem firstn_NoDup : 
+  forall (A : Type) n (ls : list A),
+    NoDup ls ->
+    NoDup (firstn n ls).
+  
+  induction n; destruct ls; intuition; simpl in *.
+  econstructor.
+  
+  inversion H; clear H; subst.
+  econstructor.
+  
+  intuition.
+  eapply H2.
+  eapply firstn_In.
+  eauto.
+  
+  eapply IHn; intuition.
+  
+Qed.
+ 
 Theorem NoDup_flatten_subset : 
   forall (A : Set)(ls1 ls2 : list (list A)),
     list_pred (fun x y => exists n, y = firstn n x) ls1 ls2 ->
@@ -4052,61 +4100,14 @@ Theorem NoDup_flatten_subset :
   eapply NoDup_app in H1.
   intuition.
   eapply app_NoDup; intuition.
-  
-  Theorem firstn_In : 
-    forall (A : Type) n (ls : list A)(a : A),
-               In a (firstn n ls) ->
-               In a ls.
-    
-    induction n; destruct ls; intuition; simpl in *;
-    intuition.
-  Qed.
-
-  Theorem firstn_NoDup : 
-    forall (A : Type) n (ls : list A),
-      NoDup ls ->
-      NoDup (firstn n ls).
-    
-    induction n; destruct ls; intuition; simpl in *.
-    econstructor.
-    
-    inversion H; clear H; subst.
-    econstructor.
-    
-    intuition.
-    eapply H2.
-    eapply firstn_In.
-    eauto.
-    
-    eapply IHn; intuition.
-    
-  Qed.
-  
+   
   eapply firstn_NoDup.
   trivial.
   
   eapply H3.
   eapply firstn_In.
   eauto.
-  
-  Theorem pred_firstn_In :
-    forall (A : Set) ls1 ls2,
-      list_pred (fun x0 y : list A => exists n : nat, y = firstn n x0) ls1 ls2 ->
-      forall a,
-        In a (flatten ls2) -> In a (flatten ls1).
     
-    induction 1; intuition; simpl in *.
-    destruct H.
-    subst.
-    eapply in_app_or in H1.
-    intuition.
-    eapply in_or_app.
-    left.
-    eapply firstn_In.
-    eauto.
-    
-  Qed.
-  
   eapply pred_firstn_In.
   eauto.
   eauto.
@@ -4121,6 +4122,18 @@ Theorem NoDup_flatten_subset :
   intuition.
 Qed.
 
+Theorem allNatsLt_nil_inv :
+  forall n,
+    allNatsLt n = nil ->
+    n = O.
+  
+  destruct n; intuition; simpl in *.
+  eapply app_eq_nil in H.
+  intuition.
+  discriminate.
+  
+Qed.
+  
 Theorem firstn_allNatsLt_h : 
   forall ls n1 n2,
     n2 >= n1 ->
@@ -4128,18 +4141,6 @@ Theorem firstn_allNatsLt_h :
     firstn n1 ls = allNatsLt n1.
   
   induction ls using rev_ind; intuition; simpl in *.
-  
-  Theorem allNatsLt_nil_inv :
-    forall n,
-      allNatsLt n = nil ->
-      n = O.
-    
-    destruct n; intuition; simpl in *.
-    eapply app_eq_nil in H.
-    intuition.
-    discriminate.
-    
-  Qed.
   
   symmetry in H0.
   eapply allNatsLt_nil_inv in H0.
@@ -4156,8 +4157,7 @@ Theorem firstn_allNatsLt_h :
   discriminate.
   eapply app_inj_tail in H0.
   intuition.
-  subst.
-  
+  subst.  
   
   destruct (le_gt_dec n1 (length (allNatsLt n2))).
   rewrite firstn_app.

@@ -1917,6 +1917,47 @@ Qed.
 
 Opaque evalDist.
 
+Theorem oc_comp_wf_inv
+   : forall (A B C : Set) (c : OracleComp A B C),
+     well_formed_oc c ->
+     forall (S : Set) (P : S -> Prop)(eqds : EqDec S) (o : S -> A -> Comp (B * S)) (s : S),
+     (forall (a : S) (b : A), P a -> well_formed_comp (o a b)) ->
+     (forall a b s s', P s -> In (b, s') (getSupport (o s a)) -> P s') ->
+     P s -> 
+     well_formed_comp (c S eqds o s).
+
+  induction 1; intuition; simpl in *.
+
+  eapply H.
+  trivial.
+
+  wftac.
+  eapply (@IHwell_formed_oc _ (fun x => P (snd x))).
+  intuition.
+  wftac.
+  intuition.
+  repeat simp_in_support.
+  simpl in *.
+  destruct x; simpl in *.
+  eapply oc_comp_invariant.
+  intuition.
+  eapply H3; eauto.
+  eauto.
+  eauto.
+  trivial.
+  
+  wftac.
+  
+  wftac.
+  eapply H1; intuition.
+  eapply H2; eauto.
+  eapply H3; eauto.
+  eapply oc_comp_invariant; intuition.
+  eapply H3; eauto.
+  eauto.
+  eauto.
+
+Qed.
 
 Theorem oc_comp_spec_eq_until_bad : 
   forall (A B C : Set)(c : OracleComp A B C), 
@@ -1974,48 +2015,6 @@ Theorem oc_comp_spec_eq_until_bad :
 
   intuition.
   simpl in *.
-
-  Theorem oc_comp_wf_inv
-     : forall (A B C : Set) (c : OracleComp A B C),
-       well_formed_oc c ->
-       forall (S : Set) (P : S -> Prop)(eqds : EqDec S) (o : S -> A -> Comp (B * S)) (s : S),
-       (forall (a : S) (b : A), P a -> well_formed_comp (o a b)) ->
-       (forall a b s s', P s -> In (b, s') (getSupport (o s a)) -> P s') ->
-       P s -> 
-       well_formed_comp (c S eqds o s).
-
-    induction 1; intuition; simpl in *.
-
-    eapply H.
-    trivial.
-
-    wftac.
-    eapply (@IHwell_formed_oc _ (fun x => P (snd x))).
-    intuition.
-    wftac.
-    intuition.
-    repeat simp_in_support.
-    simpl in *.
-    destruct x; simpl in *.
-    eapply oc_comp_invariant.
-    intuition.
-    eapply H3; eauto.
-    eauto.
-    eauto.
-    trivial.
-    
-    wftac.
-    
-    wftac.
-    eapply H1; intuition.
-    eapply H2; eauto.
-    eapply H3; eauto.
-    eapply oc_comp_invariant; intuition.
-    eapply H3; eauto.
-    eauto.
-    eauto.
-
-  Qed.
 
   wftac.
   eapply oc_comp_wf_inv;

@@ -73,6 +73,17 @@ Lemma sumList_bool : forall (ls : list bool) f,
   
 Qed.
 
+Lemma in_getSupport_or_evalDist_0 : forall (A : Set)(c : Comp A) a,
+  In a (getSupport c) \/ evalDist c a == 0.
+
+  intuition.
+  destruct (in_dec (comp_eq_dec c) a (getSupport c)); intuition.
+  
+  right.
+  eapply getSupport_not_In_evalDist; intuition.
+  
+Qed.
+
 Lemma commandTwice : forall (c1 c2 : Comp bool),
   Pr [
     b1 <-$ c1;
@@ -94,18 +105,8 @@ Lemma commandTwice : forall (c1 c2 : Comp bool),
   intuition.
   
   eapply getSupport_NoDup.
-  Lemma in_getSupport_or_evalDist_0 : forall (A : Set)(c : Comp A) a,
-    In a (getSupport c) \/ evalDist c a == 0.
-
-    intuition.
-    destruct (in_dec (comp_eq_dec c) a (getSupport c)); intuition.
-    
-    right.
-    eapply getSupport_not_In_evalDist; intuition.
-    
-  Qed.
   
-  Show.
+
   edestruct in_getSupport_or_evalDist_0.
   left.
   eauto.

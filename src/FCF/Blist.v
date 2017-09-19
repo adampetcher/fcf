@@ -512,99 +512,6 @@ Lemma getAllBlists_app_NoDup : forall n,
   apply app_inj_tail in H; intuition.
 
 Qed.
-
-Lemma getAllBlists_perm : forall n,
-  Permutation (getAllBlists n) (getAllBlists_app n).
-
-  intuition.
-  eapply NoDup_Permutation.
-
-  apply getAllBlists_NoDup.
-  apply getAllBlists_app_NoDup.
-
-  Lemma getAllBlists_app_rel_map : forall n,
-    rel_map (fun ls1 ls2 => ls1 = (rev ls2)) (getAllBlists_app n) (getAllBlists n).
-
-    induction n; intuition; simpl in *.
-    econstructor.
-    econstructor.
-    simpl.
-    trivial.
-
-    eapply rel_map_app.
-    eapply rel_map_map2.
-    
-    eapply rel_map_impl; eauto; intuition.
-    subst.
-    simpl.
-    trivial.
-
-    eapply rel_map_map2.
-    
-    eapply rel_map_impl; eauto; intuition.
-    subst.
-    simpl.
-    trivial.
-  Qed.
-
-  Lemma getAllBlists_rel_map : forall n,
-    rel_map (fun ls1 ls2 => ls1 = (rev ls2)) (getAllBlists n) (getAllBlists_app n).
-
-    induction n; intuition; simpl in *.
-    econstructor.
-    econstructor.
-    trivial.
-
-    eapply rel_map_app.
-    eapply rel_map_map2.
-    eapply rel_map_impl; eauto; intuition.
-    subst.
-    rewrite rev_unit.
-    trivial.
-  
-    eapply rel_map_map2.
-    eapply rel_map_impl; eauto; intuition.
-    subst.
-    rewrite rev_unit.
-    trivial.  
-    
-  Qed.
-
-  intuition.
-
-  specialize (getAllBlists_rel_map n); intuition.
-  specialize (rel_map_in_inv H0 x); intuition.
-  destruct H2.
-  intuition.
-  subst.
-
-  Lemma getAllBlists_app_In_length : forall n ls,
-    In ls (getAllBlists_app n) ->
-    length ls = n.
-
-    induction n; intuition; simpl in *.
-    destruct H; subst; intuition.
-
-    apply in_app_or in H;
-    destruct H;
-    apply in_map_iff in H;
-    destruct H;
-    intuition;
-
-    subst;
-    rewrite app_length; simpl;
-    rewrite plus_comm; simpl;
-    f_equal;
-    eapply IHn; eauto.
-  Qed.
-
-  Lemma getAllBlists_app_length_In : forall n ls,
-    length ls = n ->
-    In ls (getAllBlists_app n).
-
-    induction n; intuition; simpl in *;
-    destruct ls; simpl in *; intuition; try omega.
-
     Lemma ls_last_exists : forall (A : Type)(ls : list A) n,
       length ls = (S n) ->
       exists a ls', (length ls' = n /\ ls = ls' ++ (a :: nil)).
@@ -628,57 +535,151 @@ Lemma getAllBlists_perm : forall n,
       subst.
       simpl.
       intuition.
-    Qed.
+Qed. 
 
-    edestruct (ls_last_exists (b :: ls)).
-    simpl.
-    eauto.
-    destruct H0.
-    intuition.
-    rewrite H2.
-    eapply in_or_app.
-    destruct x; [left | right];
-    eapply in_map_iff;
-    econstructor; intuition.
+Lemma getAllBlists_app_rel_map : forall n,
+  rel_map (fun ls1 ls2 => ls1 = (rev ls2)) (getAllBlists_app n) (getAllBlists n).
 
-  Qed.
+  induction n; intuition; simpl in *.
+  econstructor.
+  econstructor.
+  simpl.
+  trivial.
+
+  eapply rel_map_app.
+  eapply rel_map_map2.
+  
+  eapply rel_map_impl; eauto; intuition.
+  subst.
+  simpl.
+  trivial.
+
+  eapply rel_map_map2.
+  
+  eapply rel_map_impl; eauto; intuition.
+  subst.
+  simpl.
+  trivial.
+Qed.
+
+Lemma getAllBlists_rel_map : forall n,
+  rel_map (fun ls1 ls2 => ls1 = (rev ls2)) (getAllBlists n) (getAllBlists_app n).
+
+  induction n; intuition; simpl in *.
+  econstructor.
+  econstructor.
+  trivial.
+
+  eapply rel_map_app.
+  eapply rel_map_map2.
+  eapply rel_map_impl; eauto; intuition.
+  subst.
+  rewrite rev_unit.
+  trivial.
+
+  eapply rel_map_map2.
+  eapply rel_map_impl; eauto; intuition.
+  subst.
+  rewrite rev_unit.
+  trivial.    
+Qed.
+
+Lemma getAllBlists_app_In_length : forall n ls,
+  In ls (getAllBlists_app n) ->
+  length ls = n.
+
+  induction n; intuition; simpl in *.
+  destruct H; subst; intuition.
+
+  apply in_app_or in H;
+  destruct H;
+  apply in_map_iff in H;
+  destruct H;
+  intuition;
+
+  subst;
+  rewrite app_length; simpl;
+  rewrite plus_comm; simpl;
+  f_equal;
+  eapply IHn; eauto.
+Qed.
+
+
+Lemma getAllBlists_app_length_In : forall n ls,
+  length ls = n ->
+  In ls (getAllBlists_app n).
+
+  induction n; intuition; simpl in *;
+  destruct ls; simpl in *; intuition; try omega.
+
+
+
+  edestruct (ls_last_exists (b :: ls)).
+  simpl.
+  eauto.
+  destruct H0.
+  intuition.
+  rewrite H2.
+  eapply in_or_app.
+  destruct x; [left | right];
+  eapply in_map_iff;
+  econstructor; intuition.
+
+Qed.
+
+Lemma getAllBlists_In_length : forall n ls,
+  In ls (getAllBlists n) ->
+  length ls = n.
+
+  induction n; intuition; simpl in *.
+  destruct H; subst; intuition.
+
+  apply in_app_or in H;
+  destruct H;
+  apply in_map_iff in H;
+  destruct H;
+  intuition;
+
+  subst;
+  simpl;
+  f_equal;
+  eapply IHn; eauto.
+Qed.
+
+Lemma getAllBlists_length_In : forall n ls,
+  length ls = n ->
+  In ls (getAllBlists n).
+
+  induction n; intuition; simpl in *;
+  destruct ls; simpl in *; intuition; try omega.
+
+  apply in_or_app.
+ 
+  destruct b; [left | right];
+  eapply in_map_iff; eauto.
+Qed. 
+
+Lemma getAllBlists_perm : forall n,
+  Permutation (getAllBlists n) (getAllBlists_app n).
+
+  intuition.
+  eapply NoDup_Permutation.
+
+  apply getAllBlists_NoDup.
+  apply getAllBlists_app_NoDup.
+
+  intuition.
+
+  specialize (getAllBlists_rel_map n); intuition.
+  specialize (rel_map_in_inv H0 x); intuition.
+  destruct H2.
+  intuition.
+  subst.
 
   eapply getAllBlists_app_length_In.
   rewrite rev_length.
   eapply getAllBlists_app_In_length.
-  eauto.
-
-  Lemma getAllBlists_In_length : forall n ls,
-    In ls (getAllBlists n) ->
-    length ls = n.
-
-    induction n; intuition; simpl in *.
-    destruct H; subst; intuition.
-
-    apply in_app_or in H;
-    destruct H;
-    apply in_map_iff in H;
-    destruct H;
-    intuition;
-
-    subst;
-    simpl;
-    f_equal;
-    eapply IHn; eauto.
-  Qed.
-
-  Lemma getAllBlists_length_In : forall n ls,
-    length ls = n ->
-    In ls (getAllBlists n).
-
-    induction n; intuition; simpl in *;
-    destruct ls; simpl in *; intuition; try omega.
-
-    apply in_or_app.
-
-    destruct b; [left | right];
-    eapply in_map_iff; eauto.
-  Qed.
+  eauto. 
 
   specialize (getAllBlists_app_rel_map n); intuition.
   specialize (rel_map_in_inv H0 x); intuition.
@@ -702,6 +703,21 @@ Theorem getAllBlists_length : forall n,
   trivial.
 Qed.
 
+Fixpoint tailOpt(A : Set)(n : nat)(v : Vector.t A n) : option (Vector.t A (pred n)):=
+  match v with
+    | [] => None
+    | Vector.cons _ _ _ v => Some v
+  end.
+
+Lemma tailOpt_eq : forall (A : Set)(n : nat)(v1 v2 : Vector.t A n),
+  v1 = v2 ->
+  tailOpt v1 = tailOpt v2.
+          
+  intuition.
+  subst.
+  trivial.
+Qed.
+
 Lemma vector_cons_eq_inv : forall (A : Set)(n : nat)(a1 a2 : A)(v1 v2 : Vector.t A n),
   Vector.cons A a1 n v1 = Vector.cons A a2 n v2 ->
   a1 = a2 /\ v1 = v2.
@@ -709,29 +725,14 @@ Lemma vector_cons_eq_inv : forall (A : Set)(n : nat)(a1 a2 : A)(v1 v2 : Vector.t
   intuition.
   inversion H; trivial.
   
-  Fixpoint tailOpt(A : Set)(n : nat)(v : Vector.t A n) : option (Vector.t A (pred n)):=
-    match v with
-      | [] => None
-      | Vector.cons _ _ _ v => Some v
-    end.
-  
   assert (tailOpt (Vector.cons A a1 n v1) = tailOpt (Vector.cons A a2 n v2)).
   
-  Lemma tailOpt_eq : forall (A : Set)(n : nat)(v1 v2 : Vector.t A n),
-    v1 = v2 ->
-    tailOpt v1 = tailOpt v2.
-            
-    intuition.
-    subst.
-    trivial.
-  Qed.
   eapply tailOpt_eq.
   trivial.
   
   simpl in *.
   inversion H0; clear H0; subst.
-  trivial.          
-  
+  trivial.            
 Qed.
 
 Lemma pair_eq_inv : forall (A B : Type)(a1 a2 : A)(b1 b2 : B),
@@ -790,6 +791,42 @@ Lemma le_refl_gen : forall n1 n2,
   intuition.
 Qed.
 
+Lemma app_first_eq : forall (A : Type)(ls2 ls1 ls3 : list A),
+  ls1 = ls2 ++ ls3 ->
+  length ls1 = length ls2 ->
+  ls1 = ls2 /\ ls3 = nil.
+  
+  intros; subst.
+  assert (ls3 = nil).
+  rewrite app_length in H0.
+  assert (length ls3 = O).
+  omega.
+  destruct ls3; simpl in *; try omega; trivial.
+  subst.
+  rewrite app_nil_r.
+  intuition.
+Qed.
+
+Lemma to_list_eq_inv : forall (A : Set) n (v1 v2 : Vector.t A n),
+  VectorDef.to_list v1 = VectorDef.to_list v2 ->
+        v1 = v2.
+  
+  induction n; intuition.
+  rewrite (vector_0 v2).
+  rewrite (vector_0 v1).
+  trivial.
+  
+  destruct (vector_S v1).
+  destruct (vector_S v2).
+  destruct H0. 
+  destruct H1.
+  subst.
+  unfold VectorDef.to_list in *.
+  inversion H; clear H; subst.
+  f_equal.
+  eauto.
+Qed.
+
 Lemma shiftOut_to_list : forall n (v : Bvector n),
   shiftOut (VectorDef.to_list v) n = Some (v, nil).
   
@@ -803,45 +840,10 @@ Lemma shiftOut_to_list : forall n (v : Bvector n),
   rewrite H.
   apply shiftOut_correct_inv in H.
   
-  Lemma app_first_eq : forall (A : Type)(ls2 ls1 ls3 : list A),
-    ls1 = ls2 ++ ls3 ->
-    length ls1 = length ls2 ->
-    ls1 = ls2 /\ ls3 = nil.
-    
-    intros; subst.
-    assert (ls3 = nil).
-    rewrite app_length in H0.
-    assert (length ls3 = O).
-    omega.
-    destruct ls3; simpl in *; try omega; trivial.
-    subst.
-    rewrite app_nil_r.
-    intuition.
-  Qed.
   
   apply app_first_eq in H.
   intuition; subst.
   
-  Lemma to_list_eq_inv : forall (A : Set) n (v1 v2 : Vector.t A n),
-    VectorDef.to_list v1 = VectorDef.to_list v2 ->
-          v1 = v2.
-    
-    induction n; intuition.
-    rewrite (vector_0 v2).
-    rewrite (vector_0 v1).
-    trivial.
-    
-    destruct (vector_S v1).
-    destruct (vector_S v2).
-    destruct H0. 
-    destruct H1.
-    subst.
-    unfold VectorDef.to_list in *.
-    inversion H; clear H; subst.
-    f_equal.
-    eauto.
-    
-  Qed.
   
   apply to_list_eq_inv in H0; subst.
   trivial.

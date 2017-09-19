@@ -364,6 +364,10 @@ Section OWP_HCP_Impl_PRG.
    
   Qed.
     
-  (* Print Assumptions OWP_HCP_PRG. *)
+
 
 End OWP_HCP_Impl_PRG.
+
+
+Print Assumptions OWP_HCP_PRG. 
+   
