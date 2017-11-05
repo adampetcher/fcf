@@ -305,49 +305,6 @@ Section PWO_Wrap.
 
 End PWO_Wrap.
 
-Theorem sum_eq_dec : forall (A B : Set),
-    eq_dec A ->
-    eq_dec B ->
-    eq_dec (A + B).
-
-  intuition.
-  unfold eq_dec in *.
-  intuition.
-  destruct (H a a0); subst; intuition.
-  right.
-  intuition.
-  inversion H1; clear H1; subst.
-  intuition.
-
-  right.
-  intuition.
-  inversion H1.
-
-  right. 
-  intuition.
-  inversion H1.
-
-  destruct (H0 b b0).
-  subst; intuition.
-
-  right.
-  intuition.
-  inversion H1; clear H1; subst.
-  intuition.
-Qed.
-
-Instance sum_EqDec : forall (A B : Set),
-    EqDec A ->
-    EqDec B ->
-    EqDec (A + B).
-
-  intuition.
-  eapply dec_EqDec.
-
-  eapply sum_eq_dec.
-  specialize (EqDec_dec H); intuition.
-  specialize (EqDec_dec H0); intuition.
-Qed.
 
 Section PWO_Seq.
 

@@ -1,4 +1,5 @@
--R src ''
+-R src/FCF FCF
+-R src/HMAC HMAC
 src/FCF/Admissibility.v
 src/FCF/Array.v
 src/FCF/Asymptotic.v
@@ -15,6 +16,7 @@ src/FCF/DistSem.v
 src/FCF/DistTacs.v
 src/FCF/Encryption.v
 src/FCF/Encryption_PK.v
+src/FCF/Signature.v
 src/FCF/EqDec.v
 src/FCF/ExpectedPolyTime.v
 src/FCF/FCF.v
