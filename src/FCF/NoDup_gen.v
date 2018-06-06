@@ -251,8 +251,7 @@ Lemma flatten_NoDup_gen :
   
   eapply H4.
   eapply In_gen_weaken.
-  eapply In_gen_eq.
-  trivial.
+  exact H6.
   intuition.
   subst.
   subst.
@@ -274,8 +273,7 @@ Lemma flatten_NoDup_gen :
   subst.
   eapply H4.
   eapply In_gen_weaken.
-  eapply In_gen_eq.
-  trivial.
+  exact H6.
   intuition.
   subst.
   subst.
