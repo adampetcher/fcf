@@ -7,6 +7,8 @@ Set Implicit Arguments.
 Require Import FCF.
 Require Import CompFold.
 
+Open Scope list_scope.
+
 Section DistSingle.
 
   Variable A B : Set.
