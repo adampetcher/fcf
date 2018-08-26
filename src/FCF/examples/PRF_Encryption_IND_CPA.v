@@ -9,6 +9,9 @@ Set Implicit Arguments.
 Require Import FCF.
 Require Import PRF.
 Require Import Encryption.
+Require Import RndInList.
+Require Import OTP.
+Require Import WC_PolyTime.
 
 Opaque evalDist.
 Opaque getSupport.
@@ -617,8 +620,6 @@ Section PRF_Encryption_concrete.
       
     Qed.
 
-    Require Import RndInList.
-
     Theorem RF_Encrypt_length_incr : 
       forall a b c d,
         In (a, b) (getSupport (RF_Encrypt c d)) ->
@@ -1108,8 +1109,6 @@ Section PRF_Encryption_concrete.
    Qed.
 
    (* Step 4 : apply one-time pad argument to replace ciphertext with random values *)
-   Require Import OTP.
-
    Definition G4 :=
     [a, o] <-$2 A1 _ _ (RF_Encrypt) nil;
     [p0, p1, s_A] <-3 a;
@@ -1233,7 +1232,6 @@ Section PRF_Encryption_concrete.
     Qed.
     
     (* Concrete cost of executing the constructed adversary *)
-    Require Import WC_PolyTime.
     Context `{function_cost_model}.
     Local Open Scope nat_scope.
 

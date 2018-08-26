@@ -144,13 +144,14 @@ Theorem compMap_fission_eq:
   eauto with inhabited. 
 
   eapply comp_spec_eq_trans.
-  Focus 2.
-  eapply comp_spec_seq_eq; eauto with inhabited. 
-  eapply comp_spec_eq_refl.
-  intuition.
-  eapply comp_spec_seq_eq; eauto with inhabited. 
-  intuition.
-  eapply comp_spec_eq_refl.
+  2:{
+    eapply comp_spec_seq_eq; eauto with inhabited. 
+    eapply comp_spec_eq_refl.
+    intuition.
+    eapply comp_spec_seq_eq; eauto with inhabited. 
+    intuition.
+    eapply comp_spec_eq_refl.
+  }
    
   prog_swap_r.
   prog_inline_first.
@@ -500,8 +501,9 @@ Theorem compMap_fold_equiv :
   unfold compMap_fold.
   
   eapply comp_spec_eq_trans_r.
-  Focus 2.
-  eapply comp_spec_right_ident.
+  2:{
+    eapply comp_spec_right_ident.
+  }
   eapply comp_spec_seq; eauto with inhabited.
   eapply (@compFold_spec _ _ _ (fun ls p1 p2 => b :: p1 = p2)); intuition.
   subst.
@@ -1336,11 +1338,12 @@ Lemma compMap_flatten :
   eapply comp_spec_ret; simpl; intuition.
 
   eapply comp_spec_eq_trans_r.
-  Focus 2.
-  eapply comp_spec_eq_symm.
-  eapply eq_impl_comp_spec_eq.
-  intros.
-  eapply compMap_app.
+  2:{
+    eapply comp_spec_eq_symm.
+    eapply eq_impl_comp_spec_eq.
+    intros.
+    eapply compMap_app.
+  }
   comp_skip.
   eapply comp_spec_seq.
   apply nil.
@@ -2461,10 +2464,11 @@ Theorem prob_sum_le :
   
   inline_first.
   eapply leRat_trans.
-  Focus 2.
-  eapply eqRat_impl_leRat.
-  symmetry.
-  eapply sumList_cons.
+  2:{
+    eapply eqRat_impl_leRat.
+    symmetry.
+    eapply sumList_cons.
+  }
   simpl.
   
   comp_at comp_ret leftc 1%nat.

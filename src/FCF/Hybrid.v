@@ -7,6 +7,8 @@ Set Implicit Arguments.
 Require Import FCF.
 Require Import CompFold.
 
+Open Scope list_scope.
+
 Section DistSingle.
 
   Variable A B : Set.
@@ -374,10 +376,11 @@ Section ListHybrid.
     intuition.
     
     eapply leRat_trans.
-    Focus 2.
-    eapply eqRat_impl_leRat.
-    symmetry.
-    eapply sumList_cons.
+    2:{
+      eapply eqRat_impl_leRat.
+      symmetry.
+      eapply sumList_cons.
+    }
     simpl.
     eapply leRat_trans.
     eapply ratDistance_le_trans.

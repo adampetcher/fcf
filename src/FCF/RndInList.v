@@ -150,9 +150,10 @@ Theorem evalDist_bind_event_le :
   rewrite sumList_factor_constant_l.
 
   eapply leRat_trans.
-  Focus 2.
-  eapply eqRat_impl_leRat.
-  eapply ratMult_1_r.
+  2:{
+    eapply eqRat_impl_leRat.
+    eapply ratMult_1_r.
+  }
   eapply ratMult_leRat_compat; intuition.
   
   
@@ -164,9 +165,10 @@ Theorem evalDist_bind_event_le :
   eapply sumList_le.
   intuition.
   eapply leRat_trans.
-  Focus 2.
-  eapply eqRat_impl_leRat.
-  eapply ratMult_1_r.
+  2:{
+    eapply eqRat_impl_leRat.
+    eapply ratMult_1_r.
+  }
   eapply ratMult_leRat_compat; intuition.
   destruct (evta a); intuition.
   eapply rat0_le_all.
@@ -227,11 +229,12 @@ Theorem oc_eventProb :
   clear H6.
   
   eapply leRat_trans.
-  Focus 2.
-  eapply eqRat_impl_leRat.
-  symmetry.
-  rewrite ratAdd_num.
-  eapply ratMult_distrib_r.
+  2:{
+    eapply eqRat_impl_leRat.
+    symmetry.
+    rewrite ratAdd_num.
+    eapply ratMult_distrib_r.
+  }
   eapply ratAdd_leRat_compat;
   eapply ratMult_leRat_compat; intuition.
   eapply H2.
@@ -492,11 +495,12 @@ Section RndInList.
     eapply leRat_refl.
 
     eapply leRat_trans.
-    Focus 2.
-    eapply eqRat_impl_leRat.
+    2:{
+      eapply eqRat_impl_leRat.
 
-    symmetry.
-    eapply rat_num_S.
+      symmetry.
+      eapply rat_num_S.
+    }
     eapply ratAdd_leRat_compat.
     rewrite (@sumList_exactly_one _ a).
     eapply leRat_refl.
@@ -514,14 +518,16 @@ Section RndInList.
     intuition.
     
     eapply leRat_trans.
-    Focus 2.
-    eapply IHls.
+    2:{
+      eapply IHls.
+    }
 
     eapply leRat_trans.
-    Focus 2.
-    eapply eqRat_impl_leRat.
-    symmetry.
-    eapply (sumList_filter_partition (fun b => negb (eqb a b))).
+    2:{
+      eapply eqRat_impl_leRat.
+      symmetry.
+      eapply (sumList_filter_partition (fun b => negb (eqb a b))).
+    }
 
     rewrite ratAdd_0_r.
     eapply ratAdd_leRat_compat.
@@ -637,12 +643,13 @@ Section FixedInRndList.
     reflexivity.
     
     eapply leRat_trans.
-    Focus 2.
-    eapply eqRat_impl_leRat.
-    symmetry.
-    cutrewrite (S (length ls) = 1 + (length ls))%nat.
-    apply ratAdd_num.
-    trivial.
+    2:{
+      eapply eqRat_impl_leRat.
+      symmetry.
+      cutrewrite (S (length ls) = 1 + (length ls))%nat.
+      apply ratAdd_num.
+      trivial.
+    }
     reflexivity.
   Qed.
   
@@ -669,8 +676,9 @@ Section RndInAdaptive.
     Transparent evalDist.
     simpl in H.
     eapply leRat_trans.
-    Focus 2.
-    eapply H.
+    2:{
+      eapply H.
+    }
     eapply sumList_le.
     intuition.
     rewrite ratMult_assoc.
@@ -714,9 +722,10 @@ Section RndInAdaptive.
     clear H1.
     rewrite sumList_factor_constant_r.
     eapply leRat_trans.
-    Focus 2.
-    eapply eqRat_impl_leRat.
-    eapply ratMult_1_l.
+    2:{
+      eapply eqRat_impl_leRat.
+      eapply ratMult_1_l.
+    }
     eapply ratMult_leRat_compat; intuition.
     assert ( sumList (getSupport c)
    (fun a : A0 => evalDist c a * (if evt1 a then 0 else 1)) <=

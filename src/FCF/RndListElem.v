@@ -226,28 +226,28 @@ Theorem rndListElem_uniform :
   eapply well_formed_RndNat.
   omega.
   eapply RndNat_uniform.
-  Focus 3.
-  intros.
-  simpl in H5.
+  3:{
+    intros.
+    simpl in H5.
 
-  eapply comp_spec_ret.
-  assert (a1 = (firstIndexOf (EqDec_dec _) ls a 0) <->
-    b = (firstIndexOf (EqDec_dec _) ls a0 0)).
-  eapply H5.
-  clear H5.
-  intuition; subst.
+    eapply comp_spec_ret.
+    assert (a1 = (firstIndexOf (EqDec_dec _) ls a 0) <->
+      b = (firstIndexOf (EqDec_dec _) ls a0 0)).
+    eapply H5.
+    clear H5.
+    intuition; subst.
   
-  rewrite H5.
-  eapply nth_firstIndexOf; trivial.
+    rewrite H5.
+    eapply nth_firstIndexOf; trivial.
 
+    symmetry.
+    eapply nth_firstIndexOf_if; intuition.
 
-  symmetry.
-  eapply nth_firstIndexOf_if; intuition.
-
-  rewrite H7.
-  eapply nth_firstIndexOf; trivial.
-  symmetry.
-  eapply nth_firstIndexOf_if; intuition.
+    rewrite H7.
+    eapply nth_firstIndexOf; trivial.
+    symmetry.
+    eapply nth_firstIndexOf_if; intuition.
+  }
   
   rewrite <- H2.
   apply firstIndexOf_in_lt; trivial.

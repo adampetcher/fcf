@@ -492,9 +492,10 @@ Theorem eq_impl_comp_spec :
   intros.
   repeat simp_in_support; simpl in *.
   erewrite (evalDist_1) in H5; intuition.
-  Focus 2.
-  rewrite <- H1.
-  trivial.
+  2:{
+    rewrite <- H1.
+    trivial.
+  }
   simpl in *; intuition.
 
   erewrite (evalDist_1) in H3; eauto.
@@ -1317,10 +1318,11 @@ Theorem comp_spec_impl_le :
   eapply eqRat_impl_leRat.
   eauto.
   eapply leRat_trans.
-  Focus 2.
-  eapply eqRat_impl_leRat.
-  symmetry.
-  eauto.
+  2:{
+    eapply eqRat_impl_leRat.
+    symmetry.
+    eauto.
+  }
   unfold marginal_l, marginal_r.
   dist_skip.
   dist_compute.
@@ -2222,8 +2224,9 @@ Theorem oc_comp_spec_eq_until_bad :
   eapply comp_spec_eq_symm.
   eapply comp_spec_right_ident.
   eapply comp_spec_eq_trans_r.
-  Focus 2.
-  eapply comp_spec_right_ident.
+  2:{
+    eapply comp_spec_right_ident.
+  }
   eapply comp_spec_irr_l; intuition.
   eapply oc_comp_wf_inv; eauto.
   intuition.

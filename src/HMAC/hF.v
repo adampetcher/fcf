@@ -9,6 +9,7 @@ Require Import PRF.
 Require Import SplitVector.
 Require Import cAU.
 Require Import CompFold.
+Require Import DetSem SemEquiv.
 
 Local Open Scope list_scope.
 
@@ -67,8 +68,6 @@ Section hF.
     comp_simp.
     reflexivity.
   Qed.
-
-  Require Import DetSem SemEquiv.
 
   
   Theorem G0_1_G0_equiv : 
@@ -179,8 +178,9 @@ Section hF.
     inline_first.
     simpl.
     eapply comp_spec_eq_trans_r.
-    Focus 2.
-    eapply comp_spec_right_ident.
+    2:{
+      eapply comp_spec_right_ident.
+    }
     comp_skip.
     apply (oneVector c).
     apply (oneVector c).
