@@ -86,8 +86,9 @@ Theorem addInAllLocations_perm :
   destruct H0.
   intuition; subst.
   eapply perm_trans.
-  Focus 2.
-  eapply perm_swap.
+  2:{
+    eapply perm_swap.
+  }
   eapply perm_skip.
   eapply IHx0.
   trivial.
@@ -113,9 +114,10 @@ Theorem getAllPermutations_perms :
   subst.
   eapply addInAllLocations_perm in H1.
   eapply perm_trans.
-  Focus 2.
-  eapply Permutation_sym.
-  eauto.
+  2:{
+    eapply Permutation_sym.
+    eauto.
+  }
   eapply perm_skip.
   eapply IHls1.
   trivial.
@@ -497,10 +499,11 @@ Theorem RndPerm_In_support_length :
 
   intuition.
   erewrite Permutation_length.
-  Focus 2.
-  eapply Permutation_sym.
-  eapply RndPerm_In_support.
-  eauto.
+  2:{
+    eapply Permutation_sym.
+    eapply RndPerm_In_support.
+    eauto.
+  }
   eapply allNatsLt_length.
 Qed.
 

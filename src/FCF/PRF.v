@@ -8,6 +8,7 @@ Set Implicit Arguments.
 Require Import FCF.
 Require Import CompFold. 
 Require Export Array.
+Require Export Hybrid.
 
 Local Open Scope list_scope.
 Local Open Scope array_scope.
@@ -125,8 +126,6 @@ Section PRF_concrete.
     | Pr[PRF_NAI_G0] - Pr[PRF_NAI_G1] |.   
                          
   Section PRF_NA_impl_NAI.
-
-    Require Export Hybrid.
 
     Variable maxLists : nat.
     Hypothesis maxLists_correct : 

@@ -41,13 +41,14 @@ Lemma well_formed_RndNat : forall n,
   eapply well_formed_Ret.
   eapply filter_In.
   intuition.
-  Focus 2.
-  unfold ltNatBool.
-  assert ((if (lt_dec O n) then true else false) = true).
-  destruct (lt_dec O n).
-  trivial.
-  omega.
-  eapply H0.
+  2:{
+    unfold ltNatBool.
+    assert ((if (lt_dec O n) then true else false) = true).
+    destruct (lt_dec O n).
+    trivial.
+    omega.
+    eapply H0.
+  }
   simpl.
   eapply Fold.in_getUnique.
   eapply Fold.in_flatten.
@@ -250,11 +251,12 @@ Theorem RndNat_prob :
   eapply (@ratMult_same_r_inv _ (n / 1)).
   rewrite ratMult_eq_rat1.
   eapply eqRat_trans.
-  Focus 2.
-  eapply evalDist_lossless.
-  eapply well_formed_RndNat.
-  destruct nzn.
-  apply agz.
+  2:{
+    eapply evalDist_lossless.
+    eapply well_formed_RndNat.
+    destruct nzn.
+    apply agz.
+  }
   
   symmetry.
   eapply eqRat_trans.
@@ -314,25 +316,24 @@ Lemma rndNat_sumList :
   unfold evalDist.
   fold evalDist.
   rewrite sumList_permutation.
-  Focus 2.
-  eapply (@NoDup_Permutation _ _ (forNats n)).
-  eapply getSupport_NoDup.
-  eapply forNats_NoDup.
-  intuition.
+  2:{
+    eapply (@NoDup_Permutation _ _ (forNats n)).
+    eapply getSupport_NoDup.
+    eapply forNats_NoDup.
+    intuition.
 
-  eapply forNats_In.
-  eapply RndNat_support_lt.
-  trivial.
-  eapply in_getSupport_RndNat.
-  eapply forNats_In.
-  trivial.
+    eapply forNats_In.
+    eapply RndNat_support_lt.
+    trivial.
+    eapply in_getSupport_RndNat.
+    eapply forNats_In.
+    trivial.
+  }
 
   eapply sumList_body_eq.
   intuition.
   eapply ratMult_eqRat_compat; intuition.
   
-
-
   eapply RndNat_prob.
   eapply forNats_In.
   trivial.

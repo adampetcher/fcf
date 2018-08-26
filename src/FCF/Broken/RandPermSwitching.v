@@ -302,9 +302,10 @@ Theorem evalDist_bind_event_le :
   rewrite sumList_factor_constant_l.
 
   eapply leRat_trans.
-  Focus 2.
-  eapply eqRat_impl_leRat.
-  eapply ratMult_1_r.
+  2:{
+    eapply eqRat_impl_leRat.
+    eapply ratMult_1_r.
+  }
   eapply ratMult_leRat_compat; intuition.
   
   
@@ -316,9 +317,10 @@ Theorem evalDist_bind_event_le :
   eapply sumList_le.
   intuition.
   eapply leRat_trans.
-  Focus 2.
-  eapply eqRat_impl_leRat.
-  eapply ratMult_1_r.
+  2:{
+    eapply eqRat_impl_leRat.
+    eapply ratMult_1_r.
+  }
   eapply ratMult_leRat_compat; intuition.
   destruct (evta a); intuition.
   eapply rat0_le_all.
@@ -380,11 +382,12 @@ Theorem oc_eventProb :
   clear H6.
   
   eapply leRat_trans.
-  Focus 2.
-  eapply eqRat_impl_leRat.
-  symmetry.
-  rewrite ratAdd_num.
-  eapply ratMult_distrib_r.
+  2:{
+    eapply eqRat_impl_leRat.
+    symmetry.
+    rewrite ratAdd_num.
+    eapply ratMult_distrib_r.
+  }
   eapply ratAdd_leRat_compat;
   eapply ratMult_leRat_compat; intuition.
   eapply H2.
@@ -954,8 +957,9 @@ Section RandPermSwitching.
     
     simpl in *.
     eapply leRat_trans.
-    Focus 2.
-    eapply badProb_correct.
+    2:{
+      eapply badProb_correct.
+    }
     inline_first.
     comp_skip.
     simpl.
@@ -1057,8 +1061,9 @@ Section RandPermSwitching.
     rewrite H2.
     trivial.
     eapply comp_spec_eq_trans_r.
-    Focus 2.
-    eapply H0.
+    2:{
+      eapply H0.
+    }
     clear H0.
     inline_first.
     comp_skip.

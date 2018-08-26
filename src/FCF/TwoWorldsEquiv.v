@@ -277,10 +277,11 @@ Section TwoWorldsEquiv.
       rewrite H2.
 
       eapply leRat_trans.
-      Focus 2.
-      eapply eqRat_impl_leRat.
-      symmetry.
-      eapply Def_equiv_2W.
+      2:{
+        eapply eqRat_impl_leRat.
+        symmetry.
+        eapply Def_equiv_2W.
+      }
 
       eapply ratMult_leRat_compat; intuition.
       unfold leRat.

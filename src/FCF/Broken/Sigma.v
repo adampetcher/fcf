@@ -1018,6 +1018,8 @@ End EagerSampling.
 
 *)
 
+Require Import Asymptotic.
+
 Section ProofOfKnowledge.
 
   Context `{p : SigmaProtocol}.
@@ -1090,8 +1092,6 @@ Section ProofOfKnowledge.
   Definition isHeavy (resp : P_respond_oracle) x y a :=
     bleRat ((1 / 2) * acceptance_prob x y) (Pr[ [e, z] <-$2 queryRow resp x a; ret (V_accept x a e z) ]).
 
-  Require Import Asymptotic.
-
   (* TODO: locate [expected_time_at_most] *) (*
   Definition knowledge_soundness(cost : forall (A : Set), A -> Rat -> Prop)(k : Blist -> Rat) :=
     forall x y (pf : nz (length x)),
@@ -1129,16 +1129,17 @@ Section ProofOfKnowledge.
 
     intuition.
     eapply leRat_trans.
-    Focus 2.
-    eapply (evalDist_bind_case_split_ge e); intuition.
-   
-    eapply rat0_le_all.
+    2:{
+      eapply (evalDist_bind_case_split_ge e); intuition.
+      eapply rat0_le_all.
+    }
     eapply leRat_trans.
-    Focus 2.
-    eapply eqRat_impl_leRat.
-    rewrite ratMult_0_r.
-    rewrite <- ratAdd_0_r.
-    eapply eqRat_refl.
+    2:{
+      eapply eqRat_impl_leRat.
+      rewrite ratMult_0_r.
+      rewrite <- ratAdd_0_r.
+      eapply eqRat_refl.
+    }
     intuition.
   Qed.
 
@@ -1249,72 +1250,75 @@ Section ProofOfKnowledge.
     trivial.
     
     eapply leRat_trans.
-    Focus 2.
-    eapply eqRat_impl_leRat.
-    symmetry.
-    eapply sumList_body_eq.
-    intuition.
-    apply filter_In in H2.
-    intuition.
-    unfold indicator.
-    rewrite H4.
-    rewrite ratMult_1_l at 1.
-    eapply ratMult_assoc.
+    2:{
+      eapply eqRat_impl_leRat.
+      symmetry.
+      eapply sumList_body_eq.
+      intuition.
+      apply filter_In in H2.
+      intuition.
+      unfold indicator.
+      rewrite H4.
+      rewrite ratMult_1_l at 1.
+      eapply ratMult_assoc.
+    }
     
     eapply leRat_trans.
-    Focus 2.
-    eapply eqRat_impl_leRat.
-    symmetry.
-    eapply sumList_factor_constant_l.
+    2:{
+      eapply eqRat_impl_leRat.
+      symmetry.
+      eapply sumList_factor_constant_l.
+    }
     simpl in *.
     
     eapply leRat_trans.
-    Focus 2.
-    eapply eqRat_impl_leRat.
-    symmetry.
-    eapply ratMult_eqRat_compat.
-    eapply eqRat_refl.
-    rewrite (sumList_filter_partition p1).
-    eapply ratAdd_eqRat_compat.
-    rewrite filter_twice.
-    rewrite (filter_pred_eq _ p1).
-    eapply sumList_body_eq; intuition.
-    apply filter_In in H2.
-    intuition.
-    rewrite H4.
-    destruct (EqDec_dec bool_EqDec true true).
-    eapply ratMult_1_r.
-    congruence.
-    intuition.
-    destruct (p1 a); trivial.
-    eapply sumList_0.
-    intuition.
-    apply filter_In in H2.
-    intuition.
-    destruct (p1 a); simpl in *; try congruence.
-    destruct (EqDec_dec bool_EqDec false true); try congruence.
-    eapply ratMult_0_r.
+    2:{
+      eapply eqRat_impl_leRat.
+      symmetry.
+      eapply ratMult_eqRat_compat.
+      eapply eqRat_refl.
+      rewrite (sumList_filter_partition p1).
+      eapply ratAdd_eqRat_compat.
+      rewrite filter_twice.
+      rewrite (filter_pred_eq _ p1).
+      eapply sumList_body_eq; intuition.
+      apply filter_In in H2.
+      intuition.
+      rewrite H4.
+      destruct (EqDec_dec bool_EqDec true true).
+      eapply ratMult_1_r.
+      congruence.
+      intuition.
+      destruct (p1 a); trivial.
+      eapply sumList_0.
+      intuition.
+      apply filter_In in H2.
+      intuition.
+      destruct (p1 a); simpl in *; try congruence.
+      destruct (EqDec_dec bool_EqDec false true); try congruence.
+      eapply ratMult_0_r.
+    }
     
     eapply leRat_trans.
-    Focus 2.
-    eapply ratMult_leRat_compat.
-    eapply ratInverse_leRat.
-    destruct H0.
-    eapply sumList_nz.
-    exists x.
-    intuition.
-    eapply filter_In.
-    intuition.
-    eapply getSupport_In_evalDist.
-    eauto.
-    trivial.
+    2:{
+      eapply ratMult_leRat_compat.
+      eapply ratInverse_leRat.
+      destruct H0.
+      eapply sumList_nz.
+      exists x.
+      intuition.
+      eapply filter_In.
+      intuition.
+      eapply getSupport_In_evalDist.
+      eauto.
+      trivial.
     
-    rewrite (sumList_filter_partition p1).
-    rewrite filter_twice.
-    erewrite (filter_pred_eq _ p1).
-    rewrite sumList_filter_prod_eq_r.
+      rewrite (sumList_filter_partition p1).
+      rewrite filter_twice.
+      erewrite (filter_pred_eq _ p1).
+      rewrite sumList_filter_prod_eq_r.
    
-    assert (sumList
+      assert (sumList
       (filter (fun a : A => negb (p1 a))
         (filter (fun a : A => p1 a || p2 a) (getSupport c))) 
       (evalDist c) <= 
@@ -1322,13 +1326,13 @@ Section ProofOfKnowledge.
         (fun b : A =>
           evalDist c b * (if EqDec_dec bool_EqDec (p2 b) true then 1 else 0)))).
     
-    eapply leRat_trans.
-    Focus 2.
-    eapply eqRat_impl_leRat.
-    eapply sumList_filter_prod_eq_r.
+      eapply leRat_trans.
+      2:{
+        eapply eqRat_impl_leRat.
+        eapply sumList_filter_prod_eq_r.
+      }
     
-    
-    assert (sumList
+      assert (sumList
       (filter (fun a : A => negb (p1 a))
         (filter (fun a : A => p1 a || p2 a) (getSupport c))) 
       (evalDist c) ==
@@ -1337,54 +1341,56 @@ Section ProofOfKnowledge.
         (filter p2 (getSupport c))) 
       (evalDist c)).
     
-    repeat rewrite filter_twice.
-    erewrite filter_pred_eq.
-    eapply eqRat_refl.
-    intuition.
-    destruct (p1 a); destruct (p2 a); trivial.
+      repeat rewrite filter_twice.
+      erewrite filter_pred_eq.
+      eapply eqRat_refl.
+      intuition.
+      destruct (p1 a); destruct (p2 a); trivial.
 
-    rewrite H2.
-    clear H2.
+      rewrite H2.
+      clear H2.
     
-    eapply sumList_filter_le.
-    rewrite H2.
-    rewrite H.
-    rewrite ratMult_2.
-    eapply leRat_refl.
-    intuition.
-    destruct (p1 a); trivial.
+      eapply sumList_filter_le.
+      rewrite H2.
+      rewrite H.
+      rewrite ratMult_2.
+      eapply leRat_refl.
+      intuition.
+      destruct (p1 a); trivial.
     
-    eapply eqRat_impl_leRat.
-    eapply ratAdd_0_r.
+      eapply eqRat_impl_leRat.
+      eapply ratAdd_0_r.
+    }
     eapply leRat_trans.
-    Focus 2.
-    eapply eqRat_impl_leRat.
-    rewrite ratInverse_ratMult.
-    rewrite ratMult_comm.
-    rewrite <- ratMult_assoc.
-    symmetry.
-    eapply ratMult_eqRat_compat.
-    eapply eqRat_trans.
-    eapply ratMult_eqRat_compat.
-    eapply eqRat_refl.
-    eapply ratInverse_eqRat_compat.
+    2:{
+      eapply eqRat_impl_leRat.
+      rewrite ratInverse_ratMult.
+      rewrite ratMult_comm.
+      rewrite <- ratMult_assoc.
+      symmetry.
+      eapply ratMult_eqRat_compat.
+      eapply eqRat_trans.
+      eapply ratMult_eqRat_compat.
+      eapply eqRat_refl.
+      eapply ratInverse_eqRat_compat.
     
-    trivial.
+      trivial.
     
-    symmetry.
-    eapply sumList_filter_prod_eq_r.
-    rewrite ratMult_comm.
-    eapply ratInverse_prod_1.
+      symmetry.
+      eapply sumList_filter_prod_eq_r.
+      rewrite ratMult_comm.
+      eapply ratInverse_prod_1.
     
-    rewrite sumList_filter_prod_eq_r.
-    eauto.
+      rewrite sumList_filter_prod_eq_r.
+      eauto.
     
-    simpl.
-    eapply eqRat_refl.
+      simpl.
+      eapply eqRat_refl.
     
-    trivial.
+      trivial.
     
-    intuition.
+      intuition.
+    }
     eapply eqRat_impl_leRat.
     rewrite ratMult_1_l.
     intuition.

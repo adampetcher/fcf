@@ -15,7 +15,7 @@ Lemma mult_same_r : forall n1 n2 n3,
   n3 > 0 ->
   n1 * n3 = n2 * n3 ->
   n1 = n2.
-  
+
   induction n1; destruct n2; intuition; simpl in *.
   remember (n2 * n3) as x.
   omega.
@@ -546,12 +546,14 @@ Lemma expnat_base_S : forall n k,
   induction n; intuition.
   simpl in *.
   eapply le_trans.
-  Focus 2.
-  eapply plus_le_compat.
-  eapply IHn.
-  eapply mult_le_compat.
-  eapply le_refl.
-  eapply IHn.
+  
+  2:{
+    eapply plus_le_compat.
+    eapply IHn.
+    eapply mult_le_compat.
+    eapply le_refl.
+    eapply IHn.
+  }
 
   rewrite mult_plus_distr_l.
   repeat rewrite mult_assoc.
@@ -578,8 +580,9 @@ Lemma expnat_base_S_same : forall n,
   simpl in *.
   rewrite plus_0_r.
   eapply le_trans.
-  Focus 2.
-  eapply expnat_base_S.
+  2:{
+    eapply expnat_base_S.
+  }
   destruct n; simpl.
   omega.
   intuition.
