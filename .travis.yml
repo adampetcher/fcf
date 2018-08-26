@@ -5,18 +5,7 @@ sudo: required
 matrix:
   fast_finish: true
   include:
-    - env: COQ_VERSION="8.7.0"    COQ_PACKAGE="coq-8.7.0" PPA="ppa:jgross-h/many-coq-versions"
-    - env: COQ_VERSION="8.6"      COQ_PACKAGE="coq-8.6"   PPA="ppa:jgross-h/many-coq-versions"
-    - env: COQ_VERSION="8.5"      COQ_PACKAGE="coq-8.5"   PPA="ppa:jgross-h/many-coq-versions"
-    - env: COQ_VERSION="trunk"    COQ_PACKAGE="coq"       PPA="ppa:jgross-h/coq-trunk-daily"
-    - env: COQ_VERSION="v8.7"     COQ_PACKAGE="coq"       PPA="ppa:jgross-h/coq-8.7-daily"
-    - env: COQ_VERSION="v8.6"     COQ_PACKAGE="coq"       PPA="ppa:jgross-h/coq-8.6-daily"
-    - env: COQ_VERSION="v8.5"     COQ_PACKAGE="coq"       PPA="ppa:jgross-h/coq-8.5-daily"
-  allow_failures:
-    - env: COQ_VERSION="trunk"    COQ_PACKAGE="coq"       PPA="ppa:jgross-h/coq-trunk-daily"
-    - env: COQ_VERSION="v8.7"     COQ_PACKAGE="coq"       PPA="ppa:jgross-h/coq-8.7-daily"
-    - env: COQ_VERSION="v8.6"     COQ_PACKAGE="coq"       PPA="ppa:jgross-h/coq-8.6-daily"
-    - env: COQ_VERSION="v8.5"     COQ_PACKAGE="coq"       PPA="ppa:jgross-h/coq-8.5-daily"
+    - env: COQ_VERSION="v8.8"    COQ_PACKAGE="coq" PPA="ppa:jgross-h/coq-8.8-daily"
 
 before_install:
   - if [ ! -z "$PPA" ]; then sudo add-apt-repository "$PPA" -y; fi
