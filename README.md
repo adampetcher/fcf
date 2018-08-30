@@ -2,7 +2,7 @@ Foundational Cryptography Framework for machine-checked proofs of cryptography i
 
 # Dependencies
 
-Coq 8.6 or 8.5
+Coq 8.8
 
 # Building
 
