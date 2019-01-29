@@ -6,7 +6,7 @@
 
 Set Implicit Arguments.
 
-Require Import StdNat.
+Require Import FCF.StdNat.
 
 Definition polynomial (f : nat -> nat) :=
     exists x c1 c2, forall n,
@@ -217,7 +217,7 @@ Theorem polynomial_mult :
 Qed.     
       
 
-Require Import Rat.
+Require Import FCF.Rat.
 Local Open Scope rat_scope.
 
 Definition negligible(f : nat -> Rat) :=

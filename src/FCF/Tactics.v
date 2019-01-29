@@ -3,11 +3,11 @@
  * in the LICENSE file at the root of the source tree.		*)
 Set Implicit Arguments.
 
-Require Import Crypto.
-Require Import DistTacs.
-Require Import ProgTacs.
-Require Import GenTacs.
-Require Import ProgramLogic.
+Require Import FCF.Crypto.
+Require Import FCF.DistTacs.
+Require Import FCF.ProgTacs.
+Require Import FCF.GenTacs.
+Require Import FCF.ProgramLogic.
 
 
 (** * Tactics Overview *)

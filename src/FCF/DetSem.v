@@ -5,9 +5,9 @@
 
 Set Implicit Arguments.
 
-Require Export Comp.
-Require Import Blist.
-Require Import Fold.
+Require Export FCF.Comp.
+Require Import FCF.Blist.
+Require Import FCF.Fold.
 Require Import Permutation.
 Require Import Omega.
 

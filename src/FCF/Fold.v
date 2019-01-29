@@ -5,12 +5,12 @@
 
 Set Implicit Arguments.
 
-Require Import Rat.
+Require Import FCF.Rat.
 Require Import List.
 Require Import Permutation.
 Require Import Arith.
-Require Import EqDec.
-Require Import StdNat.
+Require Import FCF.EqDec.
+Require Import FCF.StdNat.
 Require Import Bool.
 
 Local Open Scope rat_scope.

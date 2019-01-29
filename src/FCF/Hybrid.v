@@ -4,8 +4,8 @@
 
 Set Implicit Arguments.
 
-Require Import FCF.
-Require Import CompFold.
+Require Import FCF.FCF.
+Require Import FCF.CompFold.
 
 Open Scope list_scope.
 

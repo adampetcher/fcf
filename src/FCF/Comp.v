@@ -8,9 +8,9 @@ Set Implicit Arguments.
 
 Require Export Bvector.
 Require Export List.
-Require Export Blist.
-Require Export EqDec.
-Require Import Fold.
+Require Export FCF.Blist.
+Require Export FCF.EqDec.
+Require Import FCF.Fold.
 
 
 Inductive Comp : Set -> Type :=
@@ -61,7 +61,7 @@ Lemma comp_base_exists : forall (A : Set),
   eauto using Bvector_exists.
 Qed.
 
-Require Import EqDec. 
+Require Import FCF.EqDec. 
 
 Lemma comp_EqDec : forall (A : Set),
   Comp A ->

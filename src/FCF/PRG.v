@@ -5,8 +5,8 @@
 
 Set Implicit Arguments.
 
-Require Import FCF.
-Require Import SemEquiv.
+Require Import FCF.FCF.
+Require Import FCF.SemEquiv.
 
 Section OneWayPermutation.
 
@@ -138,7 +138,7 @@ Section PseudorandomGenerator.
   Definition PRG_Advantage := | (Pr[PRG_G1]) - (Pr[PRG_G2]) |.
 End PseudorandomGenerator.
 
-Require Import DetSem.
+Require Import FCF.DetSem.
 
 Section OWP_HCP_Impl_PRG.
 

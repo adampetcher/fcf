@@ -4,7 +4,7 @@
 
 Set Implicit Arguments.
 
-Require Import FCF.
+Require Import FCF.FCF.
 
 Local Open Scope nat_scope.
 
@@ -586,7 +586,7 @@ Theorem RndNat_eq_any :
 
 Qed.
 
-Require Import CompFold.
+Require Import FCF.CompFold.
 Local Opaque evalDist.
 
 Section FixedInRndList.

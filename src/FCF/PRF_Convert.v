@@ -4,9 +4,9 @@
 
 Set Implicit Arguments.
 
-Require Import FCF.
-Require Import PRF.
-Require Import CompFold.
+Require Import FCF.FCF.
+Require Import FCF.PRF.
+Require Import FCF.CompFold.
 
 Section PRF_Convert.
 
