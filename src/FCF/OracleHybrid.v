@@ -4,9 +4,9 @@
 
 Set Implicit Arguments.
 
-Require Import FCF.
+Require Import FCF.FCF.
 (* RndInList has a useful theorem (qam_count) about counting calls to an oracle. *)
-Require Import RndInList. 
+Require Import FCF.RndInList. 
 
 Section OracleHybrid.
 
@@ -345,11 +345,11 @@ End OracleHybrid.
 
 
 (* A specialization that uses OracleHybrid to produce a hybrid argument on non-adaptive oracle interactions *)
-Require Import CompFold.
-Require Import OracleCompFold.
+Require Import FCF.CompFold.
+Require Import FCF.OracleCompFold.
 
 (* oracleMap is defined in PRF.  We should probably find a better place for it. *)       
-Require Import PRF.
+Require Import FCF.PRF.
 
 Section OracleMapHybrid.
 

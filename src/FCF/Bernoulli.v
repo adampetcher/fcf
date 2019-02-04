@@ -4,9 +4,9 @@
 
 Set Implicit Arguments.
 
-Require Import Crypto.
-Require Import RndNat.
-Require Import NotationV1.
+Require Import FCF.Crypto.
+Require Import FCF.RndNat.
+Require Import FCF.NotationV1.
 
 Definition Bernoulli(r : Rat) : Comp bool :=
   match r with

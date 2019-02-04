@@ -5,14 +5,14 @@
 
 Set Implicit Arguments.
 
-Require Import Comp.
-Require Import DetSem.
-Require Import DistSem.
-Require Import Rat.
+Require Import FCF.Comp.
+Require Import FCF.DetSem.
+Require Import FCF.DistSem.
+Require Import FCF.Rat.
 Require Import Arith.
-Require Import StdNat.
-Require Import Fold.
-Require Import Limit.
+Require Import FCF.StdNat.
+Require Import FCF.Fold.
+Require Import FCF.Limit.
 Require Import Permutation.
 
 Local Open Scope rat_scope.

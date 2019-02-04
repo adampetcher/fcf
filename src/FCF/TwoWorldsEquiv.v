@@ -6,9 +6,9 @@
 
 Set Implicit Arguments.
 
-Require Import FCF.
-Require Import Crypto.
-Require Import Asymptotic.
+Require Import FCF.FCF.
+Require Import FCF.Crypto.
+Require Import FCF.Asymptotic.
 
 Theorem evalDist_bool_support : 
   forall (c : Comp bool)(ls : list bool),

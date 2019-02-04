@@ -4,9 +4,9 @@
 
 Set Implicit Arguments.
 
-Require Import FCF.
-Require Import CompFold.
-Require Import RndListElem.
+Require Import FCF.FCF.
+Require Import FCF.CompFold.
+Require Import FCF.RndListElem.
 Require Import Permutation.
 
 Local Open Scope list_scope.

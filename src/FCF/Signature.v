@@ -1,5 +1,5 @@
 Set Implicit Arguments.
-Require Import FCF.
+Require Import FCF.FCF.
 
 Local Open Scope list_scope.
 

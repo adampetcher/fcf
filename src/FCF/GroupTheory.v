@@ -6,8 +6,8 @@
 
 Set Implicit Arguments.
 
-Require Import Rat.
-Require Import StdNat.
+Require Import FCF.Rat.
+Require Import FCF.StdNat.
 
 Class Group_op(A : Set) := groupOp : A -> A -> A.
 Infix "*" := groupOp : group_scope.
