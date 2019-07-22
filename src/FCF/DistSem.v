@@ -14,7 +14,7 @@ Require Import FCF.Blist.
 Require Import Omega.
 Require Import FCF.StdNat.
 Require Import FCF.NotationV1.
- 
+Require Import FCF.EqDec. 
  
 Local Open Scope list_scope.
 Local Open Scope rat_scope.
