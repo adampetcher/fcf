@@ -1421,7 +1421,7 @@ Lemma lowDistApprox_le_1 : forall (A : Set)(c : Comp A) a n r,
   
   erewrite <- rel_map_length; eauto.
   rewrite getAllBlists_length.
-  rattac.
+  reflexivity.
 Qed.
 
 
@@ -1699,13 +1699,13 @@ Lemma lowDistApprox_bind_evalDist_limit : forall (A B :Set)(c1 : Comp B)(c2 : B 
   edestruct H4.
   eapply ratMult_nz;
   econstructor.
-  rattac.
+  discriminate.
   eapply ratMult_nz; econstructor; intuition.
   clear H4.
   
   edestruct H1.
   eapply ratMult_nz; econstructor.
-  rattac.
+  discriminate.
   eapply ratMult_nz; econstructor; intuition.
   clear H1.
 
@@ -2776,7 +2776,7 @@ Theorem lowDistApprox_Rnd: forall n2 n1 (a : Bvector n1) r,
   rewrite ratMult_2 in H9.   
   eapply ratMult_same_r_inv.
   eauto.
-  rattac.
+  discriminate.
 Qed.
 
 Definition indicator_rel (A : Set)(P : A -> bool) a (r : Rat) :=

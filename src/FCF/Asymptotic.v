@@ -130,7 +130,7 @@ Theorem polynomial_mult :
     polynomial f2 ->
     polynomial (fun n => f1 n * f2 n).
   
-  intuition.
+  intros f1 f2 H H0.
   apply polynomial_nz_equiv in H.
   apply polynomial_nz_equiv in H0.
   
@@ -140,7 +140,7 @@ Theorem polynomial_mult :
   exists (x + x2).
   exists (3 * (x3 * x0 * x4 * x1)).
   exists (x4 * x1).
-  intuition.
+  intros n.
   eapply le_trans.
   eapply mult_le_compat.
   eapply H6; intuition.
@@ -160,22 +160,22 @@ Theorem polynomial_mult :
   eapply plus_le_compat.
   rewrite (mult_comm (expnat n x)).
   repeat rewrite mult_assoc.
-  eapply mult_le_compat; intuition.
+  eapply mult_le_compat. 2: reflexivity.
   rewrite mult_comm.
   rewrite mult_assoc.
-  eapply mult_le_compat; intuition.
+  eapply mult_le_compat. 2: reflexivity.
   rewrite <- mult_1_r at 1.
   rewrite <- mult_1_r at 1.
-  eapply mult_le_compat; intuition.
-  eapply mult_le_compat; intuition.
+  eapply mult_le_compat. 2: auto with zarith.
+  eapply mult_le_compat. 2: auto with zarith.
   rewrite mult_comm.
-  intuition.
-  
+  reflexivity.
+
   destruct (eq_nat_dec n 0); subst.
   repeat rewrite expnat_0.
   simpl.
   repeat rewrite mult_0_r.
-  intuition.
+  reflexivity.
   trivial.
   trivial.
   rewrite (mult_comm (expnat n x)).

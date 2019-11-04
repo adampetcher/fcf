@@ -389,7 +389,10 @@ Theorem oc_eventProb :
     eapply ratMult_distrib_r.
   }
   eapply ratAdd_leRat_compat;
-  eapply ratMult_leRat_compat; intuition.
+  eapply ratMult_leRat_compat.
+  reflexivity.
+  intuition.
+  reflexivity.
   eapply H2.
   rewrite mult_plus_distr_l.
   rewrite plus_comm.
@@ -530,16 +533,16 @@ Theorem oc_eventProb :
   eapply H8.
   simpl.
   rewrite <- ratMult_assoc.
-  eapply ratMult_leRat_compat; intuition.
+  eapply ratMult_leRat_compat.
   eapply eqRat_impl_leRat.
   rewrite <- ratMult_num_den.
   eapply eqRat_terms; intuition.
   eapply H2.
-  eapply plus_le_compat; intuition.
+  eapply plus_le_compat. 2: reflexivity.
   rewrite <- mult_assoc.
-  eapply mult_le_compat; intuition.
+  eapply mult_le_compat. reflexivity.
   rewrite mult_comm.
-  intuition.
+  reflexivity.
 
   rewrite IHqueries_at_most'.
   eapply ratMult_leRat_compat; intuition.
