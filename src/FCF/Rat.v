@@ -92,14 +92,14 @@ Ltac rattac_one :=
     | [H : (leRat _ _) |- _ ] => unfold leRat, bleRat in H
     | [H : ?r = RatIntro _ _ |- context[match ?r with | RatIntro _ _ => _ end] ] => rewrite r
     
-    | [|- context[match ?r with | RatIntro _ _ => _ end] ] => case_eq r; intuition
+    | [|- context[match ?r with | RatIntro _ _ => _ end] ] => case_eq r; intuition idtac
     | [H : (_ , _) = (_ , _) |- _ ] => inversion H; clear H; subst
     | [|- (_, _) = (_, _) ] => f_equal
     | [H: context[ratCD _ _] |- _ ] => unfold ratCD in *
     | [H : context[match rat0 with | RatIntro _ _ => _ end ] |- _ ] => unfold rat0 in H
     | [H1 : context[match ?r with | RatIntro _ _ => _ end], H2 : ?r = RatIntro _ _ |- _ ] => rewrite H2 in H1
-    | [H : context[match ?r with | RatIntro _ _ => _ end ] |- _ ] => case_eq r; intuition
-    | [|- context[let (_, _) := ?x in _] ] => case_eq x; intuition
+    | [H : context[match ?r with | RatIntro _ _ => _ end ] |- _ ] => case_eq r; intuition idtac
+    | [|- context[let (_, _) := ?x in _] ] => case_eq x; intuition idtac
     | [H : context[ratAdd _ _] |- _ ] => unfold ratAdd in H    
     | [H : context[ratMult _ _] |- _ ] => unfold ratMult in H   
     | [H: context [eq_nat_dec ?x ?y] |- _] => destruct (eq_nat_dec x y)
@@ -114,7 +114,7 @@ Ltac rattac_one :=
     | [H : context[let (_, _) := ?p in _] |- _] => destruct p
     end.
 Ltac rattac :=
-  intuition; unfold ratCD in *; 
+  intuition idtac; unfold ratCD in *;
     repeat (rattac_one; subst); repeat rewrite mult_1_r; repeat rewrite plus_0_r; trivial; try congruence; try omega.
 
 Lemma ratCD_comm : forall r1 r2 n1 n2 d n1' n2' d',
@@ -3034,11 +3034,11 @@ Lemma ratSubtract_ratAdd_assoc_le : forall r1 r2 r3,
   unfold ratSubtract, ratAdd.
   rattac.
   arithNormalize.
-  generalize (n1 * x0 * x1 * x * x0 * x1)%nat; intuition.
+  generalize (n1 * x0 * x1 * x * x0 * x1)%nat; intuition idtac.
   assert (n3 * x * x1 * x * x0 * x1 = n3 * x1 * x * x * x0 * x1)%nat.
   do 5 arithSimplify.
   rewrite H.
-  generalize (n3 * x1 * x * x * x0 * x1)%nat; intuition.
+  generalize (n3 * x1 * x * x * x0 * x1)%nat; intuition idtac.
   assert (n0 * x * x0 * x * x0 * x1 = n0 * x0 * x * x * x0 * x1)%nat.
   do 5 arithSimplify.
   rewrite H0.

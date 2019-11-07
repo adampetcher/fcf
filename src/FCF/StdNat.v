@@ -205,11 +205,7 @@ Definition modNat (n : nat)(p : posnat) : nat :=
 
 Lemma Npos_nz : forall p, 
   Npos p <> N0.
-
-  destruct p; intuition; simpl in *.
-  inversion H.
-  inversion H.
-  inversion H.
+  intros []; discriminate.
 Qed.
 
 Lemma modNat_plus : forall n1 n2 p,
@@ -297,7 +293,7 @@ Lemma modNat_lt : forall x p, (modNat x p < p)%nat.
   apply of_nat_ge_0.
   apply of_posnat_gt_0.
 
-  specialize (Nnat.N2Nat.inj_compare); intuition.
+  specialize (Nnat.N2Nat.inj_compare); intros H0.
   rewrite <- (Nnat.Nat2N.id p) at 2.
   apply nat_compare_lt.
   rewrite <- H0.
@@ -366,7 +362,7 @@ Lemma modNat_correct : forall x (p : posnat),
   assert (posnatToNat p <> 0)%nat.
   omega.
   assert (N.of_nat p <> 0%N).
-  intuition.
+  intro.
   eapply H0.
   
   rewrite <- Nnat.Nat2N.id.
