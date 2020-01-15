@@ -16,7 +16,7 @@ Lemma mult_same_r : forall n1 n2 n3,
   n1 * n3 = n2 * n3 ->
   n1 = n2.
 
-  induction n1; destruct n2; intuition; simpl in *.
+  induction n1; destruct n2; intuition idtac; simpl in *.
   remember (n2 * n3) as x.
   omega.
   remember (n1 * n3) as x.
@@ -44,7 +44,7 @@ Lemma mult_gt_0 : forall n1 n2,
   n1 > 0 ->
   n2 > 0 ->
   n1 * n2 > 0.
-  destruct n1; intuition; simpl in *.
+  destruct n1; intuition idtac; simpl in *.
   remember (n1 * n2) as x.
   omega.
 Qed.

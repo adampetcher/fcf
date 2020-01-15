@@ -196,9 +196,10 @@ Lemma mult_le_compat_r_iff_h : forall n2 n3 n1,
     n1 > O ->
     (n2 * n1 <= n3 * n1)%nat ->
     (n2 <= n3)%nat.
-  
-  induction n2; destruct n3; intuition; simpl in *; try omega.
-  
+
+  induction n2; destruct n3; intuition idtac; simpl in *.
+  omega.
+
   exfalso.
   remember (n2 * n1)%nat as x.
   omega.
