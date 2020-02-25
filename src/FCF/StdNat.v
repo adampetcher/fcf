@@ -165,12 +165,7 @@ Theorem expnat_pos : forall x n,
   expnat x n > 0.
   
   induction n; intuition; simpl in *.
-  remember (x * expnat x n) as y.
-  assert (y <> 0); try omega.
-  intuition; subst.
-  apply mult_is_O in H1.
-  destruct H1; omega.
-
+  apply mult_gt_0; assumption.
 Qed.
 
 Lemma div2_le : forall n,
