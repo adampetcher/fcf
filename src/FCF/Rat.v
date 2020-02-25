@@ -551,7 +551,7 @@ Theorem ratAdd_0 : forall r1 r2,
   destruct p0.
   rewrite mult_1_r in e.
   apply plus_is_O in e.
-  intuition.
+  destruct e as [H0 e].
   eapply mult_is_O in H0.
   intuition.
   
@@ -563,7 +563,7 @@ Theorem ratAdd_0 : forall r1 r2,
   destruct p0.
   rewrite mult_1_r in e.
   apply plus_is_O in e.
-  intuition.
+  destruct e as [e H1].
   eapply mult_is_O in H1.
   intuition.
 
@@ -2062,9 +2062,9 @@ Lemma ratMult_same_r_inv : forall r1 r2 r3,
   }
   rewrite mult_0_r in H0.
   rewrite plus_0_l in H0.
-  destruct (eq_nat_dec n0 0); intuition.
+  destruct (eq_nat_dec n0 0). intuition.
   assert (~n0 * x0 = O)%nat.
-  intuition.
+  intros H1.
   eapply mult_is_O in H1.
   intuition.
   remember (n0 * x0)%nat as a.
@@ -3043,7 +3043,7 @@ Lemma ratSubtract_ratAdd_assoc_le : forall r1 r2 r3,
   assert (n0 * x * x0 * x * x0 * x1 = n0 * x0 * x * x * x0 * x1)%nat.
   do 5 arithSimplify.
   rewrite H0.
-  generalize ( n0 * x0 * x * x * x0 * x1)%nat; intuition.
+  generalize ( n0 * x0 * x * x * x0 * x1)%nat; intros ?; omega.
 Qed.
 
 Lemma ratSubtract_assoc_le : forall r1 r2 r3,
