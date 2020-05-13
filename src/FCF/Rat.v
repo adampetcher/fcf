@@ -3491,7 +3491,8 @@ Lemma rat_le_1_if :
   destruct d.
   rewrite mult_1_r in H.
   rewrite mult_1_l in H.
-  destruct (le_gt_dec n x); intuition.
+  destruct (le_gt_dec n x).
+  omega.
   discriminate.
   
 Qed.
