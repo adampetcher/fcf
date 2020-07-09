@@ -42,6 +42,22 @@ Section IND_CPA.
 
   Definition IND_CPA (epsilon : Rat) :=
     | Pr[IND_CPA_G] - 1 / 2 | <= epsilon.
+
+  (* (asymptotically) equivalent two-game definition *)
+
+  Definition IND_CPA_G0 :=
+    [prikey, pubkey] <-$2 KeyGen;
+    [p0, p1, a_state] <-$3 (A1 pubkey);
+    c <-$ (Encrypt p0 pubkey);
+    (A2 (c, a_state)).
+
+  Definition IND_CPA_G1 :=
+    [prikey, pubkey] <-$2 KeyGen;
+    [p0, p1, a_state] <-$3 (A1 pubkey);
+    c <-$ (Encrypt p1 pubkey);
+    (A2 (c, a_state)).
+
+  Definition IND_CPA_Advantage_2G := | Pr[IND_CPA_G0] - Pr[IND_CPA_G1] |.
               
 End IND_CPA.
 

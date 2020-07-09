@@ -497,9 +497,11 @@ Section PRF_Encryption_concrete.
 
       comp_simp.
 
-      Transparent evalDist.
-      Transparent getSupport.
+      Local Transparent evalDist.
+      Local Transparent getSupport.
       dist_compute.
+      Local Opaque evalDist.
+      Local Opaque getSupport.
 
       inline_first.
       comp_skip.
@@ -511,7 +513,7 @@ Section PRF_Encryption_concrete.
       
       pose proof RF_Encrypt_wf.
       unfold G2_2, G2_3.
-      
+
       do 3 (inline_first; comp_skip; comp_simp).
     
       comp_inline_l.
@@ -974,7 +976,10 @@ Section PRF_Encryption_concrete.
 
         rewrite H. clear H.
         (* dist_compute isn't working for some reason *)
+        Local Transparent evalDist.
         simpl.
+        Local Opaque evalDist.
+
         rewrite (@sumList_exactly_one _ x).
         rewrite eqbBvector_complete.
         destruct (EqDec_dec bool_EqDec true true ); intuition.

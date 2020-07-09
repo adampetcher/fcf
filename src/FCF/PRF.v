@@ -13,6 +13,47 @@ Require Export FCF.Hybrid.
 Local Open Scope list_scope.
 Local Open Scope array_scope.
 
+Theorem fst_split_map_eq : forall (A B : Type)(ls : list (A * B)),
+  fst (split ls) = map fst ls.
+
+  induction ls; intuition idtac; simpl in *.
+  remember (split ls) as z. destruct z.
+  simpl in *.
+  congruence.
+
+Qed.
+
+Theorem any_dec_arrayLookup_swap : 
+  forall (A B : Set)(eqda : EqDec A)(ls1 ls2 : list (A * B)),
+  any_dec (fun x => if (arrayLookup _ ls1 x) then true else false) (fst (split ls2)) = 
+  any_dec (fun x => if (arrayLookup _ ls2 x) then true else false) (fst (split ls1)).
+
+  unfold any_dec in *.
+  induction ls1; intuition idtac; simpl in *.
+  eapply fold_left_orb_all_false.
+  remember (split ls1) as z.
+  destruct z.
+  simpl in *.
+  case_eq (arrayLookup eqda ls2 a0); intros.
+  rewrite fold_left_orb_true.
+  eapply (fold_left_orb_ex).
+  rewrite eqb_refl.
+  trivial.
+  eapply arrayLookup_In_split.
+  eauto.
+  rewrite <- IHls1.
+  eapply fold_left_f_eq.
+  intuition.
+  case_eq (eqb b0 a0); intros.
+  rewrite eqb_leibniz in H1.
+  subst.
+  exfalso.
+  eapply arrayLookup_None_not_In; eauto.
+  reflexivity.
+
+Qed.
+
+
 Definition oracleMap(D R S: Set)(eqds : EqDec S)(eqdr : EqDec R)(oracle : S  -> D -> Comp (R * S))(s : S)(ds : list D) :=
   compFold _ 
   (fun acc d => [rs, s] <-2 acc; [r, s] <-$2 oracle s d; ret (rs ++ r :: nil, s)) 
@@ -65,8 +106,426 @@ Section RandomFunc.
   (* Eager random functions with finite domain *)
   Definition RndFunc(lsd : list D) : Comp (list (D * R)) :=
     compFold _ (fun f d => r <-$ RndR; ret (d, r)::f) nil lsd. 
+
+  Definition lookupEq (ls1 ls2 : list (D * R)) :=
+    forall d, arrayLookup _ ls1 d = arrayLookup _ ls2 d.
   
 End RandomFunc.
+
+Theorem randomFunc_lookupEq_spec : forall (D R : Set)(eqdd : EqDec D)(eqdr : EqDec R)(RndR : Comp R)(ls1 ls2 : list (D * R)),
+  lookupEq _ ls1 ls2 ->
+  forall d, comp_spec (fun p1 p2 => fst p1 = fst p2 /\ lookupEq _ (snd p1) (snd p2)) (randomFunc RndR _ ls1 d) (randomFunc RndR _ ls2 d).
+
+  intros.
+  unfold randomFunc.
+  rewrite H.
+  case_eq (arrayLookup _ ls2 d); intros.
+  fcf_simp.
+  eapply comp_spec_ret; intuition idtac.
+
+  fcf_skip.
+  eapply comp_base_exists; eauto.
+  eapply comp_base_exists; eauto.
+  eapply comp_spec_ret; intuition idtac.
+  unfold lookupEq; intuition idtac; simpl.
+  rewrite H.
+  reflexivity.
+
+Qed.
+
+Section RandomFunc_hist.
+
+  Variable D R : Set.
+
+  Hypothesis EqDec_D : EqDec D.
+  Hypothesis EqDec_R : EqDec R.
+
+  Variable RndR : Comp R.
+
+  Hypothesis RndR_wf : well_formed_comp RndR.
+
+  (* a random function that keeps track of all call history *)
+  Definition randomFunc_hist (ls : list (D * R))(d : D) :=
+    r <-$ match (arrayLookup _ ls d) with
+    | None => RndR
+    | Some r => ret r
+    end;
+    ret (r, ((d,r):: ls)).
+
+  Theorem randomFunc_hist_wf : forall ls d,
+    well_formed_comp (randomFunc_hist ls d).
+
+    unfold randomFunc_hist.
+    intuition idtac.
+    destruct (arrayLookup _ ls d);
+    wftac.
+
+  Qed.
+  Hint Resolve randomFunc_hist_wf : wf.
+
+  Theorem randomFunc_hist_spec : forall (ls1 ls2 : list (D * R)),
+    lookupEq _ ls1 ls2 ->
+    forall d, comp_spec (fun p1 p2 => fst p1 = fst p2 /\ lookupEq _ (snd p1) (snd p2)) (randomFunc RndR _ ls1 d) (randomFunc_hist ls2 d).
+
+    intros.
+    unfold randomFunc, randomFunc_hist.
+    rewrite H.
+    case_eq (arrayLookup _ ls2 d); intros.
+    fcf_simp.
+    eapply comp_spec_ret; intuition idtac.
+    unfold lookupEq.
+    intuition idtac.
+    simpl.
+    case_eq (eqb d0 d); intros.
+    rewrite eqb_leibniz in H1.
+    subst.
+    rewrite H.
+    trivial.
+    eauto.
+
+    fcf_skip.
+    eapply comp_base_exists; eauto.
+    eapply comp_base_exists; eauto.
+    eapply comp_spec_ret; intuition idtac.
+    unfold lookupEq; intuition idtac; simpl.
+    rewrite H.
+    reflexivity.
+
+  Qed.
+
+  (* nested random functions--- always track call history and have two separate lists, allowing the proof to
+    identify whether a query was made after some point in time. *)
+  Definition nestedRandomFunc (st : list (D * R)) s q :=
+    match (arrayLookup _ st q) with
+    | None => randomFunc RndR _ s q
+    | Some r => ret (r, (q, r)::s)
+    end.
+
+  Theorem nestedRandomFunc_wf : forall (ls s : list (D * R)) d,
+    well_formed_comp (nestedRandomFunc ls s d).
+
+    intros.
+    unfold nestedRandomFunc.
+    destruct (arrayLookup _ ls d); wftac.
+    eapply randomFunc_wf.
+    trivial.
+    
+  Qed.
+
+  Definition nestedRandomFunc_pred (st s1 s2 : list (D * R)) : Prop :=
+    (forall d, arrayLookup _ s1 d = arrayLookup _ (st ++ s2) d).
+
+  Theorem nestedRandomFunc_spec : forall st s1 s2 (d : D),
+    (nestedRandomFunc_pred st s1 s2) ->
+    comp_spec (fun p1 p2 => fst p1 = fst p2 /\ 
+      (nestedRandomFunc_pred st (snd p1) (snd p2)))
+    (randomFunc RndR _ s1 d)
+    (nestedRandomFunc st s2 d).
+
+    unfold nestedRandomFunc_pred in *;
+    intros.
+    unfold nestedRandomFunc.
+    case_eq (arrayLookup _ st d); intros.
+    unfold randomFunc.
+    rewrite H.
+    erewrite arrayLookup_app_Some; eauto.
+    eapply comp_spec_ret; intuition idtac.
+    simpl in *.
+    rewrite H.
+    case_eq (eqb d0 d); intros.
+    rewrite eqb_leibniz in H1.
+    subst.
+    repeat erewrite (arrayLookup_app_Some); eauto.
+    case_eq (arrayLookup _ st d0); intros.
+    repeat erewrite (arrayLookup_app_Some); eauto.
+    repeat rewrite (arrayLookup_app_None); eauto.
+    simpl.
+    rewrite H1.
+    trivial.
+
+    unfold randomFunc.
+    rewrite H.
+    rewrite arrayLookup_app_None.
+    case_eq (arrayLookup _ s2 d); intros.
+    eapply comp_spec_ret; intuition idtac.
+    fcf_skip.
+    eapply comp_base_exists; eauto.
+    eapply comp_base_exists; eauto.
+    eapply comp_spec_ret; intuition idtac.
+    simpl.
+    rewrite H.
+    case_eq (eqb d0 d); intros.
+    rewrite eqb_leibniz in H4.
+    subst.
+    rewrite arrayLookup_app_None; eauto.
+    simpl.
+    rewrite eqb_refl.
+    trivial.
+    case_eq (arrayLookup _ st d0); intros.
+    repeat erewrite (arrayLookup_app_Some); eauto.
+    repeat rewrite arrayLookup_app_None; eauto.
+    simpl.
+    rewrite H4.
+    trivial.
+    trivial.
+
+  Qed.
+
+  Theorem nestedRandomFunc_app_spec : forall ls ls1 x1 x2 a,
+    (forall y, arrayLookup _ x1 y = arrayLookup _ x2 y) ->
+    comp_spec
+    (fun y1 y2  =>
+     any_dec
+       (fun y =>
+        if
+         arrayLookup _ ls (fst y)
+        then true
+        else false) (snd y1) =
+     any_dec
+       (fun y =>
+        if
+         arrayLookup _ ls (fst y)
+        then true
+        else false) (snd y2) /\
+     (any_dec
+        (fun y =>
+         if
+          arrayLookup _ ls (fst y)
+         then true
+         else false) (snd y1) = false ->
+      (forall z,
+       arrayLookup _ (snd y1) z =
+       arrayLookup _ (snd y2) z) /\
+      fst y1 = fst y2))
+    (nestedRandomFunc 
+       (ls ++ ls1) x1 a)
+    (nestedRandomFunc ls1 x2 a).
+
+    intros.
+    unfold nestedRandomFunc.
+
+    match goal with
+    | [|- context[match ?a with | Some _ => _ | None => _ end] ] =>
+        case_eq a; intros
+    end.
+    match goal with
+    | [H: arrayLookup ?eqd (?ls1 ++ ?ls2) ?a = Some _ |- _] =>
+      case_eq (arrayLookup eqd ls1 a); intros
+    end.
+    erewrite arrayLookup_app_Some in H0; eauto.
+    inversion H0; clear H0; subst.
+
+    match goal with
+    | [|- context[match ?a with | Some _ => _ | None => _ end] ] =>
+        case_eq a; intros
+    end.
+    eapply comp_spec_ret; intuition idtac.
+    simpl in *.
+    repeat rewrite any_dec_cons.
+    simpl.
+    match goal with
+    | [|- context[if ?a then _ else _] ] =>
+      cutrewrite (a = Some r)
+    end;
+    simpl; trivial.
+
+    simpl in *.
+    rewrite any_dec_cons in *.
+    apply orb_false_elim in H2.
+    intuition.
+    simpl in *.
+    match goal with
+    | [H: (if ?a then _ else _) = false |- _] =>
+      cutrewrite (a = Some r) in H
+    end; trivial.
+    discriminate.
+    simpl in *.
+
+    rewrite any_dec_cons in *.
+    apply orb_false_elim in H2.
+    intuition idtac.
+    simpl in *.
+    match goal with
+    | [H: (if ?a then _ else _) = false |- _] =>
+      cutrewrite (a = Some r) in H
+    end; trivial.
+    discriminate.
+
+    unfold randomFunc.
+    match goal with
+    | [|- context[match ?a with | Some _ => _ | None => _ end] ] =>
+        case_eq a; intros
+    end.
+    eapply comp_spec_ret; intuition idtac.
+    simpl in *.
+    rewrite any_dec_cons.
+    simpl.
+    match goal with
+    | [|- context[if ?a then _ else _] ] =>
+      cutrewrite (a = Some r)
+    end; trivial.
+    simpl.
+    symmetry.
+    eapply ex_any_dec.
+    eapply arrayLookup_Some_impl_In.
+    eauto.
+    simpl.  
+    match goal with
+    | [|- context[if ?a then _ else _] ] =>
+      cutrewrite (a = Some r)
+    end;
+    simpl; trivial.
+
+    simpl in *.
+    rewrite any_dec_cons in *.
+    apply orb_false_elim in H3.
+    intuition idtac.
+    simpl in *.
+    match goal with
+    | [H: (if ?a then _ else _) = false |- _] =>
+      cutrewrite (a = Some r) in H
+    end; trivial.
+    discriminate.
+
+    simpl in *.
+    rewrite any_dec_cons in *.
+    apply orb_false_elim in H3.
+    intuition idtac.
+    simpl in *.
+    match goal with
+    | [H: (if ?a then _ else _) = false |- _] =>
+      cutrewrite (a = Some r) in H
+    end; trivial.
+    discriminate.
+
+    fcf_irr_r.
+    eapply comp_spec_ret; intuition idtac.
+    simpl in *.
+    repeat rewrite any_dec_cons.
+    simpl in *.
+    repeat rewrite (any_dec_map fst (fun y =>if (arrayLookup _ ls y) then true else false)).
+    repeat rewrite <- fst_split_map_eq.
+    rewrite any_dec_arrayLookup_swap.
+    symmetry.
+    rewrite any_dec_arrayLookup_swap.
+    symmetry.
+    f_equal.
+    eapply any_dec_f_eq.
+    intuition idtac.
+    rewrite H.
+    reflexivity.
+    simpl in *.
+    rewrite any_dec_cons in *.
+    apply orb_false_elim in H4.
+    intuition idtac.
+    simpl in *.
+    match goal with
+    | [H: (if ?a then _ else _) = false |- _] =>
+      cutrewrite (a = Some r) in H
+    end; trivial.
+    discriminate.
+    simpl in *.
+    rewrite any_dec_cons in *.
+    apply orb_false_elim in H4.
+    intuition idtac.
+    simpl in *.
+    match goal with
+    | [H: (if ?a then _ else _) = false |- _] =>
+      cutrewrite (a = Some r) in H
+    end; trivial.
+    discriminate.
+
+    rewrite arrayLookup_app_None in H0.
+    rewrite H0.
+    eapply comp_spec_ret; intuition idtac.
+    simpl in *.
+    repeat rewrite any_dec_cons.
+    simpl in *.
+    repeat rewrite (any_dec_map fst (fun y =>if (arrayLookup _ ls y) then true else false)).
+    repeat rewrite <- fst_split_map_eq.
+    rewrite any_dec_arrayLookup_swap.
+    symmetry.
+    rewrite any_dec_arrayLookup_swap.
+    symmetry.
+    f_equal.
+    eapply any_dec_f_eq.
+    intuition idtac.
+    rewrite H.
+    reflexivity.
+    simpl in *.
+    rewrite H.
+    reflexivity.
+    trivial.
+
+    match goal with
+    | [H: arrayLookup ?eqd (?ls1 ++ ?ls2) ?a = None |- _] =>
+      case_eq (arrayLookup eqd ls1 a); intros
+    end.
+    erewrite arrayLookup_app_Some in H0; eauto.
+    discriminate.
+    rewrite arrayLookup_app_None in H0.
+    rewrite H0.
+
+    unfold randomFunc.
+    rewrite H.
+
+    match goal with
+    | [|- context[match ?a with | Some _ => _ | None => _ end] ] =>
+        case_eq a; intros
+    end.
+    eapply comp_spec_ret; intuition idtac.
+    simpl in *.
+    repeat rewrite (any_dec_map fst (fun y =>if (arrayLookup _ ls y) then true else false)).
+    repeat rewrite <- fst_split_map_eq.
+    rewrite any_dec_arrayLookup_swap.
+    symmetry.
+    rewrite any_dec_arrayLookup_swap.
+    symmetry.
+    eapply any_dec_f_eq.
+    intuition idtac.
+    rewrite H.
+    reflexivity.
+
+    fcf_skip.
+    eapply comp_base_exists; eauto.
+    eapply comp_base_exists; eauto.
+    eapply comp_spec_ret; intuition idtac.
+    simpl in *.
+    repeat rewrite any_dec_cons.
+    repeat rewrite (any_dec_map fst (fun y =>if (arrayLookup _ ls y) then true else false)).
+    repeat rewrite <- fst_split_map_eq.
+    rewrite any_dec_arrayLookup_swap.
+    symmetry.
+    rewrite any_dec_arrayLookup_swap.
+    symmetry.
+    f_equal.
+    eapply any_dec_f_eq.
+    intuition idtac.
+    rewrite H.
+    reflexivity.
+
+    simpl.
+    rewrite H.
+    reflexivity.
+    trivial.
+  
+   Qed.
+
+  (* a list of random values with history *)
+  Definition rndHist (ls : list (D * R))(d : D) :=
+    r <-$ RndR;
+    ret (r, (d,r)::ls).
+  Theorem rndHist_wf : forall ls d,
+    well_formed_comp (rndHist ls d).
+
+    unfold rndHist.
+    intuition idtac; wftac.
+
+  Qed.
+
+  Hint Resolve rndHist_wf : wf.
+  
+End RandomFunc_hist.
 
 Local Open Scope type_scope.
 Local Open Scope comp_scope.

@@ -385,7 +385,7 @@ Section PRF_DRBG.
     simpl in *.
     destruct (in_dec (EqDec_dec D_EqDec) a l0); intuition.
     discriminate.
-    rewrite notInArrayLookupNone in H.
+    rewrite notInArrayLookupNone_unzip in H.
     discriminate.
     intuition.
     rewrite unzip_eq_split in H3.
@@ -401,7 +401,7 @@ Section PRF_DRBG.
     simpl in *.
     destruct (in_dec (EqDec_dec D_EqDec) a l0).
     discriminate.
-    rewrite notInArrayLookupNone in H.
+    rewrite notInArrayLookupNone_unzip in H.
     discriminate.
     intuition.
     rewrite unzip_eq_split in H3.

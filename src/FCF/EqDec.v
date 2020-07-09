@@ -418,3 +418,30 @@ Theorem eqbPair_symm :
   trivial.
   
 Qed.
+
+Theorem eqbPair_refl : 
+  forall (A B : Set)(eqda : EqDec A)(eqdb : EqDec B) (p1 : (A * B)),
+    eqbPair _ _ p1 p1 = true.
+  
+  intuition idtac.
+  unfold eqbPair in *.
+  simpl.
+  repeat rewrite eqb_refl.
+  trivial.
+  
+Qed.
+
+Theorem eqbPair_prop : forall (A B : Set)(eqda : EqDec A)(eqdb : EqDec B)(p1 p2 : (A * B)),
+  eqbPair _ _ p1 p2 = true ->
+  p1 = p2.
+
+  intuition idtac.
+  unfold eqbPair in *.
+  apply andb_prop in H.
+  intuition idtac. simpl in *.
+  rewrite eqb_leibniz in H0.
+  rewrite eqb_leibniz in H1.
+  subst.
+  destruct p2; trivial.
+
+Qed.

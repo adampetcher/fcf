@@ -389,6 +389,25 @@ Theorem comp_spec_consequence :
 
 Qed.
 
+Theorem comp_spec_consequence_support
+ : forall (A B : Set) (eqda1 eqda2 : EqDec A)
+     (eqdb1 eqdb2 : EqDec B) (p1 p2 : A -> B -> Prop)
+     (c1 : Comp A) (c2 : Comp B),
+   comp_spec p1 c1 c2 ->
+   (forall (a : A) (b : B), In a (getSupport c1) -> In b (getSupport c2) -> p1 a b -> p2 a b) ->
+   comp_spec p2 c1 c2.
+
+  intros.
+  destruct H.
+  intuition idtac.
+  exists x.
+  intuition idtac.
+  eapply H0.
+  eapply in_support_marginal_l; intuition.
+  eapply in_support_marginal_r; intuition.
+  eauto.
+Qed.
+
 Theorem comp_spec_symm : 
   forall (A B : Set){eqda : EqDec A}{eqdb : EqDec B}(p : A -> B -> Prop) c1 c2,
     comp_spec p c1 c2 ->

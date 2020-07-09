@@ -5485,3 +5485,766 @@ Theorem list_pred_combine_r
   intuition.
   
 Qed.
+
+Theorem combine_split_eq : forall (A B : Type)(x : list (A * B)),
+    (combine (fst (split x)) (snd (split x))) = x.
+
+  induction x; intuition idtac; simpl in *.
+  remember (split x) as z. destruct z.
+  simpl in *.
+  subst.
+  trivial.
+
+Qed.
+
+Theorem lsAppCons : forall (A : Type)(ls : list A)(n : nat)(def : A),
+  n < length ls ->
+  ls = (firstn n ls) ++ ((nth n ls def) :: (skipn (S n) ls)).
+
+  induction ls; destruct n; intuition idtac; simpl in *.
+  omega.
+  omega.
+  f_equal. eapply IHls.
+  omega.
+
+Qed.
+
+Theorem combine_nil_r : forall (A B : Type)(ls : list A),
+  combine ls (@nil B) = nil.
+
+  induction ls; intuition idtac.
+
+Qed.
+
+Theorem firstn_combine : forall (A B : Type)(lsA : list A)(lsB : list B) n,
+  firstn n (combine lsA lsB) = combine (firstn n lsA) (firstn n lsB).
+
+  induction lsA; intuition idtac; simpl in *.
+  destruct n; trivial.
+  destruct lsB; simpl in *.
+  destruct n; trivial.
+
+  destruct n; simpl in *; trivial.
+  f_equal; eauto.
+
+Qed.
+
+Theorem nth_combine : forall (A B : Type)(lsA : list A)(lsB : list B) n defA defB,
+  length lsA = length lsB ->
+  nth n (combine lsA lsB) (defA, defB) = (nth n lsA defA, nth n lsB defB).
+
+  induction lsA; destruct lsB; destruct n; intuition idtac; simpl in *; try omega.
+  eapply IHlsA. omega.
+
+Qed.
+
+Theorem skipn_combine : forall (A B : Type)(lsA : list A)(lsB : list B) n,
+  skipn n (combine lsA lsB) = combine (skipn n lsA) (skipn n lsB).
+
+  induction lsA; intuition idtac; simpl in *.
+  repeat rewrite skipn_nil. trivial.
+  destruct lsB; simpl in *.
+  repeat rewrite skipn_nil.
+  rewrite combine_nil_r.
+  trivial.
+
+  destruct n; simpl in *; trivial.
+
+Qed.
+
+Theorem firstn_snd_split_app : forall (A B : Type)(ls1 ls2 : list (A * B)),
+  firstn (length ls1) (snd (split (ls1 ++ ls2))) = snd (split ls1).
+  
+  induction ls1; intuition idtac; subst; simpl in *; trivial.
+  remember (split (ls1 ++ ls2)) as z.
+  destruct z.
+  simpl in *.
+  remember (split ls1) as z'.
+  destruct z'.
+  simpl.
+  f_equal.
+  assert (l0 = (snd (split (ls1 ++ ls2)))).
+  rewrite <- Heqz. trivial.
+  rewrite H.
+  eauto.
+Qed.
+
+Theorem firstn_snd_split_app_gen : forall (A B : Type)(ls1 ls2 : list (A * B)) n,
+  n = length ls1 ->
+  firstn n (snd (split (ls1 ++ ls2))) = snd (split ls1).
+
+  intuition idtac; subst.
+  eapply firstn_snd_split_app.
+
+Qed.
+
+Theorem nth_snd_split_app : forall (A B : Type)(ls1 ls2 : list (A * B)) def,
+  nth (length ls1) (snd (split (ls1 ++ ls2))) def = nth 0 (snd (split ls2)) def.
+  
+  induction ls1; intuition idtac; subst; simpl in *; trivial.
+  remember (split (ls1 ++ ls2)) as z.
+  destruct z.
+  simpl in *.
+  assert (l0 = (snd (split (ls1 ++ ls2)))).
+  rewrite <- Heqz. trivial.
+  rewrite H.
+  eauto.
+Qed.
+
+ Theorem nth_snd_split_app_gen : forall (A B : Type)(ls1 ls2 : list (A * B)) n def,
+  n = length ls1 ->
+  nth n (snd (split (ls1 ++ ls2))) def = nth 0 (snd (split ls2)) def.
+
+  intuition idtac; subst.
+  eapply nth_snd_split_app.
+
+Qed.
+
+Theorem skipn_snd_split_app : forall (A B : Type)(ls1 ls2 : list (A * B)),
+  skipn (length ls1) (snd (split (ls1 ++ ls2))) = snd (split ls2).
+  
+  induction ls1; intuition idtac; subst; simpl in *; trivial.
+  remember (split (ls1 ++ ls2)) as z.
+  destruct z.
+  simpl in *.
+  assert (l0 = (snd (split (ls1 ++ ls2)))).
+  rewrite <- Heqz. trivial.
+  rewrite H.
+  eauto.
+Qed.
+
+
+Lemma skipn_sum : forall (A : Type)(n2 n1 : nat)(ls : list A),
+  skipn n1 (skipn n2 ls) = skipn (n2 + n1) ls.
+  
+  induction n2; intuition idtac; simpl in *.
+  
+  destruct ls.
+  destruct n1; trivial.
+  trivial.
+Qed.
+
+Theorem skipn_snd_split_app_cons : forall (A B : Type)(ls1 ls2 : list (A * B)) p,
+  skipn (S (length ls1)) (snd (split (ls1 ++ (p :: ls2)))) = snd (split ls2).
+
+  intuition idtac.
+  assert (S (length ls1) = (length ls1 + 1))%nat.
+  omega.
+  rewrite H.
+  rewrite <- skipn_sum.
+  rewrite skipn_snd_split_app.
+  simpl.
+  destruct (split ls2); trivial.
+
+Qed.
+
+Theorem skipn_snd_split_app_cons_gen : forall (A B : Type)(ls1 ls2 : list (A * B)) p n,
+  n = (S (length ls1)) ->
+  skipn n (snd (split (ls1 ++ (p :: ls2)))) = snd (split ls2).
+
+  intuition idtac.
+  subst. 
+  apply skipn_snd_split_app_cons.   
+Qed.
+
+Theorem nth_0_snd_split_cons : forall (A B : Type)(x : A * B)(ls: list (A * B)) def,
+  nth 0 (snd (split (x :: ls))) def = (snd x).
+
+  intuition idtac; simpl in *.  
+  remember (split ls) as z. destruct z.
+  simpl. trivial.
+  
+Qed.
+
+Theorem snd_split_length : forall (A B : Type)(ls : list (A * B)),
+  length (snd (split ls)) = length ls.
+
+  induction ls; intuition idtac; simpl in *.
+  remember (split ls) as z. destruct z.
+  simpl in *.
+  congruence.
+
+Qed.
+
+Theorem snd_split_app : forall (A B : Type)(ls1 ls2 : list (A * B)),
+  snd (split (ls1 ++ ls2)) = (snd (split ls1)) ++ (snd (split ls2)).
+
+  induction ls1; intuition idtac; simpl in *.
+  remember (split (ls1 ++ ls2)) as z. destruct z.
+  simpl.
+  remember (split ls1) as z'. destruct z'.
+  simpl.
+  f_equal.
+  simpl in *.
+  assert (l0 = snd (split (ls1 ++ ls2))).
+  rewrite <- Heqz. trivial.
+  subst.
+  eauto.
+
+Qed.
+
+Theorem snd_split_cons : forall (A B : Type)(ls : list (A * B)) p,
+  snd (split (p :: ls)) = (snd p) :: (snd (split ls)).
+
+  intuition idtac; simpl in *.
+  remember (split ls) as z. destruct z.
+  simpl. trivial.
+Qed.
+
+Theorem fst_split_app : forall (A B : Type)(ls1 ls2 : list (A * B)),
+  fst (split (ls1 ++ ls2)) = (fst (split ls1)) ++ (fst (split ls2)).
+
+  induction ls1; intuition idtac; simpl in *.
+  remember (split (ls1 ++ ls2)) as z. destruct z.
+  simpl.
+  remember (split ls1) as z'. destruct z'.
+  simpl.
+  f_equal.
+  simpl in *.
+  assert (l = fst (split (ls1 ++ ls2))).
+  rewrite <- Heqz. trivial.
+  subst.
+  eauto.
+
+Qed.
+
+Theorem fst_split_cons : forall (A B : Type)(ls : list (A * B)) p,
+  fst (split (p :: ls)) = (fst p) :: (fst (split ls)).
+
+  intuition idtac; simpl in *.
+  remember (split ls) as z. destruct z.
+  simpl. trivial.
+Qed.
+
+Theorem skipn_length : forall (A : Type)(ls : list A) n,
+  length (skipn n ls) = length ls - n.
+
+  induction ls; destruct n; intuition idtac; simpl in *; eauto.
+
+Qed.
+
+Theorem filter_flatten : forall (A : Set)(ls : list (list A)) f,
+  filter f (flatten ls) = flatten (map (filter f) ls).
+
+  induction ls; intuition idtac; simpl in *.
+  rewrite filter_app.
+  f_equal.
+  eauto.
+
+Qed.
+
+Theorem fold_left_init_eq : forall (A : Set)(ls : list A) f init1 init2,
+  (forall a1 a2 b, a1 == a2 -> f a1 b == f a2 b) ->
+  init1 == init2 ->
+  fold_left f ls init1 == fold_left f ls init2.
+
+  induction ls; intuition idtac; simpl in *.
+  apply IHls; intuition.
+  
+Qed.
+
+Theorem fold_add_flatten : forall (A : Set)(ls : list (list A)) f init,
+  fold_left (fun a b => a + f b) (flatten ls) init ==
+  fold_left (fun a b => a + (sumList b f)) ls init.
+
+  induction ls; intuition idtac; simpl in *.
+  reflexivity.
+  rewrite fold_left_app.
+  rewrite IHls.
+  apply fold_left_init_eq.
+  intuition idtac.
+  apply ratAdd_eqRat_compat; intuition idtac. 
+  reflexivity.
+  unfold sumList.
+  rewrite <- fold_add_init.
+  apply fold_left_init_eq.
+  intuition idtac.
+  apply ratAdd_eqRat_compat; intuition idtac.
+  reflexivity.
+  rewrite <- ratAdd_0_r.
+  reflexivity.
+
+Qed.
+
+Theorem sumList_flatten : forall (A : Set)(ls : list (list A)) f,
+  sumList (flatten ls) f ==
+  sumList ls (fun x => sumList x f).
+
+  intuition idtac.
+  apply fold_add_flatten.
+  
+Qed.
+
+Theorem skipn_In : forall (A : Type) n ls (a : A),
+  In a (skipn n ls) ->
+  In a ls.
+
+  induction n; destruct ls; intuition idtac.
+  simpl in *.
+  right.
+  eauto.
+
+Qed.
+
+Theorem Forall2_impl : forall (A B : Type)(lsa : list A)(lsb : list B) (P1 P2 : A -> B -> Prop),
+  Forall2 P1 lsa lsb ->
+  (forall a b, P1 a b -> P2 a b) ->
+  Forall2 P2 lsa lsb.
+
+  induction 1; intuition idtac.
+  econstructor.
+  econstructor; eauto.
+
+Qed.
+
+Theorem Forall2_all_In : forall (A B : Type)(lsa : list A)(lsb : list B) (P : A -> B -> Prop),
+  (length lsa = length lsb) ->
+  (forall a b, In a lsa -> In b lsb -> P a b) ->
+  Forall2 P lsa lsb.
+
+  induction lsa; destruct lsb; intuition idtac; simpl in *.
+  econstructor.
+    
+  discriminate.
+  discriminate.
+  econstructor; eauto.
+
+Qed.
+
+Theorem fold_add_eqRat_compat : forall (A : Set)(ls : list A) f1 f2 init1 init2,
+  (forall r1 r2 a, r1 == r2 -> f1 r1 a == f2 r2 a) ->
+  init1 == init2 ->
+  fold_left f1 ls init1 == fold_left f2 ls init2.
+
+  induction ls; intuition idtac; simpl in *.
+  eapply IHls; intuition idtac.
+  eauto.
+
+Qed.
+
+
+Theorem fold_add_prod : forall (A B : Set)(lsb : list B)(lsa : list A)(fa : A -> Rat)(fb : B -> Rat) initB,
+  fold_left (fun (a : Rat) (b : A) => a + fa b) lsa 0 *
+  fold_left (fun (a : Rat) (b : B) => a + fb b) lsb initB ==
+  fold_left
+    (fun (a : Rat) (b : A) =>
+     a +
+     fa b *
+     fold_left (fun (a0 : Rat) (b0 : B) => a0 + fb b0) lsb
+       initB) lsa 0.
+
+  induction lsb; intuition idtac; simpl in *.
+  symmetry.
+  rewrite <- fold_add_factor_constant_r.
+  eapply fold_add_eqRat_compat.
+  intuition idtac.
+  eapply ratAdd_eqRat_compat; intuition idtac.
+  reflexivity.
+  rewrite ratMult_0_l.
+  reflexivity.
+
+  rewrite fold_add_init.
+  rewrite ratMult_distrib.
+  rewrite IHlsb.
+  
+  rewrite <- fold_add_factor_constant_r.
+  rewrite fold_add_eq.
+  eapply fold_add_body_eq.
+  rewrite ratMult_0_l.
+  symmetry.
+  apply ratAdd_0_r.
+  intros.
+  rewrite fold_add_init.
+  rewrite ratMult_distrib.
+  reflexivity.
+
+Qed.
+
+Theorem sumList_prod : forall (A B : Set)(lsa : list A)(lsb : list B)(fa : A -> Rat)(fb : B -> Rat),
+  (sumList lsa fa) * (sumList lsb fb) ==
+  (sumList lsa (fun a => (fa a) * sumList lsb fb)).
+
+  intuition idtac.
+  eapply fold_add_prod.
+  
+Qed.
+
+Theorem fst_split_perm : forall (A B : Type)(ls1 ls2 : list (A * B)),
+  Permutation ls1 ls2 ->
+  Permutation (fst (split ls1)) (fst (split ls2)).
+
+  induction 1; intuition idtac; simpl in *.
+  econstructor.
+  remember (split l) as z. destruct z.
+  remember (split l') as z. destruct z.
+  simpl.
+  econstructor.
+  eauto.
+
+  remember (split l) as z. destruct z.
+  simpl.
+  econstructor.
+
+  econstructor; eauto.
+
+Qed.
+
+Theorem fold_left_comm_perm_eq : 
+  forall (A B : Type)(ls1 ls2 : list B),
+  Permutation ls1 ls2 ->
+  forall (f : A -> B -> A) init,
+  (forall a b1 b2, f (f a b1) b2 = f (f a b2) b1) ->
+  fold_left f ls1 init = fold_left f ls2 init.
+
+  induction 1; intuition idtac.
+  simpl.
+  eauto.
+
+  simpl.
+  rewrite H.
+  eauto.
+
+  rewrite IHPermutation1.
+  apply IHPermutation2.
+  intuition idtac.
+  intuition idtac.
+
+Qed.
+
+Theorem Forall2_eq_refl : forall (A : Type)(ls : list A),
+  Forall2 eq ls ls.
+
+  induction ls; intuition idtac.
+  econstructor.
+  econstructor; eauto.
+
+Qed.
+
+Theorem snd_split_nil_if : forall (A B : Type)(ls : list (A * B)),
+  snd (split ls) = nil ->
+  ls = nil.
+
+  induction ls; intuition idtac; simpl in *.
+  destruct a.
+  remember (split ls) as z.
+  destruct z.
+  simpl in *.
+  discriminate.
+
+Qed.
+
+Theorem fold_left_orb_true : forall (A : Type)(f : A -> bool)(ls : list A),
+  fold_left (fun b a => b || (f a)) ls true = true.
+
+  induction ls; intuition idtac.
+
+Qed.
+
+Definition any_dec(A : Type)(f : A -> bool)(ls : list A) :=
+  fold_left (fun b a => b || (f a)) ls false.
+
+Theorem any_dec_cons : forall (A : Type)(f : A -> bool)(ls : list A)(a : A),
+  any_dec f (a :: ls) = f a || any_dec f ls.
+
+  intuition idtac.
+  unfold any_dec. simpl.
+  case_eq (f a); intros.
+  rewrite fold_left_orb_true.
+  trivial.
+  trivial.
+
+Qed.
+
+Theorem any_dec_f_eq : forall (A : Type)(f1 f2 : A -> bool)(ls : list A),
+  (forall a, In a ls -> f1 a = f2 a) ->
+  any_dec f1 ls = any_dec f2 ls.
+
+  unfold any_dec in *.
+  induction ls; intuition idtac; simpl in *.
+  rewrite H.
+  case_eq (f2 a); intros.
+  repeat rewrite fold_left_orb_true.
+  trivial.
+  eauto.
+  intuition idtac.
+Qed.
+
+Theorem any_dec_map : forall (A B : Type)(f1 : A -> B)(f2 : B -> bool)(ls : list A),
+  any_dec (fun a => f2 (f1 a)) ls = any_dec f2 (map f1 ls).
+
+  unfold any_dec in *.
+  induction ls; intuition idtac; simpl in *.
+  case_eq (f2 (f1 a)); intros.
+  repeat rewrite fold_left_orb_true.
+  trivial.
+  eauto.
+Qed.  
+
+Theorem fold_left_orb_all_false : forall (A : Type)(ls : list A),
+  fold_left (fun b _ => orb b false) ls false = false.
+
+  induction ls; intuition idtac; simpl in *.
+
+Qed.
+
+Theorem fold_left_orb_ex : forall (A : Type)(f : A -> bool)(ls : list A) a b,
+  f a = true ->
+  In a ls ->
+  fold_left (fun b x => orb b (f x)) ls b = true.
+
+  induction ls; intuition idtac; simpl in *;
+  intuition idtac; subst.
+  rewrite H.
+  rewrite orb_true_r.
+  apply fold_left_orb_true.
+  eauto.
+  
+Qed.
+
+Theorem fold_left_f_eq : forall (A B : Type)(f1 f2 : A -> B -> A)(ls : list B) a,
+  (forall b, In b ls -> (forall a, (f1 a b) = (f2 a b))) ->
+  fold_left f1 ls a = fold_left f2 ls a.
+
+  induction ls; intuition idtac; simpl in *.
+  rewrite H.
+  eapply IHls.
+  intuition idtac.
+  eauto.
+  intuition idtac.
+
+Qed.
+
+Theorem any_dec_ex : forall (A : Type)(f : A -> bool)(ls : list A),
+  any_dec f ls = true ->
+  exists a, In a ls /\ f a = true.
+
+  unfold any_dec in *.
+  induction ls; intuition idtac; simpl in *.
+  discriminate.
+  case_eq (f a); intros.
+  econstructor.
+  intuition idtac.
+  rewrite H0 in H.
+  edestruct IHls.
+  trivial.
+  intuition idtac.
+  exists x.
+  intuition idtac.
+
+Qed.
+
+Theorem ex_any_dec : forall (A : Type)(f : A -> bool)(ls : list A) a,
+  In a ls -> f a = true ->
+  any_dec f ls = true.
+
+  unfold any_dec in *.
+  induction ls; intuition idtac; simpl in *;
+  intuition idtac; subst.
+  rewrite H0.
+  apply fold_left_orb_true.
+  case_eq (f a); intros.
+  apply fold_left_orb_true.
+  eauto.
+
+Qed.
+
+Theorem any_dec_app : forall (A : Type) f (ls1 ls2 : list A),
+  any_dec f (ls1 ++ ls2) = 
+  any_dec f ls1 || any_dec f ls2.
+
+  unfold any_dec in *.
+  induction ls1; intuition idtac; simpl in *.
+  case_eq (f a); intros.
+  repeat rewrite fold_left_orb_true.
+  trivial.
+  eapply IHls1.
+
+Qed.
+
+Theorem any_dec_in_dec_swap : forall (A : Set)(eqda : EqDec A)(ls1 ls2 : list A),
+      any_dec (fun x => if (in_dec (EqDec_dec _) x ls2) then true else false) ls1 = 
+      any_dec (fun x => if (in_dec (EqDec_dec _) x ls1) then true else false) ls2.
+
+  induction ls1; intuition idtac; simpl in *.
+  destruct ls2; simpl in *.
+  trivial.
+  rewrite any_dec_cons.
+  simpl.
+  unfold any_dec. simpl.
+  symmetry.
+  apply fold_left_orb_all_false.
+  
+  rewrite any_dec_cons.
+  destruct (in_dec (EqDec_dec eqda) a ls2).
+  simpl.
+  symmetry.
+  eapply ex_any_dec.
+  eauto.
+  destruct (EqDec_dec eqda a a).
+  trivial.
+  intuition eauto.
+  simpl.
+  rewrite IHls1.
+  eapply any_dec_f_eq.
+  intuition idtac.
+  destruct (EqDec_dec eqda a a0).
+  subst.
+  intuition idtac.
+  destruct (in_dec (EqDec_dec eqda) a0 ls1);
+  trivial.
+
+Qed.
+
+Fixpoint hasDup(A : Set)(eqd : EqDec A)(ls : list A) :=
+  match ls with
+  | nil => false
+  | a :: ls' => if (in_dec (EqDec_dec _) a ls') then true else (hasDup _ ls')
+end.
+
+Theorem hasDup_false_NoDup : forall (A : Set)(eqd : EqDec A)(ls : list A),
+  hasDup _ ls = false ->
+  NoDup ls.
+
+  induction ls; intuition idtac; simpl in *.
+  econstructor.
+  destruct (in_dec (EqDec_dec eqd) a ls).
+  discriminate.
+  econstructor;
+  intuition idtac.
+
+Qed.
+
+Theorem hasDup_true_not_NoDup : forall (A : Set)(eqd : EqDec A)(ls : list A),
+  hasDup eqd ls = true ->
+  NoDup ls -> False.
+
+  induction ls; intuition idtac; simpl in *.
+  discriminate.
+  destruct (in_dec (EqDec_dec eqd) a ls).
+  inversion H0; clear H0; subst.
+  intuition idtac.
+  inversion H0; clear H0; subst.
+  intuition idtac.
+
+Qed.
+
+Theorem not_NoDup_hasDup_true : forall (A : Set)(eqd : EqDec A)(ls : list A),
+  (~NoDup ls) ->
+  hasDup eqd ls = true.
+
+  induction ls; intuition idtac; simpl in *.
+  exfalso.
+  eapply H.
+  econstructor.
+  destruct (in_dec (EqDec_dec eqd) a ls).
+  trivial.
+  eapply IHls.
+  intuition idtac.
+  eapply H.
+  econstructor; intuition idtac.
+
+Qed.
+
+Theorem skipn_0 : forall (A : Type)(ls : list A),
+  skipn 0 ls = ls.
+  intuition idtac.
+Qed.
+
+Theorem firstn_app_le : forall (A : Type)(n : nat)(ls1 ls2 : list A),
+  (n <= length ls1)%nat ->
+  firstn n (ls1 ++ ls2) = firstn n ls1.
+
+  induction n; destruct ls1; intuition idtac; simpl in *.
+  omega.
+  f_equal.
+  eapply IHn.
+  omega.
+
+Qed.
+
+Theorem skipn_cons_impl_le : forall (A : Type)(n : nat)(ls1 ls2 : list A) a,
+  skipn n ls1 = (a :: ls2) -> 
+  (n <= length ls1)%nat.
+
+  induction n; destruct ls1; intuition idtac; simpl in *.
+  discriminate.
+  omega.
+  discriminate.
+  eapply le_n_S.
+  eapply IHn.
+  eauto.
+
+Qed.
+
+Theorem map_split_l : forall (A B C: Type)(ls : list (A * B))(f : A -> C),
+  map f (fst (split ls)) = map (fun x => f (fst x)) ls.
+
+  induction ls; intuition idtac; simpl in *.
+  remember (split ls) as z. destruct z.
+  simpl.
+  f_equal.
+  eapply IHls.
+
+Qed.
+
+Theorem map_split_r : forall (A B C: Type)(ls : list (A * B))(f : B -> C),
+  map f (snd (split ls)) = map (fun x => f (snd x)) ls.
+
+  induction ls; intuition idtac; simpl in *.
+  remember (split ls) as z. destruct z.
+  simpl.
+  f_equal.
+  eapply IHls.
+
+Qed.
+
+Theorem skipn_map_eq : forall (A B : Type)(n : nat)(ls : list A)(f : A -> B),
+  skipn n (map f ls) = map f (skipn n ls).
+
+  induction n; destruct ls; intuition idtac; simpl in *.
+  eauto.
+
+Qed.
+
+Theorem skipn_app_gen : forall (A : Type)(n : nat)(ls1 ls2 : list A),
+  skipn n (ls1 ++ ls2) = 
+  skipn n ls1 ++ (skipn (n - length ls1) ls2).
+
+  induction n; destruct ls1; intuition idtac; simpl in *.
+  apply IHn.
+  
+Qed.
+
+Theorem tl_app_eq : forall (A : Type)(ls1 ls2 : list A),
+  ls1 <> nil ->
+  tl (ls1 ++ ls2) = (tl ls1) ++ ls2.
+
+  induction ls1; intuition idtac; simpl in *.
+
+Qed.
+
+Theorem Forall2_map_eq : forall (A B C : Type)(f1 : A -> C)(f2 : B -> C)(lsa : list A)(lsb : list B),
+  Forall2 (fun a b => f1 a = f2 b) lsa lsb ->
+  map f1 lsa = map f2 lsb.
+
+  induction 1; intuition idtac; simpl in *.
+  f_equal.
+  trivial.
+  eauto.
+
+Qed.
+
+Theorem skipn_nil_impl_short : forall (A : Type)(n : nat)(ls : list A),
+  skipn n ls = nil -> 
+  (length ls <= n)%nat.
+
+  induction n; destruct ls; intuition idtac; simpl in *.
+  omega.
+  discriminate.
+  omega.
+  eapply le_n_S.
+  eauto.
+
+Qed.
+
+
