@@ -7,6 +7,7 @@
 Set Implicit Arguments.
 Require Import FCF.Crypto.
 Require Import FCF.Fold.
+Require Import Permutation.
 
 Local Open Scope list_scope.
 
@@ -212,7 +213,7 @@ Lemma arrayLookup_Some_In_unzip :
   
 Qed.
 
-Lemma notInArrayLookupNone : 
+Lemma notInArrayLookupNone_unzip : 
   forall (A B : Set)(eqd : EqDec A)(arr : Array A B) a,
     (~ In a (fst (unzip arr))) ->
     (arr # a) = None.
@@ -729,4 +730,85 @@ Theorem arrayLookup_allNats_eq :
   omega.
   trivial.
   
+Qed.
+
+Theorem notInArrayLookupNone:
+  forall (A B : Set) (eqd : EqDec A)
+    (arr : Array A B) (a : A),
+  ~ In a (fst (split arr)) ->
+  arrayLookup eqd arr a = None.
+
+  induction arr; intuition; simpl in *.
+  remember (split arr) as z. destruct z.
+  simpl in *.
+  intuition idtac.
+  case_eq (eqb a a0); intros.
+  rewrite eqb_leibniz in H.
+  subst.
+  intuition idtac.
+  eauto.
+
+Qed.
+
+
+Theorem arrayLookup_In_split : forall (A B : Set)(eqd : EqDec A)(ls : list (A * B)) a b,
+  arrayLookup _ ls a = Some b ->
+  In a (fst (split ls)).
+
+  induction ls; intuition idtac; simpl in *.
+  discriminate.
+  remember (split ls) as z.
+  destruct z.
+  simpl.
+  case_eq (eqb a a0); intros.
+  rewrite eqb_leibniz in H0.
+  subst.
+  intuition idtac.
+  rewrite H0 in H.
+  eauto.
+
+Qed.
+
+Theorem arrayLookup_perm_eq : forall (A B : Set)(eqd : EqDec A)(ls1 ls2 : list (A * B)),
+  Permutation ls1 ls2 ->
+  NoDup (fst (split ls1)) -> NoDup (fst (split ls2)) ->
+  (forall x, arrayLookup _ ls1 x = arrayLookup _ ls2 x).
+
+  induction 1; intuition idtac; simpl in *.
+  destruct x.
+  case_eq (eqb x0 a); intros.
+  trivial.
+  remember (split l') as z. destruct z.
+  remember (split l) as z. destruct z.
+  simpl in *.
+  inversion H0; clear H0; subst.
+  inversion H1; clear H1; subst.
+  eapply IHPermutation; eauto.
+
+  destruct y.
+  destruct x.
+  remember (split l) as z. destruct z.
+  simpl in *.
+  case_eq (eqb x0 a); intros.
+  rewrite (eqb_leibniz) in H1. subst.
+  case_eq (eqb a a0); intros.
+  rewrite eqb_leibniz in H1.
+  subst.
+  inversion H0; clear H0; subst.
+  simpl in *.
+  intuition idtac.
+  trivial.
+  reflexivity.
+
+  rewrite H3.
+  rewrite IHPermutation2.
+  trivial.
+  eapply Permutation_NoDup.
+  eapply fst_split_perm; eauto.
+  trivial.
+  trivial.
+  eapply Permutation_NoDup.
+  eapply fst_split_perm; eauto.
+  trivial.
+
 Qed.

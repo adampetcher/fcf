@@ -306,10 +306,10 @@ Qed.
 
 Local Open Scope comp_scope.
 
-Definition maybeBind(A B : Type)(opt_a : option A)(f : A -> B) : option B :=
+Definition maybeBind(A B : Type)(opt_a : option A)(f : A -> option B) : option B :=
   match opt_a with
     | None => None
-    | Some a => Some (f a)
+    | Some a => (f a)
   end.
 
 Inductive OracleComp : Set -> Set -> Set -> Type :=

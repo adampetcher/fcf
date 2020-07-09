@@ -44,8 +44,10 @@ src/FCF/RndDup.v
 src/FCF/RndGrpElem.v
 src/FCF/RndInList.v
 src/FCF/RndListElem.v
+src/FCF/RndListPred.v
 src/FCF/RndNat.v
 src/FCF/RndPerm.v
+src/FCF/ROM.v
 src/FCF/SemEquiv.v
 src/FCF/SplitVector.v
 src/FCF/StdNat.v

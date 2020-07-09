@@ -12,6 +12,8 @@ Require Import FCF.SemEquiv.
 Require Import FCF.DetSem.
 Require Import FCF.NotationV1.
 
+Require Import Omega.
+
  
 Local Open Scope rat_scope.
 Local Open Scope comp_scope.
@@ -2507,4 +2509,346 @@ Theorem evalDist_orb_le :
   rewrite ratMult_1_r.
   reflexivity.
   
+Qed.
+
+Theorem evalDist_seq_eq_trans : forall (A B : Set) c1 c2 (f : A -> Comp B),
+  (forall x, evalDist c1 x == evalDist c2 x) ->
+  (forall x, evalDist (Bind c1 f) x == evalDist (Bind c2 f) x).
+
+  intros.
+  eapply evalDist_seq_eq; intuition idtac.
+  reflexivity.
+
+Qed. 
+
+Theorem evalDist_comp_equal : forall (A : Set)(c1 c2 : Comp A) x,
+  c1 = c2 ->
+  evalDist c1 x == evalDist c2 x.
+
+  intros; subst; reflexivity.
+
+Qed.
+
+Theorem combine_app : forall (A B : Type) (lsa1 lsa2 : list A) (lsb1 lsb2 : list B),
+  length lsa1 = length lsb1 ->
+  combine (lsa1 ++ lsa2) (lsb1 ++ lsb2) = 
+  (combine lsa1 lsb1) ++ (combine lsa2 lsb2).
+
+  induction lsa1; destruct lsb1; intros; simpl in *; try discriminate.
+  reflexivity.
+  f_equal.
+  eapply IHlsa1.
+  omega.
+
+Qed.
+
+Theorem combine_cons : forall (A B : Type) a1 (lsa2 : list A) b1 (lsb2 : list B),
+  combine (a1 :: lsa2) (b1 ::lsb2) = 
+  (a1, b1) :: (combine lsa2 lsb2).
+
+  intuition idtac.
+
+Qed.
+
+Theorem map_cons : forall (A B : Type)(f : A -> B) a ls,
+  map f (a :: ls) = (f a) :: (map f ls).
+
+  intuition idtac.
+
+Qed.
+
+Theorem Repeat_body_eq : forall (A : Set) (eqda : EqDec A)(c1 c2 : Comp A) f,
+  (forall x, evalDist c1 x == evalDist c2 x) ->
+  (forall x, evalDist (Repeat c1 f) x == evalDist (Repeat c2 f) x).
+
+  intros.
+  destruct (in_dec (EqDec_dec _) x (getSupport c1)).
+  case_eq (f x); intuition idtac.
+  eapply evalDist_Repeat_eq; intuition idtac.
+  eauto.
+  eapply filter_In; intuition idtac.
+  erewrite sumList_permutation.
+  eapply sumList_body_eq.
+  intuition idtac.
+  eauto.
+  apply evalDist_getSupport_filter_perm; intuition idtac.
+  eauto.
+  
+  repeat rewrite evalDistRepeat_pred_0; intuition idtac.
+  reflexivity.
+  repeat rewrite evalDistRepeat_sup_0; intuition idtac.
+  reflexivity.
+  rewrite <- H.
+  eapply getSupport_not_In_evalDist_h; eauto.
+  eapply getSupport_not_In_evalDist_h; eauto.
+
+Qed.
+
+Theorem repeat_fission_indep : forall (A B : Set)(eqda : EqDec A)(eqdb : EqDec B)(c1 : Comp A)(c2 : Comp B) P1 P2 y,
+  evalDist (Repeat (a <-$ c1; b <-$ c2; ret (a, b)) (fun x => (P1 (fst x)) && (P2 (snd x)))) y  ==
+  evalDist (a <-$ (Repeat c1 P1); b <-$ (Repeat c2 P2); ret (a, b)) y.
+
+  intros.
+  simpl.
+  rewrite <- sumList_factor_constant_l.
+  rewrite (sumList_filter_partition P1).
+  symmetry.
+  rewrite ratAdd_0_r.
+  apply ratAdd_eqRat_compat.
+  
+  apply sumList_body_eq.
+  intros.
+  repeat rewrite <- sumList_factor_constant_l.
+  symmetry.
+  rewrite (sumList_filter_partition P2).
+  symmetry.
+  rewrite ratAdd_0_r.
+  apply ratAdd_eqRat_compat.
+
+  apply sumList_body_eq.
+  intros.
+  apply filter_In in H.
+  apply filter_In in H0.
+  intuition idtac.
+  unfold indicator.
+  destruct (EqDec_dec (pair_EqDec eqda eqdb) (a, a0) (a1, b)).
+  pairInv. simpl.
+  rewrite H2. rewrite H3.
+  repeat rewrite ratMult_1_l.
+  repeat rewrite ratMult_1_r.
+  repeat rewrite <- ratMult_assoc.
+  apply ratMult_eqRat_compat; intuition idtac.
+  rewrite ratMult_comm.
+  rewrite <- ratMult_assoc.
+  apply ratMult_eqRat_compat; intuition idtac.
+  rewrite <- ratInverse_ratMult.
+  eapply ratInverse_eqRat_compat.
+  intuition idtac.
+  apply ratMult_0 in H0.
+  intuition idtac.
+  rewrite sumList_0 in H4.
+  eapply getSupport_In_evalDist.
+  eauto.
+  eapply H4.
+  eapply filter_In; intuition idtac.
+  rewrite sumList_0 in H4.
+  eapply getSupport_In_evalDist.
+  eapply H1.
+  eapply H4.
+  eapply filter_In; intuition idtac.
+
+  symmetry.
+  eapply eqRat_trans.
+  eapply sumList_body_eq.
+  intros.
+  apply filter_In in H0.
+  intuition idtac.
+  eapply eqRat_trans.
+  eapply (sumList_filter_partition P1).
+  eapply eqRat_trans.
+  eapply ratAdd_eqRat_compat.
+  eapply sumList_body_eq.
+  intros.
+  eapply ratMult_eqRat_compat.
+  reflexivity.
+  eapply (sumList_filter_partition P2).
+  eapply sumList_0.
+  intros.
+  eapply eqRat_trans.
+  eapply ratMult_eqRat_compat.
+  reflexivity.
+  eapply sumList_0.
+  intros.
+  destruct (EqDec_dec (pair_EqDec eqda eqdb) (a0, a2) a).
+  subst.
+  eapply filter_In in H0.
+  intuition idtac. simpl in *.
+  simpl in *.
+  rewrite negb_true_iff in H8.
+  rewrite H8 in H5.
+  discriminate.
+  eapply ratMult_0_r.
+  apply ratMult_0_r.
+ 
+  eapply eqRat_trans.
+  symmetry.
+  eapply ratAdd_0_r.
+  eapply sumList_body_eq.
+  intros.
+  eapply ratMult_eqRat_compat.
+  reflexivity.
+  eapply eqRat_trans.
+  eapply ratAdd_eqRat_compat.
+  reflexivity.
+  eapply sumList_0.
+  intros.
+  destruct (EqDec_dec (pair_EqDec eqda eqdb) (a0, a2) a); subst.
+  apply filter_In in H6.
+  intuition idtac.
+  simpl in *.
+  rewrite negb_true_iff in H8.
+  rewrite H8 in H5.
+  rewrite andb_false_r in H5.
+  discriminate.
+  eapply ratMult_0_r.
+  symmetry.
+  eapply ratAdd_0_r.
+
+  rewrite sumList_comm.
+  eapply eqRat_trans.
+  eapply sumList_body_eq.
+  intros.
+  eapply sumList_factor_constant_l.
+  eapply eqRat_trans.
+  eapply sumList_body_eq.
+  intros.
+  eapply ratMult_eqRat_compat.
+  reflexivity.
+  eapply sumList_comm.
+  eapply eqRat_trans.
+  eapply sumList_body_eq.
+  intros.
+  eapply ratMult_eqRat_compat.
+  reflexivity.
+  eapply sumList_body_eq.
+  intros.
+  eapply sumList_factor_constant_l.
+  eapply eqRat_trans.
+  eapply sumList_body_eq.
+  intros.
+  eapply ratMult_eqRat_compat.
+  reflexivity.
+  eapply sumList_body_eq.
+  intros.
+  eapply ratMult_eqRat_compat.
+  reflexivity.
+  apply (@sumList_exactly_one _ (a, a0)).
+  eapply filter_NoDup.
+  eapply getUnique_NoDup.
+  eapply filter_In.
+  intuition idtac.
+  eapply in_getUnique.
+  eapply in_flatten.
+  exists ((map (pair a) (getSupport c2))).
+  intuition idtac.
+  eapply in_map_iff.
+  exists a.
+  intuition idtac.
+  rewrite Fold.flatten_map_eq.
+  apply DetSem.getUnique_NoDup_eq.
+  apply FinFun.Injective_map_NoDup.
+  unfold FinFun.Injective.
+  intuition idtac.
+  pairInv.
+  trivial.
+  eapply getSupport_NoDup.
+  eapply filter_In; eauto.
+  eapply in_map_iff.
+  econstructor; intuition idtac.
+  eapply filter_In; eauto.
+  simpl.
+  eapply filter_In in H0.
+  eapply filter_In in H4.
+  eapply andb_true_iff.
+  intuition idtac.
+
+  intros.
+  destruct (EqDec_dec (pair_EqDec eqda eqdb) (a, a0) b0).
+  subst.
+  intuition idtac.
+  reflexivity.
+  eapply eqRat_trans.
+  eapply sumList_body_eq.
+  intros.
+  eapply ratMult_eqRat_compat.
+  reflexivity.
+  eapply sumList_body_eq.
+  intros.
+  eapply ratMult_eqRat_compat.
+  reflexivity.
+  destruct (EqDec_dec (pair_EqDec eqda eqdb) (a, a0) (a, a0)).
+  reflexivity.
+  intuition idtac.
+  eapply eqRat_trans.
+  eapply sumList_body_eq.
+  intros.
+  eapply ratMult_eqRat_compat.
+  reflexivity.
+  eapply sumList_body_eq.
+  intros.
+  eapply ratMult_1_r.
+  rewrite sumList_prod.
+  eapply eqRat_trans.
+  eapply sumList_body_eq.
+  intros.
+  symmetry.
+  eapply sumList_factor_constant_l.
+  rewrite sumList_comm.
+  eapply sumList_body_eq.
+  intros.
+  rewrite sumList_factor_constant_r.
+  eapply ratMult_comm.
+  intuition idtac.
+  rewrite sumList_0 in H0.
+  eapply getSupport_In_evalDist.
+  eauto.
+  eapply H0.
+  eapply filter_In; eauto.
+  intuition idtac.
+  rewrite sumList_0 in H0.
+  eapply getSupport_In_evalDist.
+  eapply H1.
+  eapply H0.
+  eapply filter_In; eauto.
+  reflexivity.
+  reflexivity.
+
+  simpl.
+  repeat rewrite ratMult_0_r.
+  reflexivity.
+
+  symmetry.
+  apply sumList_0.
+  intros.
+  apply filter_In in H0.
+  intuition idtac.
+  rewrite negb_true_iff in H2.
+  unfold indicator. simpl.
+  destruct (EqDec_dec (pair_EqDec eqda eqdb) (a, a0) (a1, b)).
+  pairInv.
+  rewrite H2.
+  rewrite andb_false_r.
+  repeat rewrite ratMult_0_l.
+  reflexivity.
+  repeat rewrite ratMult_0_r.
+  reflexivity.
+
+  symmetry.
+  apply sumList_0.
+  intros.
+  apply filter_In in H.
+  intuition idtac.
+  rewrite negb_true_iff in H1.
+  unfold indicator. simpl.
+  case_eq (P1 a0); intuition idtac.
+  simpl.  
+  assert (sumList (getSupport c2)
+   (fun b0 : B =>
+    evalDist c2 b0 *
+    (if EqDec_dec (pair_EqDec eqda eqdb) (a, b0) (a0, b)
+     then 1
+     else 0)) == 0).
+  apply sumList_0.
+  intros.
+  destruct (EqDec_dec (pair_EqDec eqda eqdb) (a, a1) (a0, b)).
+  pairInv.
+  congruence.
+  apply ratMult_0_r.
+  rewrite H2.
+  repeat rewrite ratMult_0_r.
+  reflexivity.
+  simpl.
+  repeat rewrite ratMult_0_l.
+  reflexivity.
+
 Qed.

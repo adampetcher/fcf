@@ -11,7 +11,7 @@ Local Open Scope list_scope.
 (* Definitions for fold, map etc.   These should probably go somewhere else. *)
 
 (* Fold a computation over a list *)
-Fixpoint compFold(A B : Set)(eqd : EqDec B)(f : B -> A -> Comp B)(init : B)(ls : list A) :=
+Fixpoint compFold(A : Type)(B : Set)(eqd : EqDec B)(f : B -> A -> Comp B)(init : B)(ls : list A) :=
   match ls with
       | nil => ret init 
       | a :: ls' =>
@@ -20,14 +20,14 @@ Fixpoint compFold(A B : Set)(eqd : EqDec B)(f : B -> A -> Comp B)(init : B)(ls :
   end.
 
 (* foldBody_option is an adapter that allows you to fold a computation with signature B -> A -> Comp (option B) over a list of A, accumulating an option B. *)
-Definition foldBody_option(A B : Set)(eqd : EqDec B)(f : B -> A -> Comp (option B))(b_opt : option B)(a : A) :=
+Definition foldBody_option(A : Type)(B : Set)(eqd : EqDec B)(f : B -> A -> Comp (option B))(b_opt : option B)(a : A) :=
   match b_opt with
       | None => ret None
       | Some b =>
         f b a
   end.
 
-Definition opt_pred(A B : Set)(P : A -> B -> Prop)(opt_a : option A)(opt_b : option B) :=
+Definition opt_pred(A B : Type)(P : A -> B -> Prop)(opt_a : option A)(opt_b : option B) :=
   match opt_a with
     | Some a =>
       match opt_b with
@@ -42,7 +42,7 @@ Definition opt_pred(A B : Set)(P : A -> B -> Prop)(opt_a : option A)(opt_b : opt
   end.
 
 Theorem foldBody_option_spec : 
-  forall (A B C D: Set)(eqda : EqDec A)(eqdb : EqDec B) (c1 : A -> C -> Comp (option A)) (c2 : B -> D -> Comp (option B)) (post : A -> B -> Prop) (pre1 : A -> B -> Prop) (pre2 : C -> D -> Prop), 
+  forall (A B : Set)(C D: Type)(eqda : EqDec A)(eqdb : EqDec B) (c1 : A -> C -> Comp (option A)) (c2 : B -> D -> Comp (option B)) (post : A -> B -> Prop) (pre1 : A -> B -> Prop) (pre2 : C -> D -> Prop), 
     (forall a b c d, 
          pre1 a b -> pre2 c d -> comp_spec (opt_pred post) (c1 a c) (c2 b d)) ->
     forall opt_a opt_b c d,
@@ -82,7 +82,7 @@ Theorem compFold_option_spec :
 Qed.
 
 (* Map a computation over a list. *)
-Fixpoint compMap (A B : Set)(eqdb : EqDec B)(c : A -> Comp B)(ls : list A) : Comp (list B) :=
+Fixpoint compMap (A : Type)(B : Set)(eqdb : EqDec B)(c : A -> Comp B)(ls : list A) : Comp (list B) :=
   match ls with
       | nil => ret nil
       | a :: lsa' =>
@@ -93,7 +93,7 @@ Fixpoint compMap (A B : Set)(eqdb : EqDec B)(c : A -> Comp B)(ls : list A) : Com
 
 
 Theorem compMap_cons: 
-  forall (A B : Set)(eqdb : EqDec B) (ls : list A)(c : A -> Comp B) (a : A) x,
+  forall (A : Type)(B : Set)(eqdb : EqDec B) (ls : list A)(c : A -> Comp B) (a : A) x,
     evalDist (compMap _ c (a :: ls)) x ==
     evalDist (b <-$ c a; lsb <-$ compMap _ c ls; ret (b :: lsb)) x.
   
@@ -104,7 +104,7 @@ Theorem compMap_cons:
 Qed.
 
 Theorem compMap_nil : 
-  forall (A B : Set)(eqdb : EqDec B)(c : A -> Comp B),
+  forall (A : Type)(B : Set)(eqdb : EqDec B)(c : A -> Comp B),
     compMap _ c nil = ret nil.
 
   intuition.
@@ -120,7 +120,7 @@ Theorem list_inhabited :
 Qed.
 
 Theorem compMap_fission_eq:
-  forall (A B C D : Set){eqdb : EqDec B}{eqdd : EqDec D}{eqdc : EqDec C}(ls : list A)(f1 : A -> Comp B)(f2 : A -> Comp C)(f3 : list B -> Comp (list D))(f4 : C -> Comp D) P,
+  forall (A : Type)(B C D : Set){eqdb : EqDec B}{eqdd : EqDec D}{eqdc : EqDec C}(ls : list A)(f1 : A -> Comp B)(f2 : A -> Comp C)(f3 : list B -> Comp (list D))(f4 : C -> Comp D) P,
     (comp_spec eq (f3 nil) (ret nil)) -> 
     (forall a, comp_spec P (f1 a) (f2 a)) -> 
     (forall r1 r2 r3, P r1 r2 ->
@@ -161,7 +161,7 @@ Qed.
   
 
 Theorem compMap_map_fission_eq :
-  forall (A B C D : Set){eqdb : EqDec B}{eqdd : EqDec D}{eqdc : EqDec C}(ls : list A)(f1 : A -> Comp B)(f2 : A -> Comp C)(f3 : B -> D)(f4 : C -> D),
+  forall (A : Type)(B C D : Set){eqdb : EqDec B}{eqdd : EqDec D}{eqdc : EqDec C}(ls : list A)(f1 : A -> Comp B)(f2 : A -> Comp C)(f3 : B -> D)(f4 : C -> D),
     (forall a, comp_spec (fun b c => f3 b = f4 c)
               (f1 a) (f2 a)) -> 
     comp_spec eq (lsb <-$ compMap _ f1 ls; ret (map f3 lsb))
@@ -181,7 +181,7 @@ Qed.
 
 
 Theorem fold_map_fission_spec_eq : 
-  forall (A B C: Set)(eqdB : EqDec B)(eqdC : EqDec C) ls c init (ca : A -> Comp B) cb,
+  forall (A : Type)(B C: Set)(eqdB : EqDec B)(eqdC : EqDec C) ls c init (ca : A -> Comp B) cb,
     (forall a init, comp_spec eq (c init a) (x <-$ ca a; cb init x)) ->
     comp_spec eq (compFold _ c init ls) 
     (lsa <-$ (compMap _ ca ls); compFold _ cb init lsa).
@@ -209,7 +209,7 @@ Theorem fold_map_fission_spec_eq :
 Qed.
 
 Theorem fold_map_fission_spec : 
-  forall (A E : Set)(P : A -> E -> Prop)(B D : Set)(eqdA : EqDec A)(c1 : A -> B -> Comp A)(ls_b : list B)(init_a : A)
+  forall (A E : Set)(P : A -> E -> Prop)(B : Type)(D : Set)(eqdA : EqDec A)(c1 : A -> B -> Comp A)(ls_b : list B)(init_a : A)
     (eqdD : EqDec D)(eqdE : EqDec E)(c2 : B -> Comp D)(c3 : E -> D -> Comp E)(init_e : E),
     P init_a init_e ->
     (forall a b e, P a e -> comp_spec P (c1 a b) (a0 <-$ c2 b; c3 e a0)) ->
@@ -410,7 +410,6 @@ Lemma list_pred_map_r_eq :
   forall (A B : Set)(ls : list A)(f : A -> B),
     list_pred (fun a b => f a = b) ls (map f ls).
   
-  
   induction ls; intuition; simpl in *.
   econstructor.
   econstructor; intuition.
@@ -460,11 +459,11 @@ Lemma list_pred_map_l_eq :
 Qed.
 
 (* map constructed out of fold -- more complicated but allows us to apply any fold theory to map operations.*)
-Definition compMap_fold (A B : Set)(eqd : EqDec B)(c : A -> Comp B)(ls : list A) :=
+Definition compMap_fold (A : Type)(B : Set)(eqd : EqDec B)(c : A -> Comp B)(ls : list A) :=
   compFold _ (fun (acc : list B)(a : A) => b <-$ c a; ret (acc ++ (b :: nil))) nil ls.
 
 Lemma compFold_spec : 
-  forall (A C D : Set)(P2 : list A -> C -> D -> Prop)(eqdc : EqDec C)(eqdd : EqDec D)(lsa : list A)(c1 : C -> A -> Comp C)(c2 : D -> A -> Comp D) init1 init2,
+  forall (A : Type)(C D : Set)(P2 : list A -> C -> D -> Prop)(eqdc : EqDec C)(eqdd : EqDec D)(lsa : list A)(c1 : C -> A -> Comp C)(c2 : D -> A -> Comp D) init1 init2,
     P2 lsa init1 init2 ->
     (forall a lsa c d, P2 (a :: lsa) c d -> comp_spec (P2 lsa) (c1 c a) (c2 d a)) ->
     comp_spec (P2 nil) (compFold _ c1 init1 lsa) (compFold _ c2 init2 lsa).
@@ -480,7 +479,7 @@ Qed.
 
 
 Theorem compMap_fold_equiv : 
-  forall (A B : Set)(eqd : EqDec B)(c : A -> Comp B)(ls : list A),
+  forall (A:Type)(B : Set)(eqd : EqDec B)(c : A -> Comp B)(ls : list A),
     comp_spec eq (compMap eqd c ls) (compMap_fold eqd c ls).
   
   induction ls; intuition; simpl.
@@ -517,7 +516,7 @@ Theorem compMap_fold_equiv :
 Qed.
 
 Lemma compFold_wf : 
-  forall (A B : Set)(eqd : EqDec A)(c : A -> B -> Comp A)(ls : list B) init,
+  forall (A : Set)(B : Type)(eqd : EqDec A)(c : A -> B -> Comp A)(ls : list B) init,
     (forall a b, well_formed_comp (c a b)) ->
     well_formed_comp (compFold _ c init ls).
   
@@ -533,7 +532,7 @@ Lemma compFold_wf :
 Qed.
 
 Lemma compMap_map : 
-  forall (A B : Set)(eqd : EqDec B)(f : A -> B) ls,
+  forall (A: Type)(B : Set)(eqd : EqDec B)(f : A -> B) ls,
     comp_spec eq (compMap _ (fun a => ret (f a)) ls) (ret (map f ls)).
   
   induction ls; intuition.
@@ -552,7 +551,7 @@ Lemma compMap_map :
 Qed.
 
 Lemma compFold_nop : 
-  forall (A B : Set)(eqd : EqDec A)(c : A -> B -> Comp A)(ls : list B) init x, 
+  forall (A: Set)(B : Type)(eqd : EqDec A)(c : A -> B -> Comp A)(ls : list B) init x, 
     In x (getSupport (compFold _ c init ls)) ->
     (forall b a, In b ls -> In a (getSupport (c init b)) -> a = init) ->
     x = init.
@@ -581,7 +580,7 @@ Lemma compFold_nop :
 Qed.
 
 Lemma compFold_app : 
-  forall (A B : Set)(eqd : EqDec A)(c : A -> B -> Comp A)(ls1 ls2 : list B) init x,
+  forall (A: Set)(B : Type)(eqd : EqDec A)(c : A -> B -> Comp A)(ls1 ls2 : list B) init x,
     evalDist (compFold _ c init (ls1 ++ ls2)) x ==
     evalDist (init' <-$ compFold _ c init ls1; compFold _ c init' ls2) x.
   
@@ -601,7 +600,7 @@ Lemma compFold_app :
 Qed.
 
 Theorem comp_fold_ext : 
-  forall (A B : Set)(eqd : EqDec A)(c1 c2 : A -> B -> Comp A)(ls : list B)(init : A),
+  forall (A B: Set)(eqd : EqDec A)(c1 c2 : A -> B -> Comp A)(ls : list B)(init : A),
     (forall a b,
        comp_spec eq (c1 a b) (c2 a b)) ->
     comp_spec eq (compFold _ c1 init ls) (compFold _ c2 init ls).
@@ -837,7 +836,7 @@ Lemma compMap_spec :
 Qed.
 
 Theorem compMap_fission_ex : 
-  forall (A B C : Set)(eqdb : EqDec B)(eqdc : EqDec C)
+  forall (A : Type)(B C : Set)(eqdb : EqDec B)(eqdc : EqDec C)
          (c1 : A -> Comp B)(c2 : B -> Comp C)(ls : list A),
     comp_spec eq 
               (compMap _ (fun a => b <-$ c1 a; c2 b) ls)
@@ -1072,7 +1071,7 @@ Lemma list_pred_allNatsLt :
 Qed.
 
 Lemma compMap_length :
-  forall (A B : Set)(eqd : EqDec B)(ls : list A) x (c : A -> Comp B) ,
+  forall (A : Type)(B : Set)(eqd : EqDec B)(ls : list A) x (c : A -> Comp B) ,
     In x (getSupport (compMap _ c ls)) ->
     length x = length ls.
   
@@ -1154,7 +1153,7 @@ Qed.
 
 
 Lemma compFold_spec' : 
-  forall (A B C D : Set)(P2 : list A -> list B -> C -> D -> Prop)(eqdc1 eqdc2  : EqDec C)(eqdd1 eqdd2 : EqDec D)(lsa : list A)(lsb : list B)(c1 : C -> A -> Comp C)(c2 : D -> B -> Comp D) init1 init2,
+  forall (A B: Type)(C D : Set)(P2 : list A -> list B -> C -> D -> Prop)(eqdc1 eqdc2  : EqDec C)(eqdd1 eqdd2 : EqDec D)(lsa : list A)(lsb : list B)(c1 : C -> A -> Comp C)(c2 : D -> B -> Comp D) init1 init2,
     length lsa = length lsb ->
     P2 lsa lsb init1 init2 ->
     (forall a lsa b lsb c d, P2 (a :: lsa) (b :: lsb) c d -> comp_spec (P2 lsa lsb) (c1 c a) (c2 d b)) ->
@@ -1177,7 +1176,7 @@ Qed.
   
 
 Lemma compMap_support_app : 
-  forall (A B : Set)(eqd : EqDec B)(c : A -> Comp B)(lsa1 lsa2 : list A)(lsb1 lsb2 : list B),
+  forall (A: Type)(B : Set)(eqd : EqDec B)(c : A -> Comp B)(lsa1 lsa2 : list A)(lsb1 lsb2 : list B),
     In lsb1 (getSupport (compMap _ c lsa1)) ->
     In lsb2 (getSupport (compMap _ c lsa2)) ->
     In (lsb1 ++ lsb2) (getSupport (compMap _ c (lsa1 ++ lsa2))).
@@ -1217,7 +1216,7 @@ Lemma list_pred_single :
 Qed.
 
 Lemma flatten_map_eq : 
-  forall (A B : Set)(ls : list (list A))(f : A -> B),
+  forall (A B : Type)(ls : list (list A))(f : A -> B),
     map f (flatten ls) = flatten (map (fun ls' => map f ls') ls).
   
   induction ls; intuition; simpl in *.
@@ -1293,7 +1292,7 @@ Lemma flatten_map_pair_eq :
 Qed.
 
 Lemma compMap_app : 
-  forall (A B : Set)(eqd : EqDec B)(ls1 ls2 : list A)(c : A -> Comp B) x,
+  forall (A: Type)(B : Set)(eqd : EqDec B)(ls1 ls2 : list A)(c : A -> Comp B) x,
     evalDist (compMap _ c (ls1 ++ ls2)) x ==
     evalDist (r1 <-$ compMap _ c ls1; r2 <-$ compMap _ c ls2; ret (r1 ++ r2)) x.
   
@@ -1327,7 +1326,7 @@ Lemma compMap_app :
 Qed.
 
 Lemma compMap_flatten :
-  forall (A B : Set)(eqd : EqDec B)(c : A -> Comp B)(ls : list (list A)),
+  forall (A: Type)(B : Set)(eqd : EqDec B)(c : A -> Comp B)(ls : list (list A)),
     comp_spec
       (fun ls1 ls2 => ls2 = flatten ls1)
       (compMap _ (fun ls' => compMap _ c ls') ls)
@@ -1357,7 +1356,7 @@ Lemma compMap_flatten :
 Qed.
 
 Lemma map_f_equal : 
-  forall (A B : Set)(f1 f2 : A -> B)(ls1 ls2 : list A),
+  forall (A B : Type)(f1 f2 : A -> B)(ls1 ls2 : list A),
     (forall a, f1 a = f2 a) ->
     ls1 = ls2 ->
     map f1 ls1 = map f2 ls2.
@@ -2068,7 +2067,7 @@ Lemma list_pred_flatten_both :
 Qed.
 
 Theorem compMap_wf :
-  forall (A B : Set){eqdb : EqDec B}(c : A -> Comp B)(ls : list A),
+  forall (A : Type)(B : Set){eqdb : EqDec B}(c : A -> Comp B)(ls : list A),
     (forall a, In a ls -> well_formed_comp (c a)) ->
     well_formed_comp (compMap _ c ls).
 
@@ -2127,7 +2126,7 @@ Theorem compFold_cons :
 Qed.
 
 Theorem compFold_support_h : 
-  forall (A B : Set)(eqda : EqDec A)(P : A -> list B -> list B -> Prop)(c : A -> B -> Comp A) (ls1 ls2 ls3 : list B)(a z : A),
+  forall (A: Set)(B : Type)(eqda : EqDec A)(P : A -> list B -> list B -> Prop)(c : A -> B -> Comp A) (ls1 ls2 ls3 : list B)(a z : A),
     In z (getSupport (compFold _ c a ls1)) ->
     P a ls2 (ls1 ++ ls3) ->
     (forall a1 a2 b ls1 ls2,
@@ -2161,7 +2160,7 @@ Theorem compFold_support_h :
 Qed.
 
 Theorem compFold_support : 
-  forall (A B : Set)(eqda : EqDec A)(P : A -> list B -> list B -> Prop)(c : A -> B -> Comp A) (ls1 : list B)(a z : A),
+  forall (A: Set)(B : Type)(eqda : EqDec A)(P : A -> list B -> list B -> Prop)(c : A -> B -> Comp A) (ls1 : list B)(a z : A),
     In z (getSupport (compFold _ c a ls1)) ->
     P a nil ls1 ->
     (forall a1 a2 b ls1 ls2,
@@ -2193,7 +2192,7 @@ Theorem list_pred_app_both_if :
 Qed.
 
 Theorem compMap_seq_map :
-  forall (A B C : Set)(eqdc : EqDec C)(ls : list A)(f : A -> B)(c : B -> Comp C),
+  forall (A B: Type)(C : Set)(eqdc : EqDec C)(ls : list A)(f : A -> B)(c : B -> Comp C),
     comp_spec eq
               (compMap _ c (map f ls))
               (compMap _ (fun x => c (f x)) ls).
@@ -2373,7 +2372,7 @@ Lemma compMap_Repeat_close :
 Qed.
 
 Theorem compMap_head : 
-  forall (A B : Set)(eqd : EqDec B)(f : A -> Comp B)(ls : list A) x,
+  forall (A: Type)(B : Set)(eqd : EqDec B)(f : A -> Comp B)(ls : list A) x,
     (forall a, In a ls -> well_formed_comp (f a)) ->
     evalDist (ls' <-$ compMap _ f ls; ret (head ls')) x ==
     evalDist (match (head ls) with
@@ -2609,7 +2608,7 @@ Theorem Repeat_unroll_n :
 Qed.
 
 Theorem compFold_ret_eq : 
-  forall (A B : Set)(eqdb : EqDec B)(ls : list A)(f : B -> A -> B) init,
+  forall (A: Type)(B : Set)(eqdb : EqDec B)(ls : list A)(f : B -> A -> B) init,
     comp_spec eq
               (compFold _ (fun b a => ret (f b a)) init ls)
               (ret (fold_left f ls init)).
@@ -2622,7 +2621,7 @@ Theorem compFold_ret_eq :
 Qed.
 
 Theorem prob_fold_add_false_0 :
-  forall (A B : Set)(c : Comp A)(ls : list B)(P : A -> bool),
+  forall (A : Set)(B : Type)(c : Comp A)(ls : list B)(P : A -> bool),
     Pr[compFold _ (fun b _ => x <-$ c; ret b && (P x)) false ls] == 0.
   
   induction ls; intuition.
