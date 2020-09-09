@@ -545,7 +545,7 @@ Section OracleMapHybrid.
     fcf_skip.
     fcf_simp.
     fcf_skip.    
-    cutrewrite (l = (firstn i l ++ skipn i l)).
+    replace l with (firstn i l ++ skipn i l).
     eapply eqRat_trans.
     eapply compFold_app.
     
