@@ -325,7 +325,7 @@ Section RandomFunc_hist.
     simpl.
     match goal with
     | [|- context[if ?a then _ else _] ] =>
-      cutrewrite (a = Some r)
+      replace a with (Some r)
     end;
     simpl; trivial.
 
@@ -336,7 +336,7 @@ Section RandomFunc_hist.
     simpl in *.
     match goal with
     | [H: (if ?a then _ else _) = false |- _] =>
-      cutrewrite (a = Some r) in H
+      replace a with (Some r) in H
     end; trivial.
     discriminate.
     simpl in *.
@@ -347,7 +347,7 @@ Section RandomFunc_hist.
     simpl in *.
     match goal with
     | [H: (if ?a then _ else _) = false |- _] =>
-      cutrewrite (a = Some r) in H
+      replace a with (Some r) in H
     end; trivial.
     discriminate.
 
@@ -362,7 +362,7 @@ Section RandomFunc_hist.
     simpl.
     match goal with
     | [|- context[if ?a then _ else _] ] =>
-      cutrewrite (a = Some r)
+      replace a with (Some r)
     end; trivial.
     simpl.
     symmetry.
@@ -372,7 +372,7 @@ Section RandomFunc_hist.
     simpl.  
     match goal with
     | [|- context[if ?a then _ else _] ] =>
-      cutrewrite (a = Some r)
+      replace a with (Some r)
     end;
     simpl; trivial.
 
@@ -383,7 +383,7 @@ Section RandomFunc_hist.
     simpl in *.
     match goal with
     | [H: (if ?a then _ else _) = false |- _] =>
-      cutrewrite (a = Some r) in H
+      replace a with (Some r) in H
     end; trivial.
     discriminate.
 
@@ -394,7 +394,7 @@ Section RandomFunc_hist.
     simpl in *.
     match goal with
     | [H: (if ?a then _ else _) = false |- _] =>
-      cutrewrite (a = Some r) in H
+      replace a with (Some r) in H
     end; trivial.
     discriminate.
 
@@ -421,7 +421,7 @@ Section RandomFunc_hist.
     simpl in *.
     match goal with
     | [H: (if ?a then _ else _) = false |- _] =>
-      cutrewrite (a = Some r) in H
+      replace a with (Some r) in H
     end; trivial.
     discriminate.
     simpl in *.
@@ -431,7 +431,7 @@ Section RandomFunc_hist.
     simpl in *.
     match goal with
     | [H: (if ?a then _ else _) = false |- _] =>
-      cutrewrite (a = Some r) in H
+      replace a with (Some r) in H
     end; trivial.
     discriminate.
 

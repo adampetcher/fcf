@@ -648,7 +648,7 @@ Section FixedInRndList.
     2:{
       eapply eqRat_impl_leRat.
       symmetry.
-      cutrewrite (S (length ls) = 1 + (length ls))%nat.
+      replace (S (length ls)) with (1 + (length ls))%nat.
       apply ratAdd_num.
       trivial.
     }

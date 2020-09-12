@@ -90,7 +90,7 @@ Section RndListIn.
     2:{
       eapply eqRat_impl_leRat.
       symmetry.
-      cutrewrite (S (length ls) = 1 + (length ls))%nat.
+      replace (S (length ls)) with (1 + (length ls))%nat.
       rewrite ratAdd_num.
       rewrite ratMult_distrib_r.
       reflexivity.
@@ -163,7 +163,7 @@ Section RndListPred.
     2:{
       eapply eqRat_impl_leRat.
       symmetry.
-      cutrewrite (S (length ls) = 1 + (length ls))%nat.
+      replace (S (length ls)) with (1 + (length ls))%nat.
       rewrite ratAdd_num.
       rewrite ratMult_distrib_r.
       reflexivity.

@@ -712,7 +712,7 @@ Section PRF_DRBG.
      (* The rest is just arithmetic. *)
      simpl.
      rewrite mult_1_r.
-     cutrewrite ( S (length ls + length ls * S (length ls)) =  (S (length ls) + length ls * S (length ls)))%nat.
+     replace (S (length ls + length ls * S (length ls))) with (S (length ls) + length ls * S (length ls))%nat.
      rewrite ratAdd_num.
      eapply ratAdd_leRat_compat.
      eapply leRat_terms;
