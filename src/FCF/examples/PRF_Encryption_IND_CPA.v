@@ -634,7 +634,7 @@ Section PRF_Encryption_concrete.
       repeat simp_in_support.
       unfold PRFE_RandomFunc, randomFunc in *.
       destruct (arrayLookup (Bvector_EqDec eta) c x); repeat simp_in_support;
-      simpl in *; omega.
+      simpl in *; lia.
 
     Qed.
 
@@ -1051,9 +1051,9 @@ Section PRF_Encryption_concrete.
       eapply eqRat_impl_leRat.
       rewrite <- ratMult_num_den.
       eapply eqRat_terms.
-      omega.
+      lia.
       unfold posnatMult, natToPosnat, posnatToNat.
-      omega.
+      lia.
     Qed.
 
     Theorem G2_4_5_close : 
@@ -1277,7 +1277,7 @@ Section PRF_Encryption_concrete.
         eapply cost_uncurry_2.
         eapply cost_BVxor.
 
-        omega.
+        lia.
        
       Qed.
 
@@ -1548,20 +1548,20 @@ Section PRF_Encryption_concrete.
       simpl.
       repeat rewrite plus_0_r.
 
-      (* omega can't handle the functions -- remove them *)
+      (* lia can't handle the functions -- remove them *)
       assert (A1_cost (eta + eta + (x + (eta + (eta + eta)))) =
         A1_cost (x + (eta + (eta + (eta + (eta + eta)))))).
-      f_equal; omega.
+      f_equal; lia.
       rewrite H0.
       clear H0.
       remember ( A1_cost (x + (eta + (eta + (eta + (eta + eta)))))) as t1.
       assert (A2_cost_2 (eta + eta + (x + (eta + (eta + eta)))) = 
         A2_cost_2 (x + (eta + (eta + (eta + (eta + eta)))))).
-      f_equal; omega.
+      f_equal; lia.
       rewrite H0.
       clear H0.
       remember (A2_cost_2 (x + (eta + (eta + (eta + (eta + eta)))))) as t2.
-      omega.
+      lia.
     Qed.
       
   End PRF_Encryption_IND_CPA_concrete.
@@ -1611,7 +1611,7 @@ Section PRF_Encryption.
       eapply cost_curry.
       eapply (PRFE_Encrypt_OC_cost_1 n).
       eapply (@PRFE_Encrypt_OC_cost_2 n); eauto.
-      omega.
+      lia.
 
       eapply PRFE_Encrypt_OC_oc_cost; intuition.
 
@@ -1735,7 +1735,7 @@ Section PRF_Encryption.
       intuition.
       econstructor.
 
-      omega.
+      lia.
 
     Qed.
 
@@ -1784,7 +1784,7 @@ Section PRF_Encryption.
       intuition.
       econstructor.
 
-      omega.
+      lia.
 
     Qed.
     

@@ -180,6 +180,6 @@ Theorem oc_compMap_qam :
   auto.
   intuition.
   econstructor.
-  omega.
+  lia.
 
 Qed.

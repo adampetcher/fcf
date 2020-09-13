@@ -84,9 +84,9 @@ Section ListHybrid.
       skipn n ls = nil.
     
     induction ls; destruct n; intuition; simpl in *.
-    omega.
+    lia.
     eapply IHls.
-    omega.
+    lia.
     
   Qed.
 
@@ -144,11 +144,11 @@ Section ListHybrid.
       False.
     
     induction ls; intuition; simpl in *.
-    omega.
+    lia.
     destruct n; simpl in *; intuition.
     discriminate.
     eapply IHls; eauto.
-    omega.
+    lia.
     
   Qed.
 
@@ -181,9 +181,9 @@ Section ListHybrid.
       skipn n ls = nil.
     
     induction ls; destruct n; intuition; simpl in *.
-    omega.
+    lia.
     eapply IHls; eauto.
-    omega.
+    lia.
     
   Qed.
 
@@ -241,7 +241,7 @@ Section ListHybrid.
       comp_spec eq (compMap _ c ls) (y <-$ compMap _ c (firstn n ls); x <-$ c (nth n ls def); ret (y ++ x :: nil)).
     
     induction ls; intuition; simpl in *.
-    omega.
+    lia.
     
     destruct n.
     destruct ls.
@@ -251,7 +251,7 @@ Section ListHybrid.
     simpl.
     eapply comp_spec_eq_refl.
     simpl in*.
-    omega.
+    lia.
     
     simpl.
     inline_first.
@@ -276,11 +276,11 @@ Section ListHybrid.
       firstn n1 (firstn n2 ls) = firstn n1 ls.
     
     induction ls; destruct n1; destruct n2; intuition; simpl in *.
-    omega.
+    lia.
     
     f_equal.
     eapply IHls.
-    omega.
+    lia.
        
   Qed.
 
@@ -290,10 +290,10 @@ Section ListHybrid.
       nth n1 (firstn n2 ls) def = nth n1 ls def.
     
     induction ls; destruct n1; destruct n2; intuition; simpl in *.
-    omega.
-    omega.
+    lia.
+    lia.
     eapply IHls.
-    omega.
+    lia.
   Qed.
 
   Theorem G_hybrid_DistSingle_S_eq : 
@@ -313,7 +313,7 @@ Section ListHybrid.
     eapply compMap_unroll_tl.
     rewrite firstn_length.
     eapply min_l.
-    omega.
+    lia.
     intuition.
     eapply comp_spec_eq_refl.
     inline_first.
@@ -332,8 +332,8 @@ Section ListHybrid.
     rewrite <- app_comm_cons.
     simpl.
     eapply comp_spec_eq_refl.
-    omega.
-    omega.
+    lia.
+    lia.
 
     comp_irr_r.
 
@@ -346,9 +346,9 @@ Section ListHybrid.
     subst.
     rewrite app_nil_r.
     eapply comp_spec_eq_refl.
-    omega.
-    omega.
-    omega.
+    lia.
+    lia.
+    lia.
     
   Qed.
         

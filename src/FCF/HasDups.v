@@ -182,7 +182,7 @@ Section DupProb.
     }
 
     eapply ratAdd_leRat_compat.
-    eapply leRat_terms; omega.
+    eapply leRat_terms; lia.
     eapply leRat_terms; intuition.
     simpl.
     eapply mult_le_compat; intuition.

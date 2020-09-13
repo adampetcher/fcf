@@ -180,6 +180,7 @@ Section ListArray.
 End ListArray.
 
 (* Some notation for array lookups *)
+Declare Scope array_scope.
 Notation "f '#' i " := (arrayLookup _ f i) (at level 70) : array_scope.
 
 Local Open Scope array_scope.
@@ -698,7 +699,7 @@ Theorem arrayLookup_allNats_eq :
 
   eapply nth_option_None_ge in H.
   assert (i = length ls).
-  omega.
+  lia.
   subst.
   
   case_eq (arrayLookup _ ls (length ls)); intuition.
@@ -708,7 +709,7 @@ Theorem arrayLookup_allNats_eq :
   simpl in *.
   rewrite H0 in H2.
   eapply allNatsLt_lt in H2.
-  omega.
+  lia.
   rewrite arrayLookup_app_None; eauto.
   simpl.
   rewrite eqb_refl.
@@ -720,14 +721,14 @@ Theorem arrayLookup_allNats_eq :
   simpl in *.
   rewrite H0 in H2.
   eapply allNatsLt_lt in H2.
-  omega.
+  lia.
   
   rewrite arrayLookup_app_None; eauto.
   simpl.
   case_eq ( eqb i (length ls)); intuition.
   rewrite eqb_leibniz in H3.
   subst.
-  omega.
+  lia.
   trivial.
   
 Qed.

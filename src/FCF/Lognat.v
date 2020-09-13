@@ -9,6 +9,8 @@
 Set Implicit Arguments.
 
 Require Import ZArith.
+Require Import micromega.Lia.
+
 
 (* log2 is like log_inf except it returns nat, so I don't have to reason about an unnecessary conversion. This function is only used to implement lognat below.*)
 Fixpoint log2(n : positive) : nat :=
@@ -27,7 +29,7 @@ Qed.
 Lemma le_s : forall a b,
   (a <= b) -> S a <= S b.
 
-  intros. omega.
+  intros. lia.
 Qed.
 
 
@@ -52,11 +54,11 @@ Definition nat_to_pos (n : nat) : (n <> 0) -> positive :=
 
 Lemma double_nat_nz : forall(a : nat)(pf : a <> 0),
   ((2 * a) <> 0).
-  intros. omega.
+  intros. lia.
 Qed.
 Lemma s_nat_nz : forall(a : nat)(pf : a <> 0),
   ((S a) <> 0).
-  intros. omega.
+  intros. lia.
 Qed.
 
 Lemma factor_s_conv : forall(a : nat)(pf1 : (a <> 0))(pf2 : (S a) <> 0),
@@ -73,13 +75,13 @@ Qed.
 
 Lemma add_s_r : forall a b,
   a + (S b) = S (a + b).
-  intros. omega.
+  intros. lia.
 Qed.
 
 Lemma factor_double_s : forall a,
   (2 * (S a)) = (S (S (2 * a))).
 
-  intros. omega.
+  intros. lia.
 Qed.
 
 Lemma factor_double_conv : forall(a : nat)(pf1 : (a <> 0))(pf2 : (2 * a) <> 0),
@@ -93,14 +95,14 @@ Lemma factor_double_conv : forall(a : nat)(pf1 : (a <> 0))(pf2 : (2 * a) <> 0),
   unfold nat_to_pos.
   auto.
 
-  assert (a + S (a + 0) <> 0) by omega.
+  assert (a + S (a + 0) <> 0) by lia.
   specialize (factor_s_conv H). intros. 
   unfold nat_to_pos in *.
 
   rewrite (H0 pf2). clear H0.  clear pf2.
-  assert (a + S (a + 0) = S (a + (a + 0))) by omega.
+  assert (a + S (a + 0) = S (a + (a + 0))) by lia.
   rewrite H0.  
-  assert (a + (a + 0) <> 0) by omega.
+  assert (a + (a + 0) <> 0) by lia.
   specialize (factor_s_conv H1). intros. 
   
   unfold nat_to_pos in H2.
@@ -113,7 +115,7 @@ Lemma factor_double_conv : forall(a : nat)(pf1 : (a <> 0))(pf2 : (2 * a) <> 0),
   destruct a. intros. destruct n. auto.
 
   auto.
-  omega. 
+  lia. 
 Qed.
 
 Definition lognat(n : nat) : (n <> 0) -> nat := 
@@ -153,11 +155,11 @@ Lemma mult_ne : forall a b,
   a <> 0 -> b <> 0 -> a * b <> 0.
 
   intros. 
-  destruct a. omega. 
-  destruct b. omega. 
+  destruct a. lia. 
+  destruct b. lia. 
   simpl. 
   remember (b + a * (S b)) as c.
-  omega. 
+  lia. 
 Qed.
   
 
@@ -173,7 +175,7 @@ Theorem expnat_nz : forall a e,
 Qed.
 
 Lemma nz_2 : 2 <> 0.
-  omega.
+  lia.
 Qed.
 
 Theorem expnat_2_nz: forall e,
@@ -191,15 +193,15 @@ Theorem expnat_2_monotonic : forall e1 e2,
   intros.
   simpl.
   specialize (expnat_2_nz e2). intros.
-  omega.
+  lia.
 
   induction e2;
   intros.
-  omega.
+  lia.
 
   simpl. 
   specialize (IHe1 e2).
-  omega.
+  lia.
 Qed.
 
 Theorem lognat_correct_eq : forall(b : nat)(pf : (expnat 2 b) <> 0),
@@ -220,7 +222,7 @@ Qed.
 
 Lemma fold_add : forall a,
   a + (a + 0) = 2*a.
-  intros. omega.
+  intros. lia.
 Qed.
 
 Theorem lognat_ge_monotonic_b : forall(a : nat)(pf1 : (a <> 0))(pf2: (S a) <> 0),
@@ -250,8 +252,8 @@ Lemma lognat_ge_monotonic_h : forall (c a b : nat)(pfa : a <> 0)(pfb : b <> 0),
   subst. auto.
 
   intros. 
-  assert (a >= (S b)) by omega. 
-  assert (c = a - (S b)) by omega.
+  assert (a >= (S b)) by lia. 
+  assert (c = a - (S b)) by lia.
   eapply ge_trans.
   apply (IHc a (S b) pfa (s_nat_nz pfb)).
   apply H1.
@@ -296,7 +298,7 @@ Lemma lognat_ge_monotonic_mt : forall (a b : nat)(pfa : a <> 0)(pfb : b <> 0),
   intros. 
   specialize (mt H0).
   intros. 
-  apply ge_not. omega.
+  apply ge_not. lia.
 Qed.
 
 Lemma lognat_correct2 : forall(a : nat)(pf : a <> 0),
@@ -307,11 +309,11 @@ Lemma lognat_correct2 : forall(a : nat)(pf : a <> 0),
   simpl.
   rewrite fold_add.
   assert (expnat 2 (lognat pf) <> 0). apply expnat_nz. auto.
-  assert (2 * (expnat 2 (lognat pf)) <> 0). omega. 
+  assert (2 * (expnat 2 (lognat pf)) <> 0). lia. 
   eapply (lognat_ge_monotonic_mt pf H0). 
   rewrite <- (lognat_prod_sum H).
   rewrite lognat_correct_eq.
-  omega.
+  lia.
 Qed.
 
 Lemma lognat_odd : forall(a : nat)(pf1 : (2 * a) <> 0)(pf2 : (S (2 * a)) <> 0),
@@ -320,14 +322,14 @@ Lemma lognat_odd : forall(a : nat)(pf1 : (2 * a) <> 0)(pf2 : (S (2 * a)) <> 0),
   intros. 
   unfold lognat in *.
   rewrite (factor_s_conv pf1 pf2).
-  assert (a <> 0). omega.
+  assert (a <> 0). lia.
   rewrite (factor_double_conv H pf1).
   simpl. 
   auto.
 Qed.
 
 Lemma double_s : forall a, (S (S (2 * a))) = 2 * (S a).
-  intros. omega.
+  intros. lia.
 Qed.
 
 
@@ -338,7 +340,7 @@ Lemma lognat_double_eq : forall a b (pf1: 2 * a <> 0)(pf2: 2 * b <> 0)(pf3 : a <
   intros. 
   rewrite <- (lognat_prod_sum pf3).
   rewrite <- (lognat_prod_sum pf4).
-  omega.
+  lia.
 Qed.
 
 Lemma nat_comp : forall(a : nat),
@@ -359,7 +361,7 @@ Lemma nat_comp : forall(a : nat),
   exists (S x).
   left.
   simpl. 
-  omega. 
+  lia. 
 Qed.
 
 Lemma lognat_correct1 : forall(b a : nat)(pf : a <> 0),
@@ -368,24 +370,24 @@ Lemma lognat_correct1 : forall(b a : nat)(pf : a <> 0),
 
   induction b.
 
-  intros. simpl in *. omega.
+  intros. simpl in *. lia.
 
   intros. 
   elim (nat_comp a). intros. 
   destruct H0.
   subst. 
   destruct (eq_nat_dec x 0).
-  subst. omega. 
+  subst. lia. 
   rewrite <- (lognat_prod_sum n pf) in H.
   inversion H. clear H.
   rewrite H1.
   apply IHb in H1.
-  simpl in *. omega. 
+  simpl in *. lia. 
 
   subst. 
   destruct (eq_nat_dec x 0).
-  subst. unfold lognat in H. simpl in *. omega. 
-  assert ((2 * x) <> 0). omega.
+  subst. unfold lognat in H. simpl in *. lia. 
+  assert ((2 * x) <> 0). lia.
   rewrite (lognat_odd x H0 pf) in H.
   
   rewrite <- (lognat_prod_sum n H0) in H.
@@ -393,7 +395,7 @@ Lemma lognat_correct1 : forall(b a : nat)(pf : a <> 0),
   rewrite H2.
   apply IHb in H2.
   simpl. 
-  omega.
+  lia.
 Qed.  
   
   
@@ -422,7 +424,7 @@ Lemma lognat_prod_sum_gen_h : forall (a' a b: nat)(pf1 : (a <> 0))(pf2 : (b <> 0
   destruct (nat_comp a).
   destruct H0.
   subst.
-  assert (x <> 0). omega.
+  assert (x <> 0). lia.
   assert (x * b <> 0). destruct x; destruct b; simpl; congruence.
   rewrite <- (lognat_prod_sum H0) in H.
   assert (lognat pf3 = S (lognat H1)). 
@@ -436,7 +438,7 @@ Lemma lognat_prod_sum_gen_h : forall (a' a b: nat)(pf1 : (a <> 0))(pf2 : (b <> 0
   inversion H.
   specialize (IHa' x b H0 pf2 H1 H4).
   subst.
-  omega. 
+  lia. 
 
   destruct (eq_nat_dec x 0).
   subst.
@@ -444,9 +446,9 @@ Lemma lognat_prod_sum_gen_h : forall (a' a b: nat)(pf1 : (a <> 0))(pf2 : (b <> 0
   simpl in *.
   discriminate.
 
-  assert (2 * x <> 0). omega. 
+  assert (2 * x <> 0). lia. 
   assert (x * b <> 0). destruct x; destruct b; simpl; congruence.
-  assert (2 * x * b <> 0). rewrite mult_assoc_reverse. omega.
+  assert (2 * x * b <> 0). rewrite mult_assoc_reverse. lia.
   subst.
   rewrite (lognat_odd _ H1) in H.
   rewrite <- (lognat_prod_sum n) in H.
@@ -467,7 +469,7 @@ Lemma lognat_prod_sum_gen_h : forall (a' a b: nat)(pf1 : (a <> 0))(pf2 : (b <> 0
   rewrite mult_assoc_reverse.
   intros. 
   rewrite <- (lognat_prod_sum H2).
-  omega.
+  lia.
 Qed.
 
 Theorem lognat_prod_sum_gen : forall (a b: nat)(pf1 : (a <> 0))(pf2 : (b <> 0))(pf3 : a * b <> 0), 
@@ -483,19 +485,19 @@ Lemma lognat_0_1 : forall n (pf : n <> 0),
 
   intros. 
   destruct n.
-  omega.
+  lia.
   
   destruct n.
   trivial.
 
-  assert (2 <> 0). omega.
+  assert (2 <> 0). lia.
   assert (lognat pf >= lognat H0).
   eapply lognat_ge_monotonic.
-  omega. 
+  lia. 
 
   unfold lognat in *.
   simpl in *.
-  omega.
+  lia.
 Qed.
 
 Lemma lognat_succ_h : forall a n (pf1 : n <> 0)(pf2: (S n) <> 0),
@@ -515,7 +517,7 @@ Lemma lognat_succ_h : forall a n (pf1 : n <> 0)(pf2: (S n) <> 0),
   destruct (nat_comp n).
   destruct H0.
   subst. 
-  assert (x <> 0). omega.
+  assert (x <> 0). lia.
   rewrite <- (lognat_prod_sum H0) in H.
   inversion H.
   subst. 
@@ -528,14 +530,14 @@ Lemma lognat_succ_h : forall a n (pf1 : n <> 0)(pf2: (S n) <> 0),
   subst. 
   unfold lognat in *.
   simpl in *.
-  omega. 
+  lia. 
 
   generalize pf2.
-  assert (S (S (2 * x)) = 2 * (S x)). omega.
+  assert (S (S (2 * x)) = 2 * (S x)). lia.
   rewrite H0.
   intros. 
-  assert (S x <> 0). omega. 
-  assert (2 * x <> 0). omega.
+  assert (S x <> 0). lia. 
+  assert (2 * x <> 0). lia.
   rewrite (lognat_odd _ H2) in H.
   rewrite <- (lognat_prod_sum n) in H.
   inversion H.
@@ -569,15 +571,15 @@ Lemma logn_ge_1 : forall n (pf : n <> 0),
   congruence.
   
   destruct n.
-  omega.
+  lia.
 
   assert (2 <> 0).
-  omega.
+  lia.
 
   assert (forall n (pf1 : S (S n) <> 0)(pf2 : 2 <> 0), lognat pf1 >= lognat pf2).
   intros.
   eapply lognat_ge_monotonic.
-  omega.
+  lia.
 
   assert (forall (pf : 2 <> 0), 1 = lognat pf).
   intros. 

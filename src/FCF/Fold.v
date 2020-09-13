@@ -1132,19 +1132,20 @@ Theorem length_flatten_nz : forall (A : Type)(ls : list (list A)) ls',
   length (flatten ls) > 0.
   
   induction ls; destruct ls'; intuition; simpl in *.
-  intuition.
-  
-  destruct H; simpl in *; subst; intuition.
-  
-  destruct H; simpl in *; subst; intuition.
+  lia.
+  lia.
+
+  intuition idtac; simpl in *;
+  subst.
   rewrite app_length.
   simpl.
-  omega.
+  lia.
   
   rewrite app_length.
-  specialize (IHls (a0 :: ls') H).
+  specialize (IHls (a0 :: ls') H1).
   simpl in *.
   intuition.
+  lia.
   
 Qed.
 
@@ -1215,7 +1216,7 @@ Theorem length_getUnique_nz : forall (A :Set)(eqd : eq_dec A)(ls : list A),
   destruct ls; simpl in *; intuition.
   
   simpl.
-  omega.
+  lia.
 Qed.
 
 Definition maxList(ls : list nat) : nat :=
@@ -1533,7 +1534,7 @@ Lemma pred_count_eq_1_inv : forall (A : Set)(eqd : eq_dec A)(P : A -> Prop)(ls :
   trivial.
   intuition; subst; intuition.
   trivial.
-  omega.
+  lia.
   
   intuition.
 Qed.
@@ -2709,7 +2710,7 @@ Lemma ratSubtract_series_map : forall n f1 f2 a1 a2,
     ratSubtract a1 a2 == ratSubtract x1 x2.
 
   induction n; intuition; simpl in *.
-  omega.
+  lia.
 
   inversion H0; clear H0; subst.
   inversion H1; clear H1; subst.
@@ -2736,7 +2737,7 @@ Lemma ratSubtract_series_map : forall n f1 f2 a1 a2,
 
   assert (ratSubtract r1 r0 == ratSubtract x1 r5).
   eapply IHn.
-  omega.
+  lia.
   econstructor.
   eapply H11.
   eapply H18.
@@ -2799,7 +2800,7 @@ Lemma ratSubtract_series_map : forall n f1 f2 a1 a2,
   2:{
     eauto.
   }
-  omega.
+  lia.
 
   symmetry.
   eapply ratSubtract_partition.
@@ -2845,23 +2846,7 @@ Lemma sum_power_series : forall n (f : Rat -> Prop) a a',
   eapply expRat_eqRat_compat; eauto.
   unfold expRat_rel.
   intuition.
-  simpl.
-  intuition.
-  unfold ratMult_rel, expRat_rel; intuition.
   rewrite H7; eauto.
-  destruct n; try omega.
-  simpl.
-  eauto using ratMult_eqRat_compat, expRat_eqRat_compat.
-
-  unfold ratMult_rel, expRat_rel.
-  intuition.
-  rewrite H6; eauto.
-  rewrite H7; eauto.
-  eapply eqRat_refl.
-  intuition.
-  eapply expRat_eqRat_compat; eauto.
-  intuition.
-  eapply expRat_eqRat_compat; eauto.
 
   unfold ratMult_rel, expRat_rel.
   intuition.
@@ -2910,7 +2895,7 @@ Lemma sum_power_series : forall n (f : Rat -> Prop) a a',
   eapply H2.
   eauto.
   eapply bleRat_total; trivial.
-  omega.
+  lia.
 
   unfold ratMult_rel, expRat_rel.
   intuition.
@@ -2939,7 +2924,7 @@ Lemma sum_power_series : forall n (f : Rat -> Prop) a a',
   eapply H2.
   eauto.
   eapply bleRat_total; trivial.
-  omega.
+  lia.
 
   unfold expRat_rel; intuition.
   simpl.
@@ -2948,7 +2933,7 @@ Lemma sum_power_series : forall n (f : Rat -> Prop) a a',
   unfold ratMult_rel, ratSubtract_rel, expRat_rel, ratInverse_rel in *.
   intuition.
   rewrite H7; eauto.
-  destruct n; try omega.
+  destruct n; try lia.
   simpl.
   eapply ratMult_eqRat_compat; eauto.
   eapply expRat_eqRat_compat; eauto.
@@ -3234,13 +3219,13 @@ Lemma firstn_ge_all : forall n (A : Set) (ls : list A),
   induction n; intuition; simpl in *.
   destruct ls; simpl in *.
   trivial.
-  omega.
+  lia.
   destruct ls.
   trivial.
   f_equal.
   eapply IHn.
   simpl in *.
-  omega.
+  lia.
   
 Qed.
 
@@ -3250,11 +3235,11 @@ Lemma firstn_app : forall n (A : Set) (ls1 ls2 : list A),
   
   induction n; intuition; simpl in *.
   destruct ls1; simpl in *.
-  omega.
+  lia.
   
   f_equal.
   eapply IHn.
-  omega.
+  lia.
 Qed.
 
 Lemma sumList_rel_func : forall (A : Set)(f : A -> Rat -> Prop) ls r1,
@@ -3459,10 +3444,11 @@ Lemma allNatsLt_lt :
     v < n.
   
   induction n; intuition; simpl in *.
-  intuition.
+  lia.
   apply in_app_or in H.
   simpl in *.
-  intuition.
+  intuition; subst.
+  lia.
   
 Qed.
 
@@ -3517,12 +3503,12 @@ Lemma allNatsLt_NoDup :
   simpl in *.
   intuition; subst.
   eapply allNatsLt_lt in H.
-  omega.
+  lia.
 
   simpl in *.
   intuition; subst.
   eapply allNatsLt_lt in H0.
-  omega.
+  lia.
   
 Qed.
 
@@ -3533,7 +3519,7 @@ Lemma allNatsLt_lt_if :
     In i (allNatsLt n).
   
   induction n; intuition; simpl in *.
-  omega.
+  lia.
 
   eapply in_or_app.
   destruct (lt_dec i n).
@@ -3542,7 +3528,7 @@ Lemma allNatsLt_lt_if :
 
   right.
   simpl.
-  intuition.
+  lia.
     
 Qed.
 
@@ -3551,7 +3537,8 @@ Lemma nth_allNatsLt_lt :
     n < k ->
     nth n (allNatsLt k) n = n.
 
-  induction k; intuition; simpl in *.
+  induction k; intuition; simpl in *. 
+  lia.
   destruct (lt_dec n k).
   rewrite app_nth1.
   eauto.
@@ -3560,13 +3547,13 @@ Lemma nth_allNatsLt_lt :
   rewrite app_nth2.
   rewrite allNatsLt_length.
   assert (k = n).
-  omega.
+  lia.
   rewrite H0.
   rewrite minus_diag.
   simpl.
   trivial.
   rewrite allNatsLt_length.
-  omega.
+  lia.
 
 Qed.
 
@@ -3581,7 +3568,7 @@ Lemma nth_allNatsLt :
 
   eapply nth_overflow.
   rewrite allNatsLt_length.
-  omega.
+  lia.
 Qed.
 
 
@@ -3593,7 +3580,7 @@ Theorem allNatsLt_filter_lt :
   
   induction p; intuition.
   simpl.
-  assert (n = 0%nat). omega.
+  assert (n = 0%nat). lia.
   subst. trivial.
   simpl.
   destruct (le_dec n p).
@@ -3601,11 +3588,11 @@ Theorem allNatsLt_filter_lt :
   rewrite IHp; intuition.
   simpl.
   destruct (lt_dec p n ).
-  omega.
+  lia.
   eapply app_nil_r.
   
   assert (n = S p).
-  omega.
+  lia.
   subst.
   simpl.
   rewrite filter_app.  
@@ -3615,7 +3602,7 @@ Theorem allNatsLt_filter_lt :
   intuition.
   destruct (lt_dec a (S p)); intuition.
   apply allNatsLt_lt in H0.
-  omega.
+  lia.
   
   simpl.
   destruct (lt_dec p (S p)); intuition.
@@ -3783,9 +3770,9 @@ Lemma nth_listReplace_ne :
   
   rewrite IHi1.
   eapply nth_nil.
-  omega.
+  lia.
   eapply IHi1.
-  omega.
+  lia.
   
 Qed.
 
@@ -3796,14 +3783,14 @@ Theorem listReplace_length :
     length (listReplace ls i a def) = length ls.
   
   induction ls; intuition; simpl in *.
-  omega.
+  lia.
   
   destruct i; simpl in *.
   trivial.
   
   f_equal.
   eapply IHls.
-  omega.
+  lia.
   
 Qed.
 
@@ -3863,10 +3850,10 @@ Theorem map_nth_in :
     nth i (map f ls) defb = f (nth i ls defa).
   
   induction ls; destruct i; intuition; simpl in *.
-  omega.
-  omega.
+  lia.
+  lia.
   eapply IHls.
-  omega.
+  lia.
 
 Qed.
 
@@ -4042,16 +4029,16 @@ Theorem app_eq_inv :
   induction ls1; destruct ls3; intros; simpl in *; subst.
   intuition.
   
-  omega.
-  omega.
+  lia.
+  lia.
   
   inversion H0; clear H0; subst.
   
   specialize (IHls1 ls2 ls3 ls4).
   intuition.
   f_equal.
-  eapply IHls1; intuition; omega.
-  eapply IHls1; intuition; omega.
+  eapply IHls1; intuition; lia.
+  eapply IHls1; intuition; lia.
 
 Qed.
 
@@ -4192,7 +4179,7 @@ Theorem firstn_allNatsLt_h :
   eapply allNatsLt_nil_inv in H0.
   subst.
   assert (n1 = O).
-  omega.
+  lia.
   subst.
   simpl.
   trivial.
@@ -4214,7 +4201,7 @@ Theorem firstn_allNatsLt_h :
 
   rewrite allNatsLt_length in g.
   assert (n1 = (S n2)).
-  omega.
+  lia.
   subst.
   
   eapply firstn_ge_all.
@@ -4293,7 +4280,7 @@ Theorem map_fst_eq :
     map (fun x => f (fst x)) (combine ls lsc).
   
   induction lsc; destruct ls; intuition; simpl in *.
-  omega.
+  lia.
   f_equal.
   eauto.
 Qed.
@@ -4305,7 +4292,7 @@ Theorem map_snd_eq :
     map (fun x => f (snd x)) (combine lsc ls).
   
   induction lsc; destruct ls; intuition; simpl in *.
-  omega.
+  lia.
   f_equal.
   eauto.
 Qed.
@@ -4374,7 +4361,7 @@ Theorem zip_eq_nil_l :
   
   induction lsa; intuition; simpl in *.
   destruct lsb; simpl in *.
-  omega.
+  lia.
   discriminate.
        
 Qed.
@@ -4640,7 +4627,7 @@ Theorem nth_option_Some_lt :
   induction ls; intuition; simpl in *.
   discriminate.
   destruct i.
-  omega.
+  lia.
   eapply lt_n_S.
   eauto.
   
@@ -4779,7 +4766,7 @@ Theorem list_pred_I_in :
   intuition.
   eapply list_pred_impl.
   eapply IHlsa.
-  omega.
+  lia.
   intuition.
   intuition.
   intuition.
@@ -4834,7 +4821,7 @@ Theorem fold_add_const_mult :
   
   induction ls; intuition; simpl in *.
   rewrite IHls.
-  omega.
+  lia.
   
 Qed.
 
@@ -4888,20 +4875,21 @@ Lemma forNats_In :
     In i (forNats n).
   
   induction n; intuition; simpl in *.
-  omega.
+  lia.
   intuition.
   destruct (lt_dec i n).
   right.
   eapply IHn.
   trivial.
   left.
-  omega.
+  lia.
 
-  intuition.
+  intuition; subst.
+  lia.
   eapply lt_trans.
   eapply IHn.
   trivial.
-  omega.
+  lia.
 
 Qed.
 
@@ -4914,7 +4902,7 @@ Lemma forNats_NoDup :
   assert (n < n).
   eapply forNats_In.
   trivial.
-  omega.
+  lia.
 
 Qed.
 
@@ -4948,6 +4936,8 @@ Lemma sumList_forNats_first_ls :
   rewrite ratAdd_0_l.
   eapply ratAdd_leRat_compat; intuition.
   eapply rat0_le_all.
+  eapply IHn.
+  lia.
 Qed.
 
 Lemma sumList_forNats_distance : 
@@ -4993,7 +4983,7 @@ Lemma sumList_forNats_distance :
   eapply ratAdd_0_l.
   eapply ratAdd_leRat_compat; intuition.
   eapply rat0_le_all.
-  intuition.
+  lia.
 
   rewrite H.
   clear H.
@@ -5020,7 +5010,8 @@ Lemma sumList_forNats_distance :
 
   eapply sumList_forNats_first_ls;
   intuition.
-  intuition.
+  lia.
+  lia.
   rewrite H.
   eapply ratDistance_add_same_l.
 
@@ -5502,10 +5493,10 @@ Theorem lsAppCons : forall (A : Type)(ls : list A)(n : nat)(def : A),
   ls = (firstn n ls) ++ ((nth n ls def) :: (skipn (S n) ls)).
 
   induction ls; destruct n; intuition idtac; simpl in *.
-  omega.
-  omega.
+  lia.
+  lia.
   f_equal. eapply IHls.
-  omega.
+  lia.
 
 Qed.
 
@@ -5533,8 +5524,8 @@ Theorem nth_combine : forall (A B : Type)(lsA : list A)(lsB : list B) n defA def
   length lsA = length lsB ->
   nth n (combine lsA lsB) (defA, defB) = (nth n lsA defA, nth n lsB defB).
 
-  induction lsA; destruct lsB; destruct n; intuition idtac; simpl in *; try omega.
-  eapply IHlsA. omega.
+  induction lsA; destruct lsB; destruct n; intuition idtac; simpl in *; try lia.
+  eapply IHlsA. lia.
 
 Qed.
 
@@ -5629,7 +5620,7 @@ Theorem skipn_snd_split_app_cons : forall (A B : Type)(ls1 ls2 : list (A * B)) p
 
   intuition idtac.
   assert (S (length ls1) = (length ls1 + 1))%nat.
-  omega.
+  lia.
   rewrite H.
   rewrite <- skipn_sum.
   rewrite skipn_snd_split_app.
@@ -6155,10 +6146,10 @@ Theorem firstn_app_le : forall (A : Type)(n : nat)(ls1 ls2 : list A),
   firstn n (ls1 ++ ls2) = firstn n ls1.
 
   induction n; destruct ls1; intuition idtac; simpl in *.
-  omega.
+  lia.
   f_equal.
   eapply IHn.
-  omega.
+  lia.
 
 Qed.
 
@@ -6168,7 +6159,7 @@ Theorem skipn_cons_impl_le : forall (A : Type)(n : nat)(ls1 ls2 : list A) a,
 
   induction n; destruct ls1; intuition idtac; simpl in *.
   discriminate.
-  omega.
+  lia.
   discriminate.
   eapply le_n_S.
   eapply IHn.
@@ -6239,9 +6230,9 @@ Theorem skipn_nil_impl_short : forall (A : Type)(n : nat)(ls : list A),
   (length ls <= n)%nat.
 
   induction n; destruct ls; intuition idtac; simpl in *.
-  omega.
+  lia.
   discriminate.
-  omega.
+  lia.
   eapply le_n_S.
   eauto.
 

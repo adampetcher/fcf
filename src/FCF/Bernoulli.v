@@ -58,10 +58,10 @@ Theorem Bernoulli_correct :
   rewrite allNatsLt_length.
   rewrite <- ratMult_num_den.
   eapply eqRat_terms.
-  omega.
+  lia.
   unfold posnatMult, posnatToNat, natToPosnat.
   destruct p.
-  omega.
+  lia.
 
   eapply rat_le_1_if; trivial.
 

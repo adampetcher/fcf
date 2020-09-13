@@ -1,10 +1,14 @@
 nlia.cache
 .nia.cache
+.lia.cache
 Makefile.coq
 *.vo
+*.vos
+*.vok
 *.v.d
 *.glob
 *~
 .coqdeps.d
 CoqMakefile.conf
+.CoqMakefile.d
 .*.aux

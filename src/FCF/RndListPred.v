@@ -329,7 +329,7 @@ Section DupList.
     eapply leRat_terms.
     eapply mult_le_compat.
     trivial.  
-    omega.
+    lia.
     trivial.
     reflexivity.
 

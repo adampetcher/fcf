@@ -371,7 +371,7 @@ Lemma list_pred_I :
     (length lsa = length lsb) ->
     list_pred (fun a b => True) lsa lsb.
   
-  induction lsa; destruct lsb; intuition; simpl in *; try omega.
+  induction lsa; destruct lsb; intuition; simpl in *; try lia.
   econstructor.
   econstructor;
     intuition.
@@ -1112,7 +1112,7 @@ Lemma zip_length :
 
   f_equal.
   eapply IHlsa.
-  omega.
+  lia.
   
 Qed.
 
@@ -1139,7 +1139,7 @@ Lemma nth_zip :
     nth n (zip lsa lsb) (defa, defb) = (a, b) ->
     nth n lsa defa = a /\ nth n lsb defb = b.
   
-  induction lsa; destruct lsb; destruct n; intuition; simpl in *; try omega; try pairInv; intuition.
+  induction lsa; destruct lsb; destruct n; intuition; simpl in *; try lia; try pairInv; intuition.
   
   inversion H; clear H; subst.
   eapply IHlsa.
@@ -1232,7 +1232,7 @@ Lemma zip_app :
     (zip lsa1 lsb1) ++ (zip lsa2 lsb2) =
     (zip (lsa1 ++ lsa2) (lsb1 ++ lsb2)).
   
-  induction lsa1; destruct lsb1; destruct lsa2; destruct lsb2; intuition; simpl in *; try omega.
+  induction lsa1; destruct lsb1; destruct lsa2; destruct lsb2; intuition; simpl in *; try lia.
   
   repeat rewrite app_nil_r.
   trivial.
@@ -1241,9 +1241,9 @@ Lemma zip_app :
   rewrite <-  IHlsa1.
   simpl.
   trivial.
-  omega.
+  lia.
   simpl.
-  omega.
+  lia.
         
 Qed.
 
@@ -1373,7 +1373,7 @@ Lemma list_pred_zip_eq_rev :
     (length lsa = length lsb) ->
     list_pred (fun p1 p2 => [a1, b1] <-2 p1; [b2, a2] <-2 p2; a1 = a2 /\ b1 = b2) (zip lsa lsb) (zip lsb lsa).
   
-  induction lsa; destruct lsb; intuition; simpl in *; try omega;
+  induction lsa; destruct lsb; intuition; simpl in *; try lia;
   econstructor.
   
   intuition.
@@ -1402,7 +1402,7 @@ Lemma in_zip_swap :
     In (a, b) (zip lsa lsb) ->
     In (b, a) (zip lsb lsa).
   
-  induction lsa; destruct lsb; intuition; simpl in *; try omega.
+  induction lsa; destruct lsb; intuition; simpl in *; try lia.
   intuition.
   pairInv.
   intuition.
@@ -1414,7 +1414,7 @@ Lemma unzip_zip_inv :
     length lsa = length lsb ->
     unzip (zip lsa lsb) = (lsa, lsb).
   
-  induction lsa; destruct lsb; intuition; simpl in *; try omega.
+  induction lsa; destruct lsb; intuition; simpl in *; try lia.
   
   unfold unzip in *.
   simpl.
@@ -1422,7 +1422,7 @@ Lemma unzip_zip_inv :
   assert ((map (fst (B:=B)) (zip lsa lsb), map (snd (B:=B)) (zip lsa lsb)) =
           (lsa, lsb)).
   eapply IHlsa.
-  omega.
+  lia.
   
   repeat f_equal.
   
@@ -1508,13 +1508,13 @@ Lemma nth_map_In :
   
   induction ls; intuition; simpl in *.
   destruct i.
-  omega.
-  omega.
+  lia.
+  lia.
   
   destruct i.
   trivial.
   eapply IHls.
-  omega.
+  lia.
   
 Qed.
 
@@ -1553,7 +1553,7 @@ Lemma lookupIndex_lt_length :
   destruct (eqd a0 a0); subst; intuition.
   
   destruct (eqd a0 a); subst.
-  omega.
+  lia.
   eapply lt_n_S.
   eapply IHls.
   trivial.
@@ -1773,7 +1773,7 @@ Lemma map_snd_zip :
   induction lsa; intuition; simpl in *.
   destruct lsb; simpl in *; congruence.
   
-  destruct lsb; simpl in *; try omega.
+  destruct lsb; simpl in *; try lia.
   f_equal.
   eauto.
   
@@ -1966,7 +1966,7 @@ Qed.
         exists v', v <> v'.
 
       induction n; intuition.
-      omega.
+      lia.
       destruct (vector_S v).
       destruct H0.
       exists (Vector.cons bool (negb x) n x0).
@@ -2001,7 +2001,7 @@ Lemma nth_lt_length :
   destruct i; intuition.
   
   destruct i; subst.
-  omega.
+  lia.
   
   eapply lt_n_S.
   eauto.
@@ -2016,7 +2016,7 @@ Lemma map_eq_nth_h :
       i < length lsa ->
       f1 (nth i lsa def1) = f2 (nth i lsb def2).
   
-  induction lsa; destruct lsb; intuition; simpl in *; try omega.
+  induction lsa; destruct lsb; intuition; simpl in *; try lia.
   
   inversion H0; clear H0; subst.
   destruct i; intuition.
@@ -2187,7 +2187,7 @@ Theorem list_pred_app_both_if :
    eapply list_pred_app in H0.
    rewrite H in H0.
    rewrite ?firstn_app, ?skipn_app, ?firstn_ge_all,
-     ?minus_diag, ?firstn_O, ?app_nil_r in * by omega.
+     ?minus_diag, ?firstn_O, ?app_nil_r in * by lia.
    firstorder.
 Qed.
 

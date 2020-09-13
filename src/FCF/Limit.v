@@ -941,7 +941,7 @@ Lemma power_series_limit_2 : forall (f : nat -> Rat -> Prop) a,
   rewrite <- ratIdentityIndiscernables.
   eapply sum_power_series.
   assert (n' > O).
-  omega.
+  lia.
   eapply H9.
   econstructor.
   eapply H8.

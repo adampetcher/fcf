@@ -164,6 +164,7 @@ Inductive well_formed_comp : forall (A : Set), Comp A -> Prop :=
       In b (filter P (getSupport c)) ->
       well_formed_comp (Repeat c P).
 
+Declare Scope comp_scope.
 Delimit Scope comp_scope with comp.
 
 Theorem lt_eq_false : 

@@ -24,7 +24,7 @@ Theorem evalDist_bool_support :
   specialize (getSupport_length_nz H); intuition.
   rewrite <- H0 in H2.
   simpl in *.
-  omega.
+  lia.
   
   destruct b.
   
@@ -248,7 +248,7 @@ Section TwoWorldsEquiv.
       
       eapply rat_le_1.
       simpl.
-      omega.
+      lia.
       
     Qed.
 
@@ -262,7 +262,7 @@ Section TwoWorldsEquiv.
       exists (S x)%nat.
       intuition.
       eapply H0.
-      omega.
+      lia.
 
       assert ((RatIntro (S O)
         (@natToPosnat (expnat x0 (plus (S O) c))
@@ -287,7 +287,7 @@ Section TwoWorldsEquiv.
       unfold leRat.
       eapply leRat_terms; intuition.
       unfold natToPosnat, posnatToNat.
-      omega.
+      lia.
 
     Qed.
 

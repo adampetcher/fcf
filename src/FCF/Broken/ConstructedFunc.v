@@ -339,12 +339,12 @@ Section RandomPerm.
     intuition.
     destruct x.
     simpl in *.
-    omega.
+    lia.
     destruct x; simpl in *.
     econstructor.
     eapply H2.
     intuition.
-    omega.
+    lia.
   Qed.
   Hint Resolve well_formed_perm_1 : wftac.
 
@@ -428,7 +428,7 @@ Section RandomPerm.
 
     (* r is not in the list, just use the tail of it *)
     destruct x.
-    simpl in *. omega.
+    simpl in *. lia.
     exists x.
     intuition.
     simpl in *.
@@ -513,7 +513,7 @@ Section RandomPerm.
     
     destruct x.
     simpl in *.
-    omega.
+    lia.
     exists x.
     intuition.
     simpl in *.

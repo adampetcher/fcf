@@ -716,11 +716,11 @@ Section PRF_DRBG.
      rewrite ratAdd_num.
      eapply ratAdd_leRat_compat.
      eapply leRat_terms;
-     omega.
+     lia.
      eapply leRat_terms.
-     eapply mult_le_compat; omega.
+     eapply mult_le_compat; lia.
      trivial.
-     omega.
+     lia.
    Qed.
 
    Theorem PRF_DRBG_G3_bad_4_small :
@@ -729,7 +729,7 @@ Section PRF_DRBG.
      unfold PRF_DRBG_G3_bad_4.
      rewrite dupProb_const.
      destruct l.
-     omega.
+     lia.
      
      simpl.
      rewrite forNats_length.

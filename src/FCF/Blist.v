@@ -8,7 +8,7 @@ Set Implicit Arguments.
 Require Import FCF.StdNat.
 Require Export List.
 Require Export Bvector.
-Require Import Omega.
+Require Import micromega.Lia.
 Require Import FCF.EqDec.
 Require Import FCF.Fold.
 Require Import Coq.NArith.Ndigits.
@@ -72,13 +72,13 @@ Lemma shiftOut_lt : forall ls n,
   
   induction ls; intuition; simpl in *.
   destruct n.
-  omega.
+  lia.
   trivial.
   destruct n.
-  omega.
+  lia.
   rewrite IHls.
   trivial.
-  omega.
+  lia.
 Qed.
 
 Lemma shiftOut_Some : forall (ls : Blist) n,
@@ -87,7 +87,7 @@ Lemma shiftOut_Some : forall (ls : Blist) n,
   
   induction ls; intuition; simpl in *.
   assert (n = O).
-  omega.
+  lia.
   subst.
   exists ([], nil).
   trivial.
@@ -96,7 +96,7 @@ Lemma shiftOut_Some : forall (ls : Blist) n,
   exists ([], a :: ls).
   trivial.
   assert (length ls >= n).
-  omega.
+  lia.
   destruct (IHls n).
   trivial.
   destruct x.
@@ -517,10 +517,10 @@ Qed.
       exists a ls', (length ls' = n /\ ls = ls' ++ (a :: nil)).
 
       induction ls; intuition; simpl in *.
-      omega.
+      lia.
 
       destruct n.
-      destruct ls; simpl in *; try omega.
+      destruct ls; simpl in *; try lia.
       exists a. exists nil.
       simpl.
       intuition.
@@ -610,7 +610,7 @@ Lemma getAllBlists_app_length_In : forall n ls,
   In ls (getAllBlists_app n).
 
   induction n; intuition; simpl in *;
-  destruct ls; simpl in *; intuition; try omega.
+  destruct ls; simpl in *; intuition; try lia.
 
 
 
@@ -651,7 +651,7 @@ Lemma getAllBlists_length_In : forall n ls,
   In ls (getAllBlists n).
 
   induction n; intuition; simpl in *;
-  destruct ls; simpl in *; intuition; try omega.
+  destruct ls; simpl in *; intuition; try lia.
 
   apply in_or_app.
  
@@ -703,7 +703,7 @@ Theorem getAllBlists_length : forall n,
   trivial.
 Qed.
 
-Fixpoint tailOpt(A : Set)(n : nat)(v : Vector.t A n) : option (Vector.t A (pred n)):=
+Definition tailOpt(A : Set)(n : nat)(v : Vector.t A n) : option (Vector.t A (pred n)):=
   match v with
     | [] => None
     | Vector.cons _ _ _ v => Some v
@@ -800,8 +800,8 @@ Lemma app_first_eq : forall (A : Type)(ls2 ls1 ls3 : list A),
   assert (ls3 = nil).
   rewrite app_length in H0.
   assert (length ls3 = O).
-  omega.
-  destruct ls3; simpl in *; try omega; trivial.
+  lia.
+  destruct ls3; simpl in *; try lia; trivial.
   subst.
   rewrite app_nil_r.
   intuition.
@@ -1054,7 +1054,7 @@ Lemma Bv2N_N2Bv_gen : forall n0 k,
   intuition.
   assert (exists x, n0 = N.size_nat k + x)%nat.
   exists (minus n0 (N.size_nat k)).
-  omega.
+  lia.
   destruct H0.
   rewrite H0.
   rewrite N2Bv_N2Bv_gen_above.
@@ -1079,7 +1079,7 @@ Lemma Nat_size_nat_monotonic : forall n1 n2,
   
   intuition.
   destruct n1; simpl.
-  omega.
+  lia.
   destruct n2; simpl.
   inversion H.
   eapply Pos.size_nat_monotone.

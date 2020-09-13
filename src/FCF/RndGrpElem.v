@@ -90,7 +90,7 @@ Section RndGrpElem.
     ((groupLog g y + modNatAddInverse (groupLog g y) order) + 
       (groupLog g x + modNatAddInverse (groupLog g x) order +
       x0)))%nat.
-    omega.
+    lia.
     rewrite H0.
     rewrite modNat_plus.
     rewrite modNatAddInverse_correct.
@@ -108,7 +108,7 @@ Section RndGrpElem.
       (groupLog g y + modNatAddInverse (groupLog g x) order)) = 
     (groupLog g x + modNatAddInverse (groupLog g x) order + 
       (groupLog g y + modNatAddInverse (groupLog g y) order + x0)))%nat.
-    omega.
+    lia.
     rewrite H0.
     rewrite modNat_plus.
     rewrite modNatAddInverse_correct.

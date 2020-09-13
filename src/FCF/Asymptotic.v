@@ -30,6 +30,7 @@ Theorem polynomial_nz_equiv :
   exists (S x0).
   exists (x0 + S x1).
   intuition.
+  lia.
   rewrite H.
   rewrite plus_assoc.
   eapply plus_le_compat; intuition.
@@ -50,10 +51,11 @@ Theorem polynomial_nz_equiv :
   destruct (eq_nat_dec n 0); subst.
   
   rewrite expnat_0;
-    omega.
+    lia.
   
   rewrite <- mult_1_l at 1.
   eapply mult_le_compat; intuition.
+  lia.
 Qed.        
 
 Theorem polynomial_plus : 
@@ -120,7 +122,7 @@ Theorem polynomial_ident :
   exists 0.
   intuition.
   simpl.
-  omega.
+  lia.
   
 Qed.
 
@@ -190,7 +192,7 @@ Theorem polynomial_mult :
   rewrite <- mult_1_l at 1.
   eapply mult_le_compat; trivial.
   eapply expnat_ge_1.
-  omega.
+  lia.
   
   destruct (eq_nat_dec n 0); subst.
   repeat rewrite expnat_0.
@@ -213,7 +215,7 @@ Theorem polynomial_mult :
   rewrite <- mult_1_r at 1.
   eapply mult_le_compat; trivial.
   eapply expnat_ge_1.
-  omega.
+  lia.
 Qed.     
       
 
@@ -292,7 +294,7 @@ Lemma negligible_plus :
   eapply leRat_terms; intuition.
   unfold natToPosnat, posnatToNat, posnatMult.
   eapply expnat_double_le.
-  omega.
+  lia.
   
   unfold maxRat in *.
   case_eq (bleRat (f1 x1) (f2 x1)); intuition.
@@ -313,7 +315,7 @@ Lemma negligible_plus :
   rewrite ratMult_1_l.
   intuition.
   unfold posnatMult, natToPosnat, posnatToNat.
-  omega.
+  lia.
   
   rewrite H8 in H3.
   eapply H1.
@@ -331,7 +333,7 @@ Lemma negligible_plus :
   rewrite ratMult_1_l.
   intuition.
   unfold posnatMult, natToPosnat, posnatToNat.
-  omega.
+  lia.
 Qed.
 
 
@@ -344,11 +346,12 @@ Theorem double_log_plus_3_le_h :
     2 * y + 3 <= x.
   
   induction y; intuition; simpl in *.
+  lia.
   rewrite plus_0_r in *.
   
   assert (S (y + S y + 3)  = 
     (y + y + 3) + 2).
-  omega.
+  lia.
   rewrite H1.
   
   destruct (eq_nat_dec y 3).
@@ -359,15 +362,15 @@ Theorem double_log_plus_3_le_h :
   destruct (eq_nat_dec x 0).
   subst.
   rewrite log2_0 in H.
-  omega.
-  omega.
+  lia.
+  lia.
   
   eapply le_trans.
   2:{
     eapply H2.
   }
   simpl.
-  omega.
+  lia.
   
   assert ( y + y + 3 <= div2 x).
   eapply IHy.
@@ -375,7 +378,7 @@ Theorem double_log_plus_3_le_h :
   symmetry.
   apply log2_div2.
   trivial.
-  omega.
+  lia.
   
   assert (2 <= div2 x).
   assert (2 = div2 4).
@@ -387,10 +390,10 @@ Theorem double_log_plus_3_le_h :
     eapply Nat.log2_le_lin.
     destruct (eq_nat_dec 0 x); subst.
     rewrite log2_0 in H.
-    omega.
-    omega.
+    lia.
+    lia.
   }
-  omega.
+  lia.
   
   eapply le_trans.
   eapply plus_le_compat.
@@ -409,6 +412,7 @@ Theorem S_log_square_lt_h :
     S y * S y <= x.
   
   induction y; intuition; simpl in *.
+  lia.
   assert (y = Nat.log2 (div2 x)).
   symmetry.
   eapply log2_div2.
@@ -421,7 +425,7 @@ Theorem S_log_square_lt_h :
   
   assert ( S (S (y + S (S (y + (y + (y + y * y)))))) = 
     (S (y + (y + y * y))) + (2 * y + 3)).
-  omega.
+  lia.
   rewrite H2.
   clear H2.
   
@@ -431,7 +435,7 @@ Theorem S_log_square_lt_h :
   assert (S y = 6).
   rewrite H.
   trivial.
-  omega.
+  lia.
   rewrite H2.
   simpl.
   assert (x >= Nat.pow 2 6).
@@ -442,24 +446,24 @@ Theorem S_log_square_lt_h :
   destruct (eq_nat_dec x 0).
   subst.
   rewrite log2_0 in H.
-  omega.
-  omega.
+  lia.
+  lia.
   
   eapply le_trans.
   2:{
     eapply H3.
   }
   simpl.
-  omega.
+  lia.
   
   assert ( S (y + (y + y * y)) <= div2 x).
   eapply IHy.
   trivial.
-  omega.
+  lia.
   
   assert (2 * y + 3 <= div2 x).
   eapply double_log_plus_3_le_h; trivial.
-  omega.
+  lia.
   eapply le_trans.
   eapply plus_le_compat.
   eapply H2.
@@ -481,7 +485,7 @@ Theorem S_log_square_lt :
     eapply Nat.log2_le_mono.
     eapply H.
   }
-  rewrite Nat.log2_pow2; omega.
+  rewrite Nat.log2_pow2; lia.
 Qed.
 
 Theorem log_square_lt : 
@@ -492,7 +496,7 @@ Theorem log_square_lt :
   intuition.
   
   assert (Nat.log2 x < S (Nat.log2 x)).
-  omega.
+  lia.
   eapply lt_le_trans.
   
   eapply mult_lt_compat.
@@ -527,12 +531,12 @@ Theorem poly_lt_exp_ge_6 :
   rewrite <- Nat.pow_mul_r.
   
   eapply Nat.pow_lt_mono_r.
-  omega.
+  lia.
   rewrite <- H3.
 
   assert (c <= Nat.log2 x).
   eapply (@Nat.pow_le_mono_r_iff 2).
-  omega.
+  lia.
   rewrite <- H3.
   trivial.
   eapply le_lt_trans.
@@ -546,8 +550,8 @@ Theorem poly_lt_exp_ge_6 :
     eapply H0.
   }
   eapply Nat.pow_le_mono_r.
-  omega.
-  omega.
+  lia.
+  lia.
   
   destruct (eq_nat_dec c 0).
   rewrite e.
@@ -557,29 +561,29 @@ Theorem poly_lt_exp_ge_6 :
   trivial.
   eapply H4.
   eapply Nat.pow_lt_mono_r.
-  omega.
-  omega.
+  lia.
+  lia.
   
   assert (expnat x c < expnat (2 ^ S (Nat.log2 x)) c).
   eapply Nat.pow_lt_mono_l.
-  omega.
+  lia.
   eapply Nat.log2_spec.
-  omega.
+  lia.
   eapply lt_le_trans.
   eapply H4.
       
   rewrite <- Nat.pow_mul_r.
   eapply Nat.pow_le_mono_r.
-  omega.
+  lia.
   assert (c <= S (Nat.log2 x)).
   eapply (@Nat.pow_le_mono_r_iff 2).
-  omega.
+  lia.
   eapply le_trans.
   eapply H.
   
   eapply lt_le_weak.
   eapply Nat.log2_spec.
-  omega.
+  lia.
   
   eapply le_trans.
   eapply mult_le_compat.
@@ -592,8 +596,8 @@ Theorem poly_lt_exp_ge_6 :
     eapply H0.
   }
   eapply Nat.pow_le_mono_r.
-  omega.
-  omega.
+  lia.
+  lia.
 Qed.
 
 Theorem poly_lt_exp : 
@@ -611,7 +615,7 @@ Theorem poly_lt_exp :
     eapply H.
   }
   eapply Nat.pow_le_mono_r.
-  omega.
+  lia.
   eapply Max.le_max_l.
   
   eapply le_trans.
@@ -619,7 +623,7 @@ Theorem poly_lt_exp :
     eapply H.
   }
   eapply Nat.pow_le_mono_r.
-  omega.
+  lia.
   eapply Max.le_max_r.
 Qed.
     
@@ -638,7 +642,7 @@ Theorem negligible_exp_den :
   
   unfold posnatToNat, natToPosnat.
   eapply H.
-  omega.
+  lia.
 Qed.
 
 
@@ -664,13 +668,13 @@ Theorem negligible_const_mult :
   intuition.
   
   eapply rat_num_nz; [idtac | eauto].
-  omega.
+  lia.
   
   destruct (H (c + n)).
   exists (x + n)%nat.
   intuition.
   eapply H0.
-  omega.
+  lia.
   
   assert (1 / expnat x0 (c + n) == RatIntro 1 (pos  (expnat x0 c)) * RatIntro 1 (pos (expnat x0 n)))%rat.
   rewrite <- ratMult_num_den.
@@ -703,8 +707,8 @@ Theorem negligible_const_mult :
   eapply le_trans.
   eapply le_expnat_2.
   eapply expnat_base_le.
-  omega.
-  omega.
+  lia.
+  lia.
 
 Qed.
 
@@ -720,7 +724,7 @@ Theorem negligible_mult_ident :
   exists x.
   intuition.
   eapply H0.
-  omega.
+  lia.
   simpl.
   
   assert ( (RatIntro 1 (natToPosnat (expnat_nz (S c) pf_nz)))  == 
@@ -737,7 +741,7 @@ Theorem negligible_mult_ident :
   rewrite ratMult_1_l.
   intuition.
   unfold natToPosnat, posnatToNat, posnatMult.
-  omega.
+  lia.
 Qed.
 
 Theorem negligible_exp : 

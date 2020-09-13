@@ -76,7 +76,7 @@ Section DistSingle_impl_Mult.
          ret (listReplace hybrid i b b)) x ==
       evalDist (computeHybrid n (S i) a) x.
 
-    induction n; destruct i; intuition; try omega.
+    induction n; destruct i; intuition; try lia.
     unfold computeHybrid.
     unfold minus.
     fold minus.
@@ -166,7 +166,7 @@ Section DistSingle_impl_Mult.
          ret (listReplace hybrid i b b)) x ==
       evalDist (computeHybrid n i a) x.
 
-    induction n; destruct i; intuition; try omega.
+    induction n; destruct i; intuition; try lia.
 
     unfold computeHybrid.
     unfold minus.
@@ -223,8 +223,8 @@ Section DistSingle_impl_Mult.
     2:{
       comp_skip.
       eapply IHn0.
-      omega.
-      omega.
+      lia.
+      lia.
       eapply eqRat_refl.
     }
     unfold computeHybrid.

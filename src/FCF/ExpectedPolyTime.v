@@ -259,7 +259,7 @@ Section expected_poly_time_theory.
     exists 0%nat.
     intuition.
     simpl.
-    omega.
+    lia.
   Qed.
 
   Theorem expected_poly_time_rndbool :

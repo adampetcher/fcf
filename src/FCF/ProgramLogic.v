@@ -541,7 +541,7 @@ Theorem eq_impl_comp_spec :
   specialize (getSupport_length_nz H0); intuition.
   rewrite <- Heqs in H4.
   simpl in *.
-  omega.
+  lia.
   destruct (EqDec_dec _ b y); subst.
   destruct s.
   exfalso.
@@ -907,7 +907,7 @@ Theorem le_impl_comp_spec :
   specialize (getSupport_length_nz H0); intuition.
   rewrite <- Heqs in H3.
   simpl in *.
-  omega.
+  lia.
 
   destruct (EqDec_dec _ b y).
   subst.

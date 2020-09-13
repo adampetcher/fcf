@@ -195,7 +195,7 @@ Section OracleHybrid.
       simpl in H2;
       destruct (gt_dec (S b1) q);
       try discriminate;
-      try omega.
+      try lia.
     
     fcf_skip.
     fcf_spec_ret; intuition.
@@ -214,12 +214,12 @@ Section OracleHybrid.
     destruct (gt_dec (snd (snd b0)) q); intuition; discriminate.
   
     destruct (gt_dec b1 q).
-    omega.
+    lia.
     intuition.
 
     destruct b0.
     destruct (gt_dec b1 q).
-    omega.
+    lia.
     intuition.
     simpl in *.
     subst.
@@ -268,7 +268,7 @@ Section OracleHybrid.
     fcf_simp.
     destruct p; simpl in *.
     fcf_spec_ret; fcf_compute;
-    assert (b1 <= q)%nat by omega; intuition; subst; pairInv; trivial.
+    assert (b1 <= q)%nat by lia; intuition; subst; pairInv; trivial.
   
     (* probability of bad event is 0 *)
     unfold G1_count.
@@ -287,12 +287,12 @@ Section OracleHybrid.
     (* The qam_count theorem takes a function that produces a "count" from the state of the oracle.  This theorem assumes this count increases by at most 1 in each call to the oracle, and that the number of queries is at most q.  Then the result is that the final count is at most q. *)
     eapply (qam_count (A1_qam s s0 _) (fun x => snd x)) in H0.
     simpl in *.
-    omega.
+    lia.
     intuition.
     simpl.    
 
     apply O1_count_increases in H1.
-    omega.
+    lia.
     trivial.
 
     eapply rat0_le_all.
@@ -319,7 +319,7 @@ Section OracleHybrid.
     fcf_ident_expand_l.
     comp_skip.
     eapply comp_spec_ret; intuition.
-    omega.
+    lia.
 
     simpl in  H1.
     intuition; subst.
@@ -610,16 +610,16 @@ Section OracleMapHybrid.
     exfalso.
     destruct (le_dec i (length l)).
     rewrite min_l in H4.
-    omega.
+    lia.
     trivial.
     rewrite min_r in H4.
-    omega.
-    omega.
+    lia.
+    lia.
 
     comp_skip.
     fcf_spec_ret.
     simpl.
-    omega.
+    lia.
     
     simpl in H2.
     intuition.
@@ -639,10 +639,10 @@ Section OracleMapHybrid.
     fcf_skip.
     eapply (compFold_spec' (fun a b c d => a = b /\ fst c = fst d /\ fst (snd c) = snd d /\ (snd (snd c) >= i)%nat)); intuition.
     simpl.
-    rewrite min_l; omega.
+    rewrite min_l; lia.
     simpl in *.
     subst.
-    destruct (ge_dec b2 i); try omega.
+    destruct (ge_dec b2 i); try lia.
     inversion H4; clear H4; subst.
     fcf_inline_first.
     fcf_simp.
@@ -650,7 +650,7 @@ Section OracleMapHybrid.
     simpl.
     fcf_spec_ret.
     simpl.
-    omega.
+    lia.
     
     simpl in H5.
     intuition; subst.

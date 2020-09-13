@@ -4,7 +4,7 @@
 
 Set Implicit Arguments.
 
-Require Import Omega.
+Require Import micromega.Lia.
 Require Import List.
 Require Import FCF.StdNat.
 Require Import Arith.
@@ -76,7 +76,7 @@ Ltac rattac_one :=
     | [|- ?x1 * ?x2 = ?x2 * ?x1 ] => apply mult_comm
     | [|- (mult (?x1 + ?x2) _)  = (mult (?x2 + ?x1) _ )] => f_equal
     | [|- ?x1 * ?x2 * _ = ?x2 * ?x1 * _ ] => f_equal
-    | [ |- posnatToNat ?p > 0 ] => destruct p; unfold posnatToNat; omega
+    | [ |- posnatToNat ?p > 0 ] => destruct p; unfold posnatToNat; lia
       (* inversion on hypotheses *)
     | [H1 : ?n * ?x = ?n0 * ?x1, H2: ?n1 * ?x1 = ?n * ?x0 |- ?n1 * ?x = ?n0 * ?x0 ] => eapply (@mult_same_l x1)(* ;
       [idtac | rewrite mult_assoc ;
@@ -115,7 +115,7 @@ Ltac rattac_one :=
     end.
 Ltac rattac :=
   intuition idtac; unfold ratCD in *;
-    repeat (rattac_one; subst); repeat rewrite mult_1_r; repeat rewrite plus_0_r; trivial; try congruence; try omega.
+    repeat (rattac_one; subst); repeat rewrite mult_1_r; repeat rewrite plus_0_r; trivial; try congruence; try lia.
 
 Lemma ratCD_comm : forall r1 r2 n1 n2 d n1' n2' d',
   ratCD r1 r2 = (n1, n2, d) ->
@@ -125,6 +125,7 @@ Lemma ratCD_comm : forall r1 r2 n1 n2 d n1' n2' d',
   rattac.
 Qed.
 
+Declare Scope rat_scope.
 Infix "*" := ratMult : rat_scope.
 Local Open Scope rat_scope.
 
@@ -198,15 +199,15 @@ Lemma mult_le_compat_r_iff_h : forall n2 n3 n1,
     (n2 <= n3)%nat.
 
   induction n2; destruct n3; intuition idtac; simpl in *.
-  omega.
+  lia.
 
   exfalso.
   remember (n2 * n1)%nat as x.
-  omega.
+  lia.
 
   eapply le_n_S.
   eapply IHn2; eauto.
-  omega.
+  lia.
 Qed.
 
 Lemma mult_le_compat_r_iff : forall n1 n2 n3,
@@ -553,7 +554,7 @@ Theorem ratAdd_0 : forall r1 r2,
   apply plus_is_O in e.
   destruct e as [H0 e].
   eapply mult_is_O in H0.
-  intuition.
+  lia.
   
   rattac.
   rewrite mult_0_l in e.
@@ -565,7 +566,7 @@ Theorem ratAdd_0 : forall r1 r2,
   apply plus_is_O in e.
   destruct e as [e H1].
   eapply mult_is_O in H1.
-  intuition.
+  lia.
 
   rewrite (ratAdd_0_r 0).
   eapply ratAdd_eqRat_compat; eauto.
@@ -693,7 +694,7 @@ Lemma nat_minus_eq : forall (n1 n2 : nat),
                        n2 - n1 = O ->
                        n1 = n2.
 
-  intuition. 
+  lia. 
 Qed.
 
 
@@ -740,6 +741,7 @@ Theorem ratIdentityIndiscernables : forall r1 r2,
   eapply nat_minus_eq.
   apply (leRat_mult H2).
   trivial.
+  lia.
 
   rewrite H0 in H1.
   rewrite H0 in H2.
@@ -756,6 +758,7 @@ Theorem ratIdentityIndiscernables : forall r1 r2,
          (RatIntro n3 (exist (fun n : nat => n > 0) x0 g0))).
   apply H0.
   apply (leRat_mult H2).
+  lia.
 Qed.
 
 (* is this even true ? 
@@ -933,7 +936,7 @@ Lemma ratSubtract_leRat_r : forall r1 r2 r3,
   trivial.
   assert (n3 * x1 * x3 * x2 = n3 * x2 * x3 * x1)%nat.
   do 3 arithSimplify.
-  omega.
+  lia.
   
 Qed.
 
@@ -961,7 +964,7 @@ Lemma ratSubtract_leRat_l:
   
   assert (n3 * x2 * x1 * x3 = n3 * x1 * x2 * x3)%nat.
   do 3 arithSimplify.
-  omega.
+  lia.
 Qed.
 
 Lemma ratSubtract_leRat : forall r1 r2 r3 r4,
@@ -983,11 +986,11 @@ Lemma ratSubtract_0 : forall r1 r2,
   unfold ratSubtract.
   rattac.
   inversion l; clear l; subst.
-  omega.
+  lia.
   rewrite H0.
   unfold posnatToNat in *.
   
-  omega.
+  lia.
 Qed.
 
 Lemma ratSubtract_partition_leRat : forall r3 r1 r2 d1 d2,
@@ -1097,7 +1100,7 @@ Lemma minus_le : forall n1 n2 n3,
     (n1 <= n3 ->
      n1 - n2 <= n3)%nat.
   
-  intuition.
+  lia.
 Qed.
 
 Theorem ratSubtract_le : forall r1 r2 d,
@@ -1307,7 +1310,7 @@ Lemma minus_plus_assoc : forall n1 n2 n3,
   (n3 <= n2 ->
     (n1 + n2) - n3 = n1 + (n2 - n3))%nat.
   
-  intuition.
+  lia.
 Qed.
 
 Lemma ratSubtract_ratAdd_assoc: forall r1 r2 r3,
@@ -1473,15 +1476,13 @@ Theorem num_dem_same_rat1 : forall n d,
 
   rattac.
   inversion H0; clear H0; subst.
-  omega.
+  lia.
 Qed.
 
 Lemma ratAdd_num : forall n1 n2 d,
   RatIntro (n1 + n2) d == (ratAdd (RatIntro n1 d) (RatIntro n2 d)).
   
   rattac.
-  arithNormalize.
-  trivial.
 Qed.
 
 Lemma ratMult_denom : forall n d1 d2,
@@ -1503,8 +1504,6 @@ Theorem ratAdd_den_same : forall n1 n2 d,
   RatIntro (n1 + n2)%nat d == (RatIntro n1 d) + (RatIntro n2 d).
   
   rattac.
-  arithNormalize.
-  arithSimplify.
 Qed.
 
 Lemma rat_mult_den : forall n d1 d2,
@@ -1512,9 +1511,9 @@ Lemma rat_mult_den : forall n d1 d2,
   
   intuition.
   assert (n = 1 * n)%nat.
-  omega.
+  lia.
   rewrite H at 1.
-  apply ratMult_num_den; omega.
+  apply ratMult_num_den; lia.
 Qed.
 
 Lemma ratOneHalf_add: 
@@ -1571,14 +1570,6 @@ Lemma ratSubtract_ratAdd_inverse : forall r1 r2,
   intuition.
   unfold ratSubtract.
   rattac.
-  arithNormalize.
-  rewrite <- (mult_assoc (n1 * x)).
-  rewrite (mult_comm x x0).
-  rewrite mult_assoc.
-  remember (n1 * x * x0 * x)%nat as a.
-  repeat rewrite <- (mult_assoc n0).
-  rewrite (mult_comm x).
-  omega.
 Qed.
 
 Lemma ratSubtract_ratAdd_inverse_2 : forall r1 r2,
@@ -1994,7 +1985,7 @@ Lemma rat_num_nz : forall n d,
   unfold posnatToNat, natToPosnat in *.
   destruct d.
   simpl in *.
-  omega.
+  lia.
 Qed.
 
 
@@ -2068,7 +2059,8 @@ Lemma ratMult_same_r_inv : forall r1 r2 r3,
   eapply mult_is_O in H1.
   intuition.
   remember (n0 * x0)%nat as a.
-  omega.
+  lia.
+  lia.
 Qed.
 
 Lemma rat_le_1 : forall n (d : posnat),
@@ -2158,7 +2150,7 @@ Lemma ratInverse_nz : forall (r : Rat),
   inversion H0; clear H0; subst.
   rewrite mult_1_r in e.
   rewrite mult_1_r in e.
-  omega.
+  lia.
 
   unfold posnatToNat, natToPosnat in *.
   destruct p.
@@ -2166,7 +2158,7 @@ Lemma ratInverse_nz : forall (r : Rat),
   inversion H0; clear H0; subst.
   rewrite mult_1_r in e.
   rewrite mult_0_l in e.
-  omega.  
+  lia.  
 
 Qed.
 
@@ -2185,7 +2177,7 @@ Lemma ratInverse_1_swap : forall r,
   
   rattac.
   inversion H1; clear H1; subst.
-  omega.
+  lia.
   
 Qed.
 
@@ -2240,7 +2232,7 @@ Lemma ratAdd_not_leRat : forall r1 r2,
   assert ((n1 * x0 * x0) = O)%nat.
   remember (n0 * (x0 * x))%nat as a.
   remember (n1 * x0 * x0)%nat as b.
-  omega.
+  lia.
   apply mult_is_O in H1;
     intuition; 
       subst.
@@ -2248,8 +2240,8 @@ Lemma ratAdd_not_leRat : forall r1 r2,
     intuition;
       subst.
   apply rat_num_0.
-  omega.
-  omega.
+  lia.
+  lia.
 Qed.
 
 
@@ -2275,10 +2267,6 @@ Lemma eqRat_flip : forall (p1 p2 p3 p4 : posnat),
   RatIntro p2 p1 == RatIntro p4 p3.
 
   rattac.
-  rewrite mult_comm.
-  rewrite <- e.
-  apply mult_comm.
-
 Qed.
 
 Lemma ratInverse_eqRat_compat : forall r1 r2,
@@ -2301,7 +2289,7 @@ Lemma ratInverse_eqRat_compat : forall r1 r2,
     rewrite rat_num_0 in H0.
     eauto.
   }
-  omega.
+  lia.
 
   eapply eqRat_flip.
   eapply H0.
@@ -2381,7 +2369,7 @@ Lemma eqRat_ratMult_same_r : forall r1 r2 r3,
   eapply mult_gt_0.
   rewrite mult_1_r in n3.
   rewrite mult_0_l in n3.
-  omega.
+  lia.
   trivial.
   rewrite (mult_comm).
   rewrite mult_assoc.
@@ -2419,12 +2407,12 @@ Lemma expRat_le : forall n1 n2 x,
   
   destruct n2;
     simpl.
-  omega.
+  lia.
   eapply ratMult_leRat_compat.
   intuition.
   eapply IHn1.
   trivial.
-  omega.
+  lia.
 Qed.
 
 Lemma expRat_leRat_compat : forall n r1 r2,
@@ -2478,7 +2466,7 @@ Lemma rat_ge_1 : forall n (d : posnat),
   intuition.
   rattac.
   inversion H1; clear H1; subst.
-  omega.
+  lia.
   
 Qed.
 
@@ -2594,7 +2582,7 @@ Theorem mult_gt_zero_if :
   forall (a b : nat),
     a * b > 0 -> (a > 0  /\ b > 0).
 
-  induction a; induction b; intuition.
+  induction a; induction b; lia.
 
 Qed.
 
@@ -2639,7 +2627,7 @@ Lemma expRat_le_half_exists : forall r,
 
   destruct p.
   destruct x.
-  omega.
+  lia.
   simpl.
   destruct (eq_nat_dec x O); subst.
   rewrite mult_0_l.
@@ -2649,11 +2637,11 @@ Lemma expRat_le_half_exists : forall r,
   assert (nz (2 * (x * expnat x x))).
   econstructor.
   eapply mult_gt_0.
-  omega.
-  eapply mult_gt_0. omega.
+  lia.
+  eapply mult_gt_0. lia.
   edestruct (@expnat_nz x x).
   econstructor.
-  omega.
+  lia.
   eauto.
 
   assert (nz ((expnat (S x) x + x * expnat (S x) x))).
@@ -2664,7 +2652,7 @@ Lemma expRat_le_half_exists : forall r,
   eapply g.
   eauto.
   remember (x * expnat (S x) x)%nat as a.
-  omega.
+  lia.
 
   assert (posnatToNat (pos (2 * (x * expnat x x))) <= posnatToNat (pos (expnat (S x) x + x * expnat (S x) x)))%nat.
   unfold natToPosnat, posnatToNat.
@@ -2677,7 +2665,7 @@ Lemma expRat_le_half_exists : forall r,
   eapply mult_le_compat.
   intuition.
   eapply expnat_base_S_same.
-  omega.
+  lia.
 
   eapply leRat_trans.
   eapply leRat_terms.
@@ -2688,10 +2676,10 @@ Lemma expRat_le_half_exists : forall r,
   assert (nz (x * expnat x x)).
   econstructor.
   eapply mult_gt_0.
-  omega.
+  lia.
   edestruct (@expnat_nz x x).
   econstructor.
-  omega.
+  lia.
   eauto.
   assert (posnatToNat (pos (2 * (x * expnat x x))) = posnatToNat (posnatMult (pos 2) (pos (x * expnat x x)))).
   unfold posnatMult, posnatToNat, natToPosnat.
@@ -2720,7 +2708,7 @@ Lemma expRat_le_half_exists : forall r,
   eapply H.
 
   eapply rat_ge_1.
-  omega.
+  lia.
 
   Grab Existential Variables.
   
@@ -2743,7 +2731,7 @@ Lemma expRat_half_le_exp_exists : forall d,
   exfalso.
   eapply H.
   eapply rat_num_0.
-  omega.
+  lia.
   exists p.
   rewrite expRat_terms.
   eapply leRat_trans.
@@ -2907,7 +2895,7 @@ Theorem le_ratHalf_0 : forall r,
   rewrite mult_assoc in *.
   assert (n * 2 <= n)%nat.
   eapply mult_le_compat_r_iff; eauto.
-  omega.
+  lia.
 Qed.
 
 Lemma ratSubtract_0_r : forall r,
@@ -2947,7 +2935,7 @@ Lemma ratSubtract_0_inv : forall r1 r2,
   rattac.
   rewrite mult_0_l in e.
   apply mult_is_O in e.
-  intuition.
+  lia.
 Qed.
 
 Lemma ratSubtract_le_sum : forall r1 r2 d,
@@ -3043,7 +3031,7 @@ Lemma ratSubtract_ratAdd_assoc_le : forall r1 r2 r3,
   assert (n0 * x * x0 * x * x0 * x1 = n0 * x0 * x * x * x0 * x1)%nat.
   do 5 arithSimplify.
   rewrite H0.
-  generalize ( n0 * x0 * x * x * x0 * x1)%nat; intros ?; omega.
+  generalize ( n0 * x0 * x * x * x0 * x1)%nat; intros ?; lia.
 Qed.
 
 Lemma ratSubtract_assoc_le : forall r1 r2 r3,
@@ -3061,7 +3049,7 @@ Lemma ratSubtract_assoc_le : forall r1 r2 r3,
   rewrite H0.
   remember (n1 * x1 * x0 * x1 * x * x0)%nat as b.
   remember (n2 * x1 * x * x1 * x * x0)%nat as c.
-  omega.
+  lia.
   
 Qed.
 
@@ -3270,7 +3258,7 @@ Lemma ratInverse_involutive : forall r,
   destruct p.
   unfold posnatToNat, natToPosnat.
   destruct x.
-  omega.
+  lia.
   eapply eqRat_terms; intuition.
 Qed.
 
@@ -3340,7 +3328,7 @@ Lemma ratSubtract_half : forall x,
   rewrite (plus_0_r).
   repeat rewrite mult_plus_distr_r.
   remember (n * x * x * 2)%nat as a.
-  omega.
+  lia.
 Qed.
 
 Lemma ratMult_ratAdd_cd : forall r n (d : posnat),
@@ -3349,9 +3337,6 @@ Lemma ratMult_ratAdd_cd : forall r n (d : posnat),
   intuition.
   unfold ratAdd, ratMult.
   rattac.
-  arithNormalize.
-  arithSimplify.
-  do 4 arithSimplify.
 Qed.
 
 Definition numerator r :=
@@ -3492,7 +3477,7 @@ Lemma rat_le_1_if :
   rewrite mult_1_r in H.
   rewrite mult_1_l in H.
   destruct (le_gt_dec n x).
-  omega.
+  lia.
   discriminate.
   
 Qed.
@@ -3559,9 +3544,6 @@ Theorem rat_num_S :
   
   intuition.
   rattac.
-  rewrite mult_plus_distr_r.
-  f_equal.
-  eapply mult_assoc.
 Qed.
 
 Theorem distance_le_prod_f :

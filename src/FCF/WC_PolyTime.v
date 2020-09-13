@@ -182,7 +182,7 @@ Section CostTheory.
     eapply cost_const.
     intuition.
     eauto.
-    omega.
+    lia.
     
   Qed.
   
@@ -208,7 +208,7 @@ Section CostTheory.
     eauto.
     intuition.
     
-    omega.
+    lia.
     
   Qed.
   

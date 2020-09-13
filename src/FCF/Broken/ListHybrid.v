@@ -13,7 +13,7 @@ Theorem skipn_S :
     nth n ls defA :: skipn (S n) ls.
   
   induction ls; intuition; simpl in *.
-  destruct n; try omega.
+  destruct n; try lia.
 
   destruct n.
   simpl.
@@ -21,7 +21,7 @@ Theorem skipn_S :
 
   simpl.
   eapply IHls.
-  omega.
+  lia.
 Qed.
 
 Theorem firstn_S : 
@@ -32,14 +32,14 @@ Theorem firstn_S :
   
   induction n; intuition; simpl in *.
   destruct ls; simpl in *.
-  omega.
+  lia.
   trivial.
 
   destruct ls; simpl in *.
-  omega.
+  lia.
   f_equal.
   eapply IHn.
-  omega.
+  lia.
 Qed.
 
   
@@ -124,7 +124,7 @@ Section ListHybrid.
     eapply ratDistance_le_trans.
     eapply H.
     assert (n + S x = S n + x)%nat.
-    omega.
+    lia.
     rewrite H0.
     clear H0.
     eapply IHx.
@@ -182,9 +182,9 @@ Section ListHybrid.
     destruct n; simpl in *; trivial.
 
     destruct n; simpl in *.
-    omega.
+    lia.
     eapply IHls.
-    omega.
+    lia.
   Qed.
 
   Theorem LH_Gn_0_equiv : 
@@ -293,7 +293,7 @@ Section ListHybrid.
       intuition.
     } rewrite HA. clear HA.
 
-    replace numA with (0 + numA)%nat by omega.
+    replace numA with (0 + numA)%nat by lia.
     rewrite list_hybrid_close_h.
     admit.
 
@@ -304,12 +304,12 @@ Section ListHybrid.
     eapply evalDist_bind_distance; intuition.
     
     comp_simp.
-    repeat rewrite firstn_ge_all; try omega.
+    repeat rewrite firstn_ge_all; try lia.
     eapply evalDist_bind_distance; intuition.
     eapply compMap_wf;
     intuition.
 
-    repeat rewrite skipn_length_nil; try omega.
+    repeat rewrite skipn_length_nil; try lia.
     eapply leRat_trans.
     eapply eqRat_impl_leRat.
     rewrite <- ratIdentityIndiscernables.
@@ -321,8 +321,8 @@ Section ListHybrid.
     erewrite numA_correct; eauto.
     erewrite numA_correct; eauto.
 
-    rewrite LH_Gn_0_equiv by omega.
-    rewrite LH_Gn_1_equiv by omega.
+    rewrite LH_Gn_0_equiv by lia.
+    rewrite LH_Gn_1_equiv by lia.
     admit.
   Admitted.
 

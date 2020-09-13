@@ -46,7 +46,7 @@ Lemma well_formed_RndNat : forall n,
     assert ((if (lt_dec O n) then true else false) = true).
     destruct (lt_dec O n).
     trivial.
-    omega.
+    lia.
     eapply H0.
   }
   simpl.
@@ -99,7 +99,7 @@ Lemma RndNat_unchecked_lt_support : forall n v,
   
   eapply bvToNat_natToBv_inverse.
   eapply lognat_monotonic.
-  omega.
+  lia.
  
   
 Qed.
@@ -162,7 +162,7 @@ Lemma RndNat_uniform : forall v1 v2 n,
   
   eapply bvToNat_natToBv_inverse.
   eapply lognat_monotonic.
-  omega.
+  lia.
   
   destruct (EqDec_dec nat_EqDec
     (bvToNat
@@ -181,7 +181,7 @@ Lemma RndNat_uniform : forall v1 v2 n,
   
   eapply bvToNat_natToBv_inverse.
   eapply lognat_monotonic.
-  omega.
+  lia.
 
   intuition.
   

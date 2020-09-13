@@ -245,7 +245,7 @@ Section PRP_PRF.
 
     destruct x0.
     simpl in *.
-    omega.
+    lia.
     exists x0.
     intuition.
     simpl.
@@ -1353,9 +1353,9 @@ Section PRP_PRF.
     rewrite H0.
     rewrite <- ratMult_num_den.
     eapply eqRat_terms.
-    omega.
+    lia.
     unfold posnatMult, natToPosnat, posnatToNat.
-    omega.  
+    lia.  
 
     case_eq (s_O # d); intuition.
 
@@ -1452,7 +1452,7 @@ Section PRP_PRF.
     eapply eqRat_terms.
     trivial.
     simpl.
-    omega.
+    lia.
     rewrite H0.
     rewrite <- ratAdd_num.
     rewrite <- ratAdd_num.
@@ -1460,7 +1460,7 @@ Section PRP_PRF.
     eapply eqRat_terms.
     trivial.
     simpl.
-    omega.
+    lia.
     rewrite H.
     rewrite H1.
     eapply leRat_trans.
@@ -1476,7 +1476,7 @@ Section PRP_PRF.
     simpl.
     repeat rewrite plus_assoc.
     rewrite (mult_comm count (length s_O)).
-    omega.
+    lia.
 
   Qed.
 

@@ -9,7 +9,7 @@ Require Export FCF.Comp.
 Require Import FCF.Blist.
 Require Import FCF.Fold.
 Require Import Permutation.
-Require Import Omega.
+Require Import micromega.Lia.
 
 Local Open Scope list_scope. 
 Local Open Scope comp_scope.
@@ -717,7 +717,7 @@ Lemma list_skipn_strong_ind_h : forall (A : Type) l (P : list A -> Prop) ,
   destruct n; simpl in *.
   eapply H0.
   intuition.
-  destruct n; try omega; simpl in *.
+  destruct n; try lia; simpl in *.
   eapply IHl; intuition.
 
   eapply IHl; intuition.
@@ -978,7 +978,7 @@ Lemma app_second_eq :
   subst;
   simpl in *;
   rewrite app_length in H0;
-  omega.
+  lia.
 
 Qed.
 
@@ -1760,12 +1760,12 @@ Lemma app_eq_nil_inv : forall (A : Set)(ls2 ls1 ls3 : list A),
   ls3 = nil.
   
   induction ls2; intuition; simpl in *; subst.
-  destruct ls3; simpl in *; trivial. omega.
+  destruct ls3; simpl in *; trivial. lia.
   
   simpl in *.
   eapply IHls2.
   eauto.
-  omega.
+  lia.
 Qed.
 
 
@@ -2054,7 +2054,7 @@ Lemma evalDet_app_nil : forall (A : Set)(c : Comp A),
   eapply H0.
   rewrite to_list_length.
   rewrite app_length in *; simpl in *.
-  omega.
+  lia.
   
   rewrite H0 in H6.
   inversion H6.

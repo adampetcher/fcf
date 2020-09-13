@@ -175,11 +175,11 @@ Section ShuffleList.
        False.
 
      induction ls; destruct n; intuition; simpl in *.
-     omega.
-     omega.
+     lia.
+     lia.
      inversion H0.
      eapply IHls; eauto.
-     omega.
+     lia.
    Qed.
 
    Theorem permute_length_eq : 
@@ -436,7 +436,7 @@ Theorem rndListElem_pred :
   exfalso.
   eapply nth_option_not_None; eauto.
   apply RndNat_support_lt in H1.
-  omega.
+  lia.
 Qed.
 
 Theorem shuffle_RndPerm_spec : 

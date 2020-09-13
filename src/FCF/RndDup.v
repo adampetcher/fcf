@@ -224,9 +224,6 @@ Section RndDup.
 
     intuition.
     rattac.
-    rewrite mult_plus_distr_r.
-    f_equal.
-    eapply mult_assoc.
   Qed.
 
   Theorem RndDup_P :
@@ -255,7 +252,7 @@ Section RndDup.
     intros.
     eapply eqRat_refl.
 
-    inline_first.
+    fcf_inline leftc.
 
     comp_at comp_inline leftc 1%nat.
     dist_at dist_ret leftc 2%nat.
@@ -275,7 +272,7 @@ Section RndDup.
            ret (b1 || b2) ]
       ).
 
-    inline_first.
+    fcf_inline rightc.
     comp_skip.
     comp_simp.
     comp_inline_r.

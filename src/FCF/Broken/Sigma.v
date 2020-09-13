@@ -514,7 +514,7 @@ Section ParallelComposition.
     rewrite mult_0_r in *.
     symmetry in e.
     apply mult_is_O in e.
-    intuition; omega.
+    intuition; lia.
     simpl.
     rewrite e.
     rewrite mult_comm.
@@ -863,7 +863,7 @@ Lemma eager_sampling : forall (A : Set)(eqd : EqDec A)(c : Comp A),
     rewrite rat_distance_of_sum.
     rewrite IHls; intuition.
     assert (S (length ls) = 1 + (length ls))%nat.
-    omega.
+    lia.
     rewrite H0.
     rewrite ratAdd_num.
     eapply leRat_trans.
@@ -915,7 +915,7 @@ Lemma eager_sampling : forall (A : Set)(eqd : EqDec A)(c : Comp A),
     eapply ratMult_leRat_compat; intuition.
     eapply eqRat_impl_leRat.
     eapply eqRat_terms.
-    omega.
+    lia.
     simpl.
     trivial.
 
@@ -1757,7 +1757,7 @@ Section ProofOfKnowledge.
     econstructor.
     eapply RndNat_expected_time; intuition.
     unfold d.
-    omega.
+    lia.
     intros.
     econstructor.
     econstructor.
@@ -2225,7 +2225,7 @@ Section ProofOfKnowledge.
       remember (getSupport (P_commit x y)) as ls.
       destruct ls.
       simpl in P_commit_well_formed.
-      omega.
+      lia.
       destruct p0.
       exists (tt, true, (p0, c0)).
       apply filter_In.

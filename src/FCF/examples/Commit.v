@@ -312,7 +312,7 @@ Section Pedersen.
           a = b ->
           a + c = b + c.
         
-      intuition; omega.
+      intuition; lia.
       
       Qed.
 

@@ -126,7 +126,7 @@ Section constant_cost_theory.
     intuition.
     eapply constant_cost_le.
     eauto.
-    omega.
+    lia.
 
   Qed.
 
@@ -144,7 +144,7 @@ Section constant_cost_theory.
     eapply constant_cost_const.
     intuition.
     eauto.
-    omega.
+    lia.
 
   Qed.
 
@@ -169,7 +169,7 @@ Section constant_cost_theory.
     eauto.
 
     intuition.
-    omega.
+    lia.
     
   Qed.
 
@@ -187,7 +187,7 @@ Section constant_cost_theory.
     eapply constant_cost_const.
     intuition.
     eauto.
-    omega.
+    lia.
   Qed.
 
   Theorem constant_cost_compose_binary_const_l : 
@@ -204,7 +204,7 @@ Section constant_cost_theory.
     eapply constant_cost_const.
     intuition.
     eauto.
-    omega.
+    lia.
     
   Qed.
 
@@ -221,7 +221,7 @@ Section constant_cost_theory.
       eapply constant_cost_le.
       eapply constant_cost_bind; eauto.
       eapply constant_cost_const.
-      omega.
+      lia.
     Qed.
 
     Theorem constant_cost_bind_const1_pair : 
@@ -238,7 +238,7 @@ Section constant_cost_theory.
       eapply constant_cost_le.
       eapply constant_cost_bind; eauto.
       eapply constant_cost_const.
-      omega.
+      lia.
     Qed.
 
     Theorem constant_cost_bind_const2 : 
@@ -252,7 +252,7 @@ Section constant_cost_theory.
       eapply constant_cost_le.
       eapply constant_cost_bind; eauto.
       eapply constant_cost_const.
-      omega.
+      lia.
     Qed.
     
     Theorem constant_cost_bind_pair : 
@@ -269,7 +269,7 @@ Section constant_cost_theory.
       intuition.
       eapply constant_cost_le.
       eapply constant_cost_bind; eauto.
-      omega.
+      lia.
     Qed.
 
     Theorem constant_cost_compose_binary_pair : 
@@ -295,7 +295,7 @@ Section constant_cost_theory.
       eauto.
       
       intuition.
-      omega.
+      lia.
       
     Qed.
 

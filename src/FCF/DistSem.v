@@ -11,7 +11,7 @@ Require Export FCF.Rat.
 Require Import FCF.Fold.
 Require Import List.
 Require Import FCF.Blist.
-Require Import Omega.
+Require Import micromega.Lia.
 Require Import FCF.StdNat.
 Require Import FCF.NotationV1.
 Require Import FCF.EqDec. 
@@ -324,7 +324,7 @@ Lemma ratInverse_scale_sum_1 : forall (A : Set)(ls : list A)(f : A -> Rat),
   eapply ratInverse_prod_1.
   intuition.
   destruct ls; simpl in *.
-  omega.
+  lia.
   eapply sumList_0 in H1.
   eapply H.
   eauto.
@@ -553,7 +553,7 @@ Lemma evalDist_sum_le_1 : forall (A : Set)(c : Comp A),
   simpl.
   eapply rat0_le_all.
 
-  omega.
+  lia.
 Qed.
 
 Lemma evalDist_le_1 : forall (A : Set)(c : Comp A) a,

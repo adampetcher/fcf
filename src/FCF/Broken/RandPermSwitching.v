@@ -612,20 +612,20 @@ Theorem maxCount_o_equiv :
   intuition; simpl in *.
   unfold randomFunc in *.
   destruct (arrayLookup eqdd x y); repeat simp_in_support.
-  omega.
+  lia.
   simpl.
   assert ( (S (length x) <= 1+ length x)%nat).
-  omega.
+  lia.
   eapply H5.
   eapply H3.
-  omega.
+  lia.
 
   unfold randomFunc, randomFunc_max.
   destruct (arrayLookup eqdd ls a).
   eapply evalDist_ret_eq; intuition.
   comp_skip.
   destruct (ge_dec (length ls) n2).
-  omega.
+  lia.
   eapply evalDist_ret_eq; intuition.
 
   eapply eqRat_refl.
@@ -645,7 +645,7 @@ Theorem maxCount_o_equiv :
 
   rewrite <- H2.
   eapply plus_le_compat; intuition.
-  omega.
+  lia.
   
 Qed.
 *)
@@ -971,7 +971,7 @@ Section RandPermSwitching.
     simpl in *.
     destruct (arrayLookup eqdd a a1);
     repeat simp_in_support.
-    omega.
+    lia.
     simpl.
     intuition.
     

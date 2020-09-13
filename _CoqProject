@@ -55,14 +55,6 @@ src/FCF/Tactics.v
 src/FCF/TwoWorldsEquiv.v
 src/FCF/WC_PolyTime.v
 src/FCF/WC_PolyTime_old.v
-src/FCF/Broken/ConstructedFunc.v
-src/FCF/Broken/Encryption_2W.v
-src/FCF/Broken/ListHybrid.v
-src/FCF/Broken/PRP_PRF.v
-src/FCF/Broken/Procedure.v
-src/FCF/Broken/RandPermSwitching.v
-src/FCF/Broken/Sigma.v
-src/FCF/Broken/State.v
 src/FCF/examples/Commit.v
 src/FCF/examples/EC_DRBG.v
 src/FCF/examples/ElGamal.v

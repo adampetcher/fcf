@@ -12,7 +12,7 @@ Require Import FCF.SemEquiv.
 Require Import FCF.DetSem.
 Require Import FCF.NotationV1.
 
-Require Import Omega.
+Require Import micromega.Lia.
 
  
 Local Open Scope rat_scope.
@@ -2538,7 +2538,7 @@ Theorem combine_app : forall (A B : Type) (lsa1 lsa2 : list A) (lsb1 lsb2 : list
   reflexivity.
   f_equal.
   eapply IHlsa1.
-  omega.
+  lia.
 
 Qed.
 

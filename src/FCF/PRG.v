@@ -59,10 +59,10 @@ eapply eq_trans.
 apply firstn_length.
 rewrite to_list_length.
 eapply min_l.
-omega.
+lia.
 Defined.
 
-Fixpoint firstPart(A : Set)(m1 m2 : nat)(v : Vector.t A (m1 + m2)) : Vector.t A m1 :=
+Definition firstPart(A : Set)(m1 m2 : nat)(v : Vector.t A (m1 + m2)) : Vector.t A m1 :=
   of_sig_list (vector_firstPart_h m1 m2 v).
 
 Theorem skipn_length : forall (A : Set) n0 (ls : list A),
@@ -79,10 +79,10 @@ Definition vector_secondPart_h(A : Set)(m1 m2 : nat)(v : Vector.t A (m1 + m2)) :
 refine (exist _ (skipn m1 (Vector.to_list v)) _).
 rewrite skipn_length.
 rewrite to_list_length.
-omega.
+lia.
 Defined.
 
-Fixpoint secondPart(A : Set)(m1 m2 : nat)(v : Vector.t A (m1 + m2)) : Vector.t A m2 :=
+Definition secondPart(A : Set)(m1 m2 : nat)(v : Vector.t A (m1 + m2)) : Vector.t A m2 :=
   of_sig_list (vector_secondPart_h m1 m2 v).
 
 Section OWP_impl_HCP.

@@ -449,7 +449,7 @@ Theorem qam_count :
   intuition.
   eapply le_trans.
   eapply qam_count_gen; eauto.
-  omega.
+  lia.
 
 Qed.
 

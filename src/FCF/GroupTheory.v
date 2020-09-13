@@ -10,6 +10,7 @@ Require Import FCF.Rat.
 Require Import FCF.StdNat.
 
 Class Group_op(A : Set) := groupOp : A -> A -> A.
+Declare Scope group_scope.
 Infix "*" := groupOp : group_scope.
 Delimit Scope group_scope with group.
 Local Open Scope group_scope.
@@ -159,7 +160,7 @@ Section FiniteCyclicGroupProperties.
     rewrite <- (group_cyclic g y).
     repeat rewrite <- groupExp_plus.
     f_equal.
-    omega.
+    lia.
     apply g_generator.
     apply g_generator.
   Qed.

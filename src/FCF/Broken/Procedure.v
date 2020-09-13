@@ -174,10 +174,11 @@ Section RunWithOracle.
   Variable S_O : Set.
   Hypothesis S_O_EqDec : EqDec S_O.
   Variable P_O : S_O -> D_O -> Comp (R_O * S_O).
-
+(*
   Hint Resolve (P.(S_P_EqDec)) : typeclass_instances.
   Hint Resolve (P.(D_O_EqDec)) : typeclass_instances.
   Hint Resolve (P.(R_P_EqDec)) : typeclass_instances.
+*)
 
   Definition runPWO s_O :=
     [d, s_P] <-$2 P.(P1) d_P;

@@ -1904,14 +1904,14 @@ Lemma dat_correct_dat_better : forall (A : Set)(c : Comp A) ls n1 t1,
   specialize (H a).
   intuition.
   econstructor.
-  omega.
+  lia.
   
   inversion H2; clear H2; subst.
   specialize (H a).
   intuition.
   econstructor.
   assert (n >= n0).
-  omega.
+  lia.
   eauto with dat.
 Qed.
 
@@ -1966,8 +1966,8 @@ Lemma datMap_depth_better : forall (A B : Set)(tb1 tb2 : DistApproxTree B),
   inversion H2; clear H2; subst.
   inversion H3; clear H3; subst.
   econstructor.
-  eapply IHdat_better1; eauto; omega.
-  eapply IHdat_better2; eauto; omega.
+  eapply IHdat_better1; eauto; lia.
+  eapply IHdat_better2; eauto; lia.
 Qed.
 
 Lemma dat_bind_2_better : forall (n : nat) (A B : Set)(c1 : Comp B)(c2 : B -> Comp A) t1 t2,
@@ -1994,7 +1994,7 @@ Lemma dat_bind_2_better : forall (n : nat) (A B : Set)(c1 : Comp B)(c2 : B -> Co
   
   intuition.
   eapply dat_correct_dat_better; eauto.
-  omega.
+  lia.
 Qed.
 
 Lemma dat_correct_h_bind_app : forall (A B : Set) t (c1 : Comp B)(c2 : B -> Comp A) n ls1 ls2 a,
@@ -2250,7 +2250,7 @@ Lemma datMap_depth_better' : forall (B : Set)(tb1 tb2 : DistApproxTree B),
   inversion H0; clear H0; subst.
   inversion H; clear H; subst.
   eapply H2; eauto.
-  omega.
+  lia.
   
   inversion H2; clear H2; subst.
   inversion H1; clear H1; subst.
@@ -2260,16 +2260,16 @@ Lemma datMap_depth_better' : forall (B : Set)(tb1 tb2 : DistApproxTree B),
   eauto.
   destruct (le_dec (datDepth tb1) (datDepth tb2)).
   rewrite Max.max_r in H3; eauto.
-  omega.
-  rewrite Max.max_l in H3; omega.
+  lia.
+  rewrite Max.max_l in H3; lia.
   eauto.
   
   eapply IHdat_better2.
   eauto.
   eauto.
   destruct (le_dec (datDepth tb1) (datDepth tb2)).
-  rewrite Max.max_r in H3; omega.
-  rewrite Max.max_l in H3; omega.
+  rewrite Max.max_r in H3; lia.
+  rewrite Max.max_l in H3; lia.
   eauto.
   
 Qed.
@@ -2282,8 +2282,8 @@ Lemma datCorrect_datDepth : forall (A : Set)(c : Comp A) n t,
   
   destruct (le_dec (datDepth t1) (datDepth t2)).
   rewrite Max.max_r; eauto.
-  omega.
-  rewrite Max.max_l; omega.
+  lia.
+  rewrite Max.max_l; lia.
 Qed.
 
 Lemma dat_better_bind_div2 : forall (A B : Set)(c1 : Comp B)(c2 : B -> Comp A) n t1 t2,
@@ -2571,7 +2571,7 @@ Theorem lowDistApprox_Rnd: forall n2 n1 (a : Bvector n1) r,
   eauto.
   
   assert ((n1 + S n2) = (S (n1 + n2)))%nat.
-  omega.
+  lia.
   rewrite H4 in H1.
   simpl in *.
   
@@ -2599,7 +2599,7 @@ Theorem lowDistApprox_Rnd: forall n2 n1 (a : Bvector n1) r,
   
   edestruct shiftOut_Some.
   assert (length a0 >= n1)%nat.
-  omega.
+  lia.
   eapply H8.
   destruct x2.
   erewrite shiftOut_app in H14; eauto.
@@ -2651,7 +2651,7 @@ Theorem lowDistApprox_Rnd: forall n2 n1 (a : Bvector n1) r,
   
   edestruct shiftOut_Some.
   assert (length a0 >= n1)%nat.
-  omega.
+  lia.
   eapply H8.
   destruct x2.
   erewrite shiftOut_app in H14; eauto.
@@ -2706,10 +2706,10 @@ Theorem lowDistApprox_Rnd: forall n2 n1 (a : Bvector n1) r,
   assert (nz (expnat 2 (n1 + n2))%nat).
   econstructor.
   eapply expnat_pos.
-  omega.
+  lia.
   
   assert (nz 2)%nat.
-  econstructor. omega.
+  econstructor. lia.
   
   eapply eqRat_trans.
   eapply ratMult_eqRat_compat.
@@ -3534,7 +3534,7 @@ Lemma datRepeat_depth_0 : forall n2 n1 (A : Set)(f : nat -> DistApproxTree A -> 
   trivial.
   trivial.
   
-  omega.
+  lia.
   
   inversion H; clear H; subst.
   econstructor.
@@ -3546,7 +3546,7 @@ Lemma datRepeat_depth_0 : forall n2 n1 (A : Set)(f : nat -> DistApproxTree A -> 
   
   econstructor; eauto.
   eapply IHn2; eauto.
-  omega.
+  lia.
 Qed.
 
 Lemma dat_correct_repeat_same_h : forall depth repeats (A : Set)(c : Comp A) P ls t a t1,
@@ -3749,7 +3749,7 @@ Lemma dat_correct_repeat_same_h : forall depth repeats (A : Set)(c : Comp A) P l
   econstructor.
   
   destruct repeats.
-  omega.
+  lia.
 
   eapply datRepeat_depth_leaf_Some_repeat.
   trivial.
@@ -3823,7 +3823,7 @@ Lemma dat_correct_repeat_same_h : forall depth repeats (A : Set)(c : Comp A) P l
   eapply evalDet_app_nil;
   eauto.
   trivial.
-  omega.
+  lia.
 
   eapply IHdepth.
   eapply dat_correct_h_repeat_app.
@@ -3862,7 +3862,7 @@ Lemma dat_correct_repeat_same_h : forall depth repeats (A : Set)(c : Comp A) P l
   eapply evalDet_app_nil;
   eauto.
   trivial.
-  omega.
+  lia.
 
   eapply datRepeat_depth_internal.
 
@@ -3889,7 +3889,7 @@ Lemma dat_correct_repeat_same_h : forall depth repeats (A : Set)(c : Comp A) P l
   assert (n' <= length ls)%nat.
   rewrite app_length in n.
   simpl in *.
-  omega. 
+  lia. 
   rewrite firstn_app in H3.
   assert (ls = firstn n' ls ++ skipn n' ls).
   symmetry.
@@ -3903,7 +3903,7 @@ Lemma dat_correct_repeat_same_h : forall depth repeats (A : Set)(c : Comp A) P l
   rewrite H14 at 1.
   eapply H15.
   trivial.
-  omega.
+  lia.
 
   eapply IHdepth;
   eauto.
@@ -3928,7 +3928,7 @@ Lemma dat_correct_repeat_same_h : forall depth repeats (A : Set)(c : Comp A) P l
   assert (n' <= length ls)%nat.
   rewrite app_length in n.
   simpl in *.
-  omega. 
+  lia. 
   rewrite firstn_app in H3.
   assert (ls = firstn n' ls ++ skipn n' ls).
   symmetry.
@@ -3942,7 +3942,7 @@ Lemma dat_correct_repeat_same_h : forall depth repeats (A : Set)(c : Comp A) P l
   rewrite H14 at 1.
   eapply H15.
   trivial.
-  omega.
+  lia.
  Qed.
 
 
@@ -3999,12 +3999,12 @@ Lemma datRepeat_depth_better: forall (n2 : nat) (A : Set) (t2 t1 t1' : DistAppro
   rewrite mult_0_r in *.
   simpl in *.
   assert (depth0  >= (max (datDepth t2_1) (datDepth t2_2))).
-  omega.
+  lia.
 
   econstructor.
   eapply IHt2_1.
   eauto.
-  omega.
+  lia.
   eauto.
   eauto.
   rewrite mult_0_r; simpl. 
@@ -4017,7 +4017,7 @@ Lemma datRepeat_depth_better: forall (n2 : nat) (A : Set) (t2 t1 t1' : DistAppro
 
   eapply IHt2_2.
   eauto.
-  omega.
+  lia.
   eauto.
   trivial.
   rewrite mult_0_r; simpl. 
@@ -4039,18 +4039,18 @@ Lemma datRepeat_depth_better: forall (n2 : nat) (A : Set) (t2 t1 t1' : DistAppro
 
   inversion H; clear H; subst.
   congruence.
-  omega.
+  lia.
   
   rewrite mult_comm in H3.
   simpl in *.
 
   eapply IHn2.
   eauto.
-  omega.
+  lia.
   eauto.
   eapply H4; eauto.
   remember (n2 * n1)%nat as x.
-  omega.
+  lia.
 
   eapply le_trans.
   2:{
@@ -4081,7 +4081,7 @@ Lemma datRepeat_depth_better: forall (n2 : nat) (A : Set) (t2 t1 t1' : DistAppro
   eapply le_refl.
   eapply (Max.max_lub_l (datDepth t2_1) (datDepth t2_2)).
   eapply le_refl.
-  omega.
+  lia.
   trivial.
   trivial.
   trivial.
@@ -4096,7 +4096,7 @@ Lemma datRepeat_depth_better: forall (n2 : nat) (A : Set) (t2 t1 t1' : DistAppro
   eapply le_refl.
   eapply (Max.max_lub_r (datDepth t2_1) (datDepth t2_2)).
   eapply le_refl.
-  omega.
+  lia.
   trivial.
   trivial.
   trivial.
@@ -4132,7 +4132,7 @@ Lemma dat_better_repeat_sqrt : forall (A : Set) (c : Comp A)(P : A -> bool)(n : 
   eapply le_trans.
   eapply plus_le_compat.
   eapply Nat.sqrt_spec.
-  omega.
+  lia.
   eapply le_trans.
   eapply datCorrect_datDepth.
   eauto.
@@ -4192,9 +4192,9 @@ Lemma lowDistApprox_repeat_sqrt_le : forall n (A : Set)(c : Comp A)(P : A -> boo
   econstructor; eauto.
 
   destruct n.
-  omega.
+  lia.
   destruct n.
-  omega.
+  lia.
   simpl.
   
   eapply lt_le_trans.
@@ -4203,7 +4203,7 @@ Lemma lowDistApprox_repeat_sqrt_le : forall n (A : Set)(c : Comp A)(P : A -> boo
   rewrite <- Nat.sqrt_1.
   eauto.
   eapply Nat.sqrt_le_mono.
-  omega.
+  lia.
 
   Grab Existential Variables.
   eapply comp_eq_dec; eauto.
@@ -4225,7 +4225,7 @@ Lemma datRepeat_better_depth: forall (A : Set) n2 (t2 t1 t1' : DistApproxTree A)
 
   induction n2; induction t2; intuition.
   assert (reps = O).
-  omega.
+  lia.
   subst.
   inversion H1; clear H1; subst.
   inversion H0; clear H0; subst.
@@ -4242,8 +4242,8 @@ Lemma datRepeat_better_depth: forall (A : Set) n2 (t2 t1 t1' : DistApproxTree A)
   inversion H0; clear H0; subst.
   inversion H; clear H; subst.
   econstructor.
-  eapply IHt2_1; eauto; omega.
-  eapply IHt2_2; eauto; omega.
+  eapply IHt2_1; eauto; lia.
+  eapply IHt2_2; eauto; lia.
 
   inversion H1; clear H1; subst.
   inversion H0; clear H0; subst.
@@ -4260,7 +4260,7 @@ Lemma datRepeat_better_depth: forall (A : Set) n2 (t2 t1 t1' : DistApproxTree A)
   eauto.
   eapply H4; eauto.
   trivial.
-  omega.
+  lia.
   trivial.
   trivial.
   trivial.
@@ -4271,8 +4271,8 @@ Lemma datRepeat_better_depth: forall (A : Set) n2 (t2 t1 t1' : DistApproxTree A)
   inversion H; clear H; subst.
   inversion H0; clear H0; subst.
   econstructor.
-  eapply IHt2_1; eauto; omega.
-  eapply IHt2_2; eauto; omega.
+  eapply IHt2_1; eauto; lia.
+  eapply IHt2_2; eauto; lia.
 Qed.
 
 Lemma dat_repeat_better:
@@ -4295,9 +4295,9 @@ Lemma dat_repeat_better:
   eapply dat_correct_dat_better.
   eauto.
   eauto.
-  omega.
-  omega.
-  omega.
+  lia.
+  lia.
+  lia.
   
   intuition.
   eapply dat_correct_dat_better; eauto.
@@ -4455,7 +4455,7 @@ Lemma lowDistApprox_low : forall (A : Set)(c : Comp A),
   destruct (le_dec n n0).
   assert (exists n1, n0 = n + n1)%nat.
   exists (minus n0 n).
-  omega.
+  lia.
   destruct H0.
   subst.
   rewrite lowDistApprox_Rnd; eauto.
@@ -4464,7 +4464,7 @@ Lemma lowDistApprox_low : forall (A : Set)(c : Comp A),
   rewrite lowDistApprox_Rnd_lt.
   eapply rat0_le_all.
   eauto.
-  omega.
+  lia.
 
   destruct n. 
   destruct H1.
@@ -4538,7 +4538,7 @@ Lemma lowDistApprox_low : forall (A : Set)(c : Comp A),
   edestruct lowDistApprox_repeat_left_total; eauto.
   eapply leRat_trans.
   eapply lowDistApprox_le_repeat; eauto.
-  omega.
+  lia.
   unfold lowDistApprox_repeat in *.
   unfold ratMult_rel, expRat_rel, indicator_rel in *.
   edestruct lowDistApprox_left_total.
@@ -4593,7 +4593,7 @@ Lemma lowDistApprox_low : forall (A : Set)(c : Comp A),
   intuition.
 
   rewrite (@sum_power_series (S (S n)) (sumList_rel (fun a : A => lowDistApprox c a (S n))
-            (filter (fun a : A => negb (P a)) (getSupport c)))); eauto; try omega.
+            (filter (fun a : A => negb (P a)) (getSupport c)))); eauto; try lia.
   2:{
     intuition.
     eapply sumList_rel_func; eauto.
@@ -5174,7 +5174,7 @@ Theorem evalDet_evalDist_equiv : forall (A : Set)(c : Comp A),
   eapply (ratIdentityIndiscernables a').
   assert (exists n'', n' = n + n'')%nat.
   exists (n' - n).
-  omega.
+  lia.
   destruct H2.
   subst.
 

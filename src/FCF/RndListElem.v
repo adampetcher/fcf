@@ -70,11 +70,11 @@ Theorem firstIndexOf_in_lt :
   
   subst.
   destruct (eqd a0 a0); subst.
-  omega.
+  lia.
   intuition.
 
   destruct (eqd a0 a); subst.
-  omega.
+  lia.
 
   eapply lt_n_S.
   eauto.
@@ -159,13 +159,13 @@ Theorem nth_option_some :
     exists a, nth_option ls n = Some a.
   
   induction ls; intuition; simpl in *.
-  omega.
+  lia.
   
   destruct n.
   econstructor; eauto.
   
   destruct (IHls n).
-  omega.
+  lia.
   
   econstructor; eauto.
   
@@ -213,7 +213,7 @@ Theorem rndListElem_uniform :
 
   unfold rndListElem.
   case_eq (length ls); intuition.
-  destruct ls; simpl in *. intuition. omega.
+  destruct ls; simpl in *. intuition. lia.
   
   eapply comp_spec_impl_eq.
   
@@ -222,9 +222,9 @@ Theorem rndListElem_uniform :
   apply (Some a).
   eapply eq_impl_comp_spec.
   eapply well_formed_RndNat.
-  omega.
+  lia.
   eapply well_formed_RndNat.
-  omega.
+  lia.
   eapply RndNat_uniform.
   3:{
     intros.
@@ -323,12 +323,12 @@ Lemma nth_option_not_None :
     False.
 
   induction ls; intuition; simpl in *.
-  omega.
+  lia.
 
   destruct i.
   discriminate.
   assert (i < length ls).
-  omega.
+  lia.
   eauto.
 
 Qed.
@@ -361,8 +361,8 @@ Theorem rndListElem_uniform_gen :
 
   eapply comp_spec_seq; try eapply None.
   eapply eq_impl_comp_spec.
-  eapply well_formed_RndNat; omega.
-  eapply well_formed_RndNat; omega.
+  eapply well_formed_RndNat; lia.
+  eapply well_formed_RndNat; lia.
   eapply (@RndNat_uniform  (firstIndexOf (EqDec_dec _) ls1 a1 O) (firstIndexOf (EqDec_dec _) ls2 a2 O)).
 
   rewrite <- H4.
@@ -426,7 +426,7 @@ Theorem rndListElem_support_exists :
   eapply getSupport_In_Seq.
 
   eapply (@in_getSupport_RndNat O).
-  omega.
+  lia.
   simpl.
   intuition.
 Qed.
@@ -464,7 +464,7 @@ Qed.
       eapply getSupport_In_Seq.
 
       eapply (@in_getSupport_RndNat O).
-      omega.
+      lia.
       simpl.
       intuition.
     Qed.
