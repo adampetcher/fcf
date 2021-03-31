@@ -213,7 +213,7 @@ Section TwoWorldsEquiv.
       rewrite ratDistance_add_same_r.
       reflexivity.
 
-      Grab Existential Variables.
+      Unshelve.
       exact _.
       exact _.
     Qed.

@@ -426,7 +426,7 @@ Section DistSingle_impl_Mult.
     comp_simp.
     eapply compMap_computeHybrid_n_equiv.
 
-    Grab Existential Variables.
+    Unshelve.
     econstructor; intuition.
 
   Qed.
@@ -680,7 +680,7 @@ Section DistMult_impl_RepeatCore.
      dist_compute.
      intuition.     
 
-     Grab Existential Variables.
+     Unshelve.
      intuition.
 
    Qed.

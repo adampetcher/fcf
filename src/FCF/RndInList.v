@@ -85,7 +85,7 @@ Theorem qam_count_gen :
   eapply plus_le_compat; intuition.
   eapply mult_le_compat; intuition.
 
-  Grab Existential Variables.
+  Unshelve.
   repeat econstructor.
   eauto.
 
@@ -398,10 +398,9 @@ Theorem oc_eventProb :
   intuition.
   intuition.
 
-  Grab Existential Variables.
-  trivial.
-
+  Unshelve.
   repeat econstructor; eauto.
+  trivial.
 
 Qed.
 

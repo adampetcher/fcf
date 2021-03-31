@@ -216,4 +216,4 @@ Section Group_OTP.
 
 End Group_OTP.
 
-Hint Resolve RndGrpElem_wf : wftac.
+#[export] Hint Resolve RndGrpElem_wf : wftac.

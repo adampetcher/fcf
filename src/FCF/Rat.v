@@ -2599,7 +2599,7 @@ Lemma expRat_terms : forall k n (d : posnat)(p : nz (expnat d k)),
   intuition.
   eapply posnatMult_eq.
 
-  Grab Existential Variables.
+  Unshelve.
   destruct p.
   econstructor.
   eapply mult_gt_zero_if; eauto.
@@ -2710,7 +2710,7 @@ Lemma expRat_le_half_exists : forall r,
   eapply rat_ge_1.
   lia.
 
-  Grab Existential Variables.
+  Unshelve.
   
   eapply expnat_nz.
   destruct p.
@@ -2747,7 +2747,7 @@ Lemma expRat_half_le_exp_exists : forall d,
   unfold natToPosnat, posnatToNat.
   eapply le_expnat_2.
 
-  Grab Existential Variables.
+  Unshelve.
   eapply expnat_nz.
   econstructor.
   destruct p.

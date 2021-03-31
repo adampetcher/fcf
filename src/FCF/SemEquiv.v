@@ -1499,7 +1499,7 @@ Theorem bind_low_tree_approx_same_inv : forall (A B : Set)(eqda : eq_dec A)(c1 :
   eapply H5.
   eapply getTreeSupport_in; eauto.
   
-  Grab Existential Variables.
+  Unshelve.
   eapply comp_eq_dec; eauto.
 Qed.
 
@@ -1860,7 +1860,7 @@ Inductive dat_better(A : Set) : DistApproxTree A -> DistApproxTree A -> Prop :=
   dat_better ta2 tb2 ->
   dat_better (dat_internal ta1 ta2) (dat_internal tb1 tb2).
 
-Hint Constructors dat_better : dat.
+#[export] Hint Constructors dat_better : dat.
 
 Lemma dat_better_refl : forall (A : Set)(t : DistApproxTree A),
   dat_better t t.
@@ -2200,7 +2200,7 @@ Lemma lowDistApprox_le_bind : forall n (A B : Set)(c1 : Comp B)(c2 : B -> Comp A
   eapply H6.
   auto.
   
-  Grab Existential Variables.
+  Unshelve.
   eapply bind_eq_dec; eauto.
   
 Qed.
@@ -2348,7 +2348,7 @@ Lemma lowDistApprox_bind_le_div2 : forall (A B : Set)(c1 : Comp B)(c2 : B -> Com
   eapply dat_better_bind_div2; eauto.
   trivial.
   
-  Grab Existential Variables.
+  Unshelve.
   eapply bind_eq_dec; eauto.
   
 Qed.
@@ -2365,7 +2365,7 @@ Lemma lowDistApprox_func : forall (A : Set)(c : Comp A) a n r1 r2,
   rewrite <- low_tree_approx_same_inv; eauto.
   eapply low_tree_approx_same_inv; eauto.
   
-  Grab Existential Variables.
+  Unshelve.
   eapply comp_eq_dec; eauto.
   
 Qed.
@@ -2506,7 +2506,7 @@ Lemma rel_map_Rnd_any_in : forall n ls (a : Bvector n),
   simpl.
   econstructor.
   
-  Grab Existential Variables.
+  Unshelve.
   intuition.
   eapply evalDet_func; eauto.
   
@@ -2936,10 +2936,10 @@ Lemma datRepeat_left_total : forall n (A : Set)(eqd : eq_dec A)(t : DistApproxTr
   econstructor.
   econstructor; eauto.
 
-  Grab Existential Variables.
-  eapply P.
+  Unshelve.
 
   trivial.
+  eapply P.
 
 Qed.
 
@@ -4205,7 +4205,7 @@ Lemma lowDistApprox_repeat_sqrt_le : forall n (A : Set)(c : Comp A)(P : A -> boo
   eapply Nat.sqrt_le_mono.
   lia.
 
-  Grab Existential Variables.
+  Unshelve.
   eapply comp_eq_dec; eauto.
   
 Qed.
@@ -4356,7 +4356,7 @@ Lemma lowDistApprox_le_repeat:
   eapply dat_correct_repeat_same; eauto.
   trivial.
   
-  Grab Existential Variables.
+  Unshelve.
   eapply comp_eq_dec; eauto.
 Qed.
 
@@ -5188,7 +5188,7 @@ Theorem evalDet_evalDist_equiv : forall (A : Set)(c : Comp A),
   econstructor; eauto.
   trivial.
 
-  Grab Existential Variables.
+  Unshelve.
   (* todo: make a version of the squeeze theorem that doesn't have the extra nat. *)
   eapply O.
   

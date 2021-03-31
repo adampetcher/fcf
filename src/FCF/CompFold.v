@@ -119,6 +119,8 @@ Theorem list_inhabited :
 
 Qed.
 
+#[export] Hint Resolve list_inhabited : inhabited.
+
 Theorem compMap_fission_eq:
   forall (A : Type)(B C D : Set){eqdb : EqDec B}{eqdd : EqDec D}{eqdc : EqDec C}(ls : list A)(f1 : A -> Comp B)(f2 : A -> Comp C)(f3 : list B -> Comp (list D))(f4 : C -> Comp D) P,
     (comp_spec eq (f3 nil) (ret nil)) -> 
@@ -137,8 +139,6 @@ Theorem compMap_fission_eq:
 
   simpl.
   prog_inline_first.
-  
-  Hint Resolve list_inhabited : inhabited.
 
   eapply comp_spec_seq; intuition;
   eauto with inhabited. 
@@ -2508,7 +2508,7 @@ Theorem prob_sum_le :
   rewrite prob_or_le_sum.
   eapply ratAdd_leRat_compat; intuition.
 
-  Grab Existential Variables.
+  Unshelve.
   intuition.
 
 Qed.

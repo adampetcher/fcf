@@ -1076,7 +1076,7 @@ Lemma fold_add_subset : forall (A : Set)(eqd : eq_dec A)(ls1 ls2 : list A)(f : A
   eauto.
   eauto.
   
-  Grab Existential Variables.
+  Unshelve.
   trivial.
 Qed.
 
@@ -2309,7 +2309,7 @@ Lemma sumList_rel_ls_intersect: forall (A : Set)(rel : A -> Rat -> Prop)(ls1 : l
   subst.
   intuition.
   
-  Grab Existential Variables.
+  Unshelve.
   trivial.
 
 Qed.
@@ -2479,7 +2479,7 @@ Lemma fold_add_subset' : forall (A : Set)(eqd : eq_dec A)(ls1 ls2 : list A)(f : 
   trivial.
   trivial.
   
-  Grab Existential Variables.
+  Unshelve.
   trivial.
 Qed.
 

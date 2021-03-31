@@ -794,17 +794,18 @@ Theorem eq_impl_comp_spec :
   simpl in *.
   discriminate.
 
-  Grab Existential Variables. 
-  unfold eq_dec; intuition.
-  eapply (EqDec_dec _).
-  unfold eq_dec; intuition.
-  eapply (EqDec_dec _).
+  Unshelve. 
 
   intuition.
   intuition.
   intuition.
   intuition.
   intuition.
+
+  unfold eq_dec; intuition.
+  eapply (EqDec_dec _).
+  unfold eq_dec; intuition.
+  eapply (EqDec_dec _).
 
 Qed.
 
@@ -1307,17 +1308,18 @@ Theorem le_impl_comp_spec :
   rewrite eqb_refl in Heqx2.
   discriminate.
 
-  Grab Existential Variables.
-  unfold eq_dec; intuition.
-  eapply (EqDec_dec _).
-  unfold eq_dec; intuition.
-  eapply (EqDec_dec _).
+  Unshelve.
 
   intuition.
   intuition.
   intuition.
   intuition.
   intuition.
+
+  unfold eq_dec; intuition.
+  eapply (EqDec_dec _).
+  unfold eq_dec; intuition.
+  eapply (EqDec_dec _).
 
 Qed.
 
@@ -1451,7 +1453,7 @@ Theorem eq_impl_comp_spec_eq :
   repeat simp_in_support.
   trivial.
 
-  Grab Existential Variables.
+  Unshelve.
   intuition.
   intuition.
   
@@ -1697,7 +1699,7 @@ Theorem comp_spec_iso :
   repeat simp_in_support.
   trivial.
 
-  Grab Existential Variables.
+  Unshelve.
   intuition.
   intuition.
 

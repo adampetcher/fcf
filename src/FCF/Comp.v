@@ -35,7 +35,7 @@ Inductive Comp_eq : forall (A : Set), Comp A -> Comp A -> Prop :=
     (forall a, P1 a = P2 a) ->
     Comp_eq (Repeat c1 P1) (Repeat c2 P2).
 
-Hint Constructors Comp_eq : comp.
+#[export] Hint Constructors Comp_eq : comp.
 
 Theorem Comp_eq_refl : forall (A : Set)(c : Comp A),
   Comp_eq c c.

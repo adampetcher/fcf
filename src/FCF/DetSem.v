@@ -74,7 +74,7 @@ Inductive evalDet_steps(A : Set) : comp_state A -> comp_state A -> Prop :=
       evalDet_steps ans ans' ->
       evalDet_steps (cs_more c s) ans'.
 
-Hint Constructors evalDet_steps : evalDet.
+#[export] Hint Constructors evalDet_steps : evalDet.
 
 Inductive evalDet(A : Set)(c : Comp A)(s : Blist) : comp_answer A -> Prop :=
   | evalDet_done : forall a s',

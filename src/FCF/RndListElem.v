@@ -125,10 +125,12 @@ Lemma rndListElem_support:
   
   eapply nth_option_In; eauto.
 
-  Grab Existential Variables.
-  apply O.
+  Unshelve.
+
   unfold eq_dec.
   eapply (EqDec_dec eqd).
+
+  apply O.
 Qed.
 
 Theorem nth_firstIndexOf_if : 

@@ -19,7 +19,7 @@ Require Import FCF.NotationV1.
 Local Open Scope rat_scope.
 Local Open Scope comp_scope.
 
-Hint Resolve true : inhabited.
+#[export] Hint Resolve true : inhabited.
 
 Ltac prog_ret_l :=
   eapply comp_spec_eq_trans_l; [eapply comp_spec_left_ident | idtac].

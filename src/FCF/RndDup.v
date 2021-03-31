@@ -323,7 +323,7 @@ Section RndDup.
     rewrite (ratS_num' (length ls)).
     reflexivity.
 
-    Grab Existential Variables.
+    Unshelve.
     eapply 1.
   Qed.
 End RndDup.

@@ -82,7 +82,7 @@ Lemma RndNat_support_lt : forall n x,
   destruct (lt_dec x n); congruence.
 Qed.
 
-Hint Resolve well_formed_RndNat : wftac.
+#[export] Hint Resolve well_formed_RndNat : wftac.
 
 
 Lemma RndNat_unchecked_lt_support : forall n v,

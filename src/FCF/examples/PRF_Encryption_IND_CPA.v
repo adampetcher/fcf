@@ -853,7 +853,7 @@ Section PRF_Encryption_concrete.
       subst.
       trivial.
 
-      Grab Existential Variables.
+      Unshelve.
       eauto.
     Qed.
     
@@ -945,7 +945,7 @@ Section PRF_Encryption_concrete.
       destruct p1; simpl in *.
       subst; intuition.
 
-      Grab Existential Variables.
+      Unshelve.
       eauto.
     Qed.
     

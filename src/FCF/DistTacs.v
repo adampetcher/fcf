@@ -21,7 +21,7 @@ Definition leftc := false.
 Definition rightc := true.
 
 (* wftac -- A tactic for deciding well-formedness *)
-Hint Resolve posnat_pos : wftac.
+#[export] Hint Resolve posnat_pos : wftac.
 
 Ltac pairInv := 
   match goal with
