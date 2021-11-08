@@ -223,7 +223,7 @@ Theorem oc_eventProb :
   eauto.
   eauto.
   rewrite mult_comm.
-  intuition.
+  reflexivity.
 
   rewrite H6.
   clear H6.
