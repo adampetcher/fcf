@@ -4,6 +4,8 @@ coq: Makefile.coq
 
 Makefile.coq: Makefile _CoqProject
 	$(COQBIN)coq_makefile -f _CoqProject  > $@
+	
+install: coq
 
 SORT_COQPROJECT = sed 's,[^/]*/,~&,g' | env LC_COLLATE=C sort | sed 's,~,,g'
 .PHONY: update-_CoqProject
