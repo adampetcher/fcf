@@ -762,7 +762,7 @@ Lemma not_In_getSupport_bind_cp : forall (A B : Set)(eqda : eq_dec A)(eqdb : eq_
 Qed.
 
 
-Instance length_getSupport_nz : forall (A : Set)(c : Comp A),
+#[export] Instance length_getSupport_nz : forall (A : Set)(c : Comp A),
   well_formed_comp c ->
   nz (length (getSupport c)).
 intuition.

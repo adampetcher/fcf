@@ -2409,11 +2409,11 @@ Require Import Setoid.
 Add Parametric Relation (A : Set){eqd : EqDec A} : (Comp A) (@comp_spec A A eqd eqd eq)
   as comp_spec_eq_rel.
 
-Global Instance comp_spec_eq_rel_Reflexive (A : Set) (eqd : EqDec A) : Reflexive (comp_spec eq)
+#[export] Instance comp_spec_eq_rel_Reflexive (A : Set) (eqd : EqDec A) : Reflexive (comp_spec eq)
   | 10 := @comp_spec_eq_refl A eqd.
-Global Instance comp_spec_eq_rel_Symmetric (A : Set) (eqd : EqDec A) : Symmetric (comp_spec eq)
+#[export] Instance comp_spec_eq_rel_Symmetric (A : Set) (eqd : EqDec A) : Symmetric (comp_spec eq)
   | 10 := @comp_spec_eq_symm A eqd.
-Global Instance comp_spec_eq_rel_Transitive (A : Set) (eqd : EqDec A) : Transitive (comp_spec eq)
+#[export] Instance comp_spec_eq_rel_Transitive (A : Set) (eqd : EqDec A) : Transitive (comp_spec eq)
   | 10 := @comp_spec_eq_trans A eqd.
-Global Instance comp_spec_eq_rel (A : Set) (eqd : EqDec A) : Equivalence (comp_spec eq)
+#[export] Instance comp_spec_eq_rel (A : Set) (eqd : EqDec A) : Equivalence (comp_spec eq)
   | 10 := {}.

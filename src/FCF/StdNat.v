@@ -94,7 +94,7 @@ Class nz (a : nat) := {
   agz : a > 0
 }.
 
-Instance nz_nat : forall (n : nat), nz (S n).
+#[export] Instance nz_nat : forall (n : nat), nz (S n).
 intuition.
 econstructor.
 lia.
@@ -140,7 +140,7 @@ Lemma posnat_pos : forall (p : posnat),
   trivial.
 Qed.
 
-Instance nz_posnat : forall (p : posnat),
+#[export] Instance nz_posnat : forall (p : posnat),
   nz p.
 
 intuition.
@@ -657,7 +657,7 @@ Lemma div2_ge : forall n n',
   trivial.
 Qed.
 
-Instance expnat_nz : forall k n (p : nz n),
+#[export] Instance expnat_nz : forall k n (p : nz n),
   nz (expnat n k).
 
 intuition.

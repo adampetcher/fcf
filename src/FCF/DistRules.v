@@ -1209,7 +1209,7 @@ Class RatRel (R : Rat -> Rat -> Prop) :=
   mult_proper : Proper (R ==> R ==> R) ratMult
 }.
 
-Instance RatRel_trans : 
+#[export] Instance RatRel_trans : 
   forall (R : Rat -> Rat -> Prop),
     RatRel R -> Transitive R.
 
@@ -1219,7 +1219,7 @@ intuition.
 
 Qed.
 
-Instance RatRel_flip : 
+#[export] Instance RatRel_flip : 
   forall R,
     RatRel R ->
     RatRel (Basics.flip R).
@@ -1239,14 +1239,14 @@ Qed.
 
 (* The class includes equality and inequality. *)
 
-Instance eqRat_RatRel : RatRel eqRat.
+#[export] Instance eqRat_RatRel : RatRel eqRat.
 
 econstructor;
 eauto with typeclass_instances.
 
 Qed.
 
-Instance leRat_RatRel : RatRel leRat.
+#[export] Instance leRat_RatRel : RatRel leRat.
 
 econstructor;
 eauto with typeclass_instances.
@@ -1255,7 +1255,7 @@ eapply eqRat_impl_leRat.
 Qed.
 
 (* This one comes up some times: *)
-Instance eqRat_RatRel_1 : 
+#[export] Instance eqRat_RatRel_1 : 
   RatRel (fun r r1 : Rat => r1 == r).
 
 eapply RatRel_flip.

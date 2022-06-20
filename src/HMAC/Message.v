@@ -18,9 +18,6 @@ Section HMAC_Message.
   Instance Message_EqDec : EqDec Message.
 
   eapply pair_EqDec;  eauto with typeclass_instances.
-  eapply Vector_EqDec.
-  eapply Vector_EqDec.
-  eauto with typeclass_instances.
 
   Qed.
 

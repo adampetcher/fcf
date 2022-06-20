@@ -282,14 +282,14 @@ Add Parametric Relation : Rat eqRat
 Require Import RelationClasses.
 Require Import Coq.Classes.Morphisms.
 
-Global Instance Subrelation_eq_le : subrelation eqRat leRat.
+#[export] Instance Subrelation_eq_le : subrelation eqRat leRat.
 repeat red.
 intuition.
 eapply eqRat_impl_leRat.
 trivial.
 Qed.
 
-Global Instance eqRat_resp_leRat : 
+#[export] Instance eqRat_resp_leRat : 
   forall x,
     Proper (eqRat ==> Basics.flip Basics.impl)
                                   (leRat x).

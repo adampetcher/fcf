@@ -115,14 +115,14 @@ Lemma bind_eq_dec : forall (A B : Set),
 Qed.
 
 (*
-Instance comp_eq_dec : forall (A : Set),
+#[export] Instance comp_eq_dec : forall (A : Set),
   Comp A ->
   EqDec A.
 
 eapply comp_base_EqDec.
 Qed.
 
-Instance bind_EqDec : forall (B A : Set),
+#[export] Instance bind_EqDec : forall (B A : Set),
   Comp B ->
   (B -> Comp A) ->
   EqDec A.

@@ -78,7 +78,7 @@ Section RandomFunc.
   Variable RndR : Comp R.
 
   Hypothesis EqDec_D : EqDec D.
-  Instance EqDec_R : EqDec R.
+  #[export] Instance EqDec_R : EqDec R.
     eapply comp_EqDec.
     eauto.
   Qed.

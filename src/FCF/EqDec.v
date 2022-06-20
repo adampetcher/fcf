@@ -178,7 +178,7 @@ Section Vector_EqDec.
   Variable A : Set.
   Context `{eqd_A : EqDec A}.
 
-  Instance Vector_EqDec : 
+  #[export] Instance Vector_EqDec : 
     forall (n : nat),
       EqDec (Vector.t A n).
   
@@ -202,7 +202,7 @@ Fixpoint BvIsZero n (v : Bvector n) : bool  :=
   end.
 *)
 
-Instance unit_EqDec : EqDec unit.
+#[export] Instance unit_EqDec : EqDec unit.
 refine {| eqb := (fun x y => true) |}.
 
 intuition.
@@ -212,7 +212,7 @@ trivial.
 
 Qed.
 
-Instance bool_EqDec : EqDec bool.
+#[export] Instance bool_EqDec : EqDec bool.
 refine {| eqb := Bool.eqb |}.
 eapply eqb_true_iff.
 Qed.
@@ -238,7 +238,7 @@ Theorem eqbBvector_complete : forall n (v : Bvector n),
   apply eqb_vector_refl.
 Qed.
  
-Instance Bvector_EqDec n : EqDec (Bvector n).
+#[export] Instance Bvector_EqDec n : EqDec (Bvector n).
 refine {| eqb := (@eqbBvector n) |}.
 intuition.
 eapply eqbBvector_sound; auto.
@@ -248,7 +248,7 @@ eapply eqbBvector_complete; eauto.
 Defined.
 
 
-Instance nat_EqDec : EqDec nat.
+#[export] Instance nat_EqDec : EqDec nat.
 refine {| eqb := (fun x y => (leb x y) && (leb y x)) |}.
 
 intuition.
@@ -266,7 +266,7 @@ Qed.
 Definition eqbPair (A B : Set)(dA : EqDec A)(dB : EqDec B)(p1 p2 : (A*B)) :=
   (eqb (fst p1) (fst p2)) && (eqb (snd p1) (snd p2)).
 
-Instance pair_EqDec (A B : Set) (dA : EqDec A) (dB : EqDec B) : EqDec (prod A B).
+#[export] Instance pair_EqDec (A B : Set) (dA : EqDec A) (dB : EqDec B) : EqDec (prod A B).
 refine {| eqb := (@eqbPair A B dA dB) |}.
 
 intuition; unfold eqbPair in *; simpl in *.
@@ -294,7 +294,7 @@ Definition eqbSum(A B : Set)(dA : EqDec A)(dB : EqDec B)(s1 s2 : (A + B)) :=
     end
   end.
 
-Instance sum_EqDec (A B : Set) (dA : EqDec A) (dB : EqDec B) :
+#[export] Instance sum_EqDec (A B : Set) (dA : EqDec A) (dB : EqDec B) :
     EqDec (sum A B).
 refine {| eqb := (@eqbSum A B dA dB) |}.
 
@@ -322,7 +322,7 @@ Definition eqbOption (A : Set)(dA : EqDec A)(o1 o2 : option A) :=
       end
   end.
 
-Instance option_EqDec (A : Set) (dA : EqDec A) : EqDec (option A).
+#[export] Instance option_EqDec (A : Set) (dA : EqDec A) : EqDec (option A).
 refine {| eqb := (@eqbOption A dA ) |}.
 
 intuition; unfold eqbOption in *; simpl in *.
@@ -384,7 +384,7 @@ Lemma eqbList_correct2 : forall (A : Set)(eqd : EqDec A) ls1 ls2,
   trivial.
 Qed.
 
-Instance list_EqDec (A : Set) (dA : EqDec A) : EqDec (list A).
+#[export] Instance list_EqDec (A : Set) (dA : EqDec A) : EqDec (list A).
 refine {| eqb := (@eqbList A dA ) |}.
 intuition.
 eapply eqbList_correct1; trivial.

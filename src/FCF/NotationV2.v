@@ -21,13 +21,13 @@ Class Monad
 *)
   }.
 
-Instance IdentMonad : Monad (fun (A: Set) => A).
+#[export] Instance IdentMonad : Monad (fun (A: Set) => A).
 econstructor.
 intuition.
 intuition.
 Defined.
 
-Instance CompMonad : Monad Comp.
+#[export] Instance CompMonad : Monad Comp.
 econstructor.
 intuition.
 apply Ret; intuition.
@@ -39,7 +39,7 @@ eapply Bind; eauto.
 Defined.
 
 
-Instance OracleCompMonad : forall (D R : Set), Monad (OracleComp D R).
+#[export] Instance OracleCompMonad : forall (D R : Set), Monad (OracleComp D R).
 
 econstructor.
 intuition.
