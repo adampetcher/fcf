@@ -18,7 +18,7 @@ jobs:
       matrix:
         image:
           - 'coqorg/coq:dev'
-          - 'coqorg/coq:8.13'
+          - 'coqorg/coq:8.15.2'
       fail-fast: false
     steps:
       - uses: actions/checkout@v2
