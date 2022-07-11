@@ -3216,7 +3216,7 @@ Lemma firstn_ge_all : forall n (A : Set) (ls : list A),
   n >= length ls ->
   firstn n ls = ls.
 
-  induction n; intuition; simpl in *.
+  induction n; intuition idtac; simpl in *.
   destruct ls; simpl in *.
   trivial.
   lia.
@@ -3904,7 +3904,7 @@ Theorem app_cons_eq :
   forall (A : Type) ls2 ls1 (a : A),
     ls2 ++ (a :: ls1) = (ls2 ++ (a :: nil)) ++ ls1.
   
-  induction ls2; intuition; simpl in *.
+  induction ls2; intuition idtac; simpl in *.
   f_equal.
   eauto.
   

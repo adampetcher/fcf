@@ -559,7 +559,7 @@ Section OracleMapHybrid.
     rewrite firstn_skipn.
     fcf_skip.
     eapply (compFold_spec' (fun a b c d => a = b /\ snd c = snd d /\ l0++ (fst d) = (fst c)));
-      intuition.
+      intuition idtac.
     simpl.
     eapply app_nil_r.
     simpl in *.
