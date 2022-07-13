@@ -273,7 +273,7 @@ Theorem comp_spec_seq :
   rewrite ratMult_1_r.
   eapply ratMult_eqRat_compat; intuition.
   specialize (H2 a).
-  intuition.
+  intuition idtac.
   rewrite H2.
   
   unfold marginal_l.
@@ -320,7 +320,7 @@ Theorem comp_spec_seq :
   rewrite H5.
   rewrite ratMult_1_r.
   eapply ratMult_eqRat_compat; intuition.
-  specialize (H2 a); intuition.
+  specialize (H2 a); intuition idtac.
   rewrite H6.
   unfold marginal_r; intuition.
 
@@ -1719,13 +1719,13 @@ Theorem comp_spec_irr_r :
   unfold marginal_l.
   dist_inline_first.
   dist_irr_r.
-  specialize (H0 x0); intuition.
+  specialize (H0 x0); intuition idtac.
   eapply H0.
   
   unfold marginal_r.
   dist_inline_first.
   dist_skip.
-  specialize (H0 x0); intuition.
+  specialize (H0 x0); intuition idtac.
   apply H2.
   repeat simp_in_support.
   specialize (H0 x0); intuition.
@@ -1748,13 +1748,13 @@ Theorem comp_spec_irr_l :
   unfold marginal_l.
   dist_inline_first.
   dist_skip.
-  specialize (H0 x0); intuition.
+  specialize (H0 x0); intuition idtac.
   eapply H0.
   
   unfold marginal_r.
   dist_inline_first.
   dist_irr_r.
-  specialize (H0 x0); intuition.
+  specialize (H0 x0); intuition idtac.
   apply H2.
   repeat simp_in_support.
   specialize (H0 x0); intuition.

@@ -32,7 +32,7 @@ Lemma well_formed_RndNat : forall n,
   unfold RndNat.
   eapply (well_formed_Repeat).
   unfold eq_dec.
-  intuition.
+  intuition idtac.
   eapply eq_nat_dec.
   unfold RndNat_unchecked.
   eapply well_formed_Bind.
