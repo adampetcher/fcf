@@ -11,7 +11,6 @@ Require Export Bvector.
 Require Import micromega.Lia.
 Require Import FCF.EqDec.
 Require Import FCF.Fold.
-Require Import Coq.NArith.Ndigits.
 Require Import ZArith.
 Local Open Scope list_scope.
 
@@ -994,127 +993,68 @@ Qed.
 
 
 Definition lognat(n : nat) : nat := 
-  N.size_nat (N.of_nat n).
+  N.to_nat (N.size (N.of_nat n)).
 
-Definition bvToNat(k : nat)(v : Bvector k) :=
-  N.to_nat (Bv2N k v).
-
-Lemma Bv2N_zero : forall (n : nat),
-  Bv2N n (Bvect_false n) = N0.
-  
-  induction n; intuition; simpl in *.
-  unfold N.double in *.
-  unfold Bvect_false in *.
-  rewrite IHn.
-  trivial.
-Qed.
-
-Lemma bvNat_zero : forall n, 
-  bvToNat (Bvect_false n) = O.
-
-  intuition.
-  unfold bvToNat.
-  assert (N.to_nat N0 = O).
-  simpl.
-  trivial.
-  rewrite <- H.
-  f_equal.
-  eapply Bv2N_zero.
-  
-Qed.
-
-Definition natToBv(k : nat)(v : nat) : Bvector k :=
-  N2Bv_gen k (N.of_nat v).
-
-
-Lemma Bv2N_app_false : forall n1 n2 (v1 : Bvector n1),
-  Bv2N (n1 + n2) (Vector.append v1 (Bvect_false n2)) = Bv2N n1 v1.
-  
-  induction n1; intuition.
-  rewrite (vector_0 v1).
-  simpl.
-  apply Bv2N_zero.
-  
-  destruct (vector_S v1).
-  destruct H.
-  rewrite H.
-  simpl.
-  destruct x.
-  rewrite IHn1.
-  trivial.
-  rewrite IHn1.
-  trivial.
-  
-Qed.
-
-Lemma Bv2N_N2Bv_gen : forall n0 k,
-  n0 >= N.size_nat k ->
-  Bv2N n0 (N2Bv_gen n0 k) = k.
-  
-  intuition.
-  assert (exists x, n0 = N.size_nat k + x)%nat.
-  exists (minus n0 (N.size_nat k)).
-  lia.
-  destruct H0.
-  rewrite H0.
-  rewrite N2Bv_N2Bv_gen_above.
-  rewrite Bv2N_app_false.
-  apply Bv2N_N2Bv.
-Qed.
-  
-Lemma bvToNat_natToBv_inverse : forall n k,
-  n >= lognat k ->
-  bvToNat (natToBv n k) = k.
-  
-  intuition.
-  unfold bvToNat, natToBv.
-  rewrite Bv2N_N2Bv_gen.
-  apply Nnat.Nat2N.id.
-  trivial.
-Qed.
-
-Lemma Nat_size_nat_monotonic : forall n1 n2,
-  (n1 < n2)%N ->
-  (N.size_nat n1 <= N.size_nat n2)%nat.
-  
-  intuition.
-  destruct n1; simpl.
-  lia.
-  destruct n2; simpl.
-  inversion H.
-  eapply Pos.size_nat_monotone.
-  intuition.
-Qed.
-  
 Lemma lognat_monotonic : forall n1 n2,
   (n1 < n2 ->
     lognat n1 <= lognat n2)%nat.
-  
-  intuition.
-  unfold lognat.
-  eapply Nat_size_nat_monotonic.
-  specialize (Nnat.Nat2N.inj_compare n1 n2); intuition.
-  apply nat_compare_lt in H.
-  rewrite H in H0.
-  case_eq (N.of_nat n1 ?= N.of_nat n2)%N; intuition;
-    congruence.
+Proof.
+  intros ? ? H.
+  pose proof N.log2_le_mono (N.of_nat n1) (N.of_nat n2).
+  case n1, n2; try (cbn; lia); cbv [lognat]; rewrite !N.size_log2; try lia.
+Qed.
+
+Lemma lt_pow2_lognat k n : lognat k <= n -> k < 2^n.
+Proof.
+  cbv [lognat]; intros H; destruct k; [pose proof Nat.pow_eq_0_iff 2 n; lia|].
+  enough (N.of_nat (S k) < N.of_nat (2^n))%N by lia; rewrite Nnat.Nat2N.inj_pow.
+  rewrite !N.size_log2, Nnat.N2Nat.inj_succ in H by lia.
+  apply N.log2_lt_pow2; lia.
+Qed.
+
+
+Fixpoint bvToNat(k : nat)(v : Bvector k) :=
+  match v in Vector.t _ k with
+  | Vector.nil _ => 0
+  | Vector.cons _ b _ v => Nat.b2n b + Nat.double (bvToNat v)
+  end.
+
+Lemma bvNat_zero : forall n, 
+  bvToNat (Bvect_false n) = O.
+Proof. induction n; cbn; rewrite ?IHn; trivial. Qed.
+
+Fixpoint natToBv(k : nat)(v : nat) : Bvector k :=
+  match k with
+  | 0 => Vector.nil _
+  | S k => Vector.cons _ (Nat.odd v) _ (natToBv k (Nat.div2 v))
+  end.
+
+Lemma bvToNat_natToBv : forall n k,
+  bvToNat (natToBv n k) = k mod (2 ^ n).
+Proof.
+  induction n; cbn [bvToNat natToBv]; trivial; intros.
+  cbn [Nat.pow]; rewrite Nat.Div0.mod_mul_r; setoid_rewrite Nat.bit0_mod; f_equal.
+  rewrite IHn, Nat.div2_div, Nat.double_twice; trivial.
+Qed.
+
+Lemma bvToNat_natToBv_inverse : forall n k,
+  n >= lognat k ->
+  bvToNat (natToBv n k) = k.
+Proof.
+  intros; rewrite bvToNat_natToBv, Nat.mod_small; auto using lt_pow2_lognat.
 Qed.
 
 Lemma natToBv_bvToNat_inverse : forall n k,
   (natToBv n (bvToNat k)) = k.
-
-  intuition.
-  unfold natToBv, bvToNat.
-  rewrite Nnat.N2Nat.id.
-  apply N2Bv_Bv2N.
+Proof.
+  symmetry.
+  induction k; cbn; trivial; f_equal.
+  { rewrite Nat.odd_add_even by (exists (bvToNat k); cbv[Nat.double]; lia).
+    symmetry; apply Nat.b2n_bit0. }
+  rewrite Nat.div2_div, Nat.double_twice, Nat.add_b2n_double_div2; trivial.
 Qed.
 
 Lemma bvToNat_natToBv_eq : forall n (v : Bvector n) k,
   bvToNat v = k ->
   v = natToBv n k.
-
-  intuition.
-  rewrite <- H.
-  symmetry.
-  apply natToBv_bvToNat_inverse.
-Qed.
+Proof. pose proof natToBv_bvToNat_inverse. congruence. Qed.
