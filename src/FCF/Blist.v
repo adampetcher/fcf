@@ -1033,7 +1033,9 @@ Lemma bvToNat_natToBv : forall n k,
   bvToNat (natToBv n k) = k mod (2 ^ n).
 Proof.
   induction n; cbn [bvToNat natToBv]; trivial; intros.
-  cbn [Nat.pow]; rewrite Nat.Div0.mod_mul_r; setoid_rewrite Nat.bit0_mod; f_equal.
+  cbn [Nat.pow]; rewrite Nat.mod_mul_r by (try apply Nat.pow_nonzero; lia).
+  setoid_rewrite Nat.bit0_mod.
+  f_equal.
   rewrite IHn, Nat.div2_div, Nat.double_twice; trivial.
 Qed.
 
