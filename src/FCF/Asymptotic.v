@@ -8,6 +8,8 @@ Set Implicit Arguments.
 
 Require Import FCF.StdNat.
 
+Local Ltac Tauto.intuition_solver ::= auto with arith crelations.
+
 Definition polynomial (f : nat -> nat) :=
     exists x c1 c2, forall n,
       (f n <= c1 * expnat n x + c2)%nat.

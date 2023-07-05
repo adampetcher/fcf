@@ -10,6 +10,8 @@ Require Import FCF.StdNat.
 Require Import Arith.
 Require Import Lia.
 
+Local Ltac Tauto.intuition_solver ::= auto with bool crelations arith.
+
 Inductive Rat :=
     RatIntro : nat -> posnat -> Rat.
 

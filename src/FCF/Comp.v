@@ -12,6 +12,7 @@ Require Export FCF.Blist.
 Require Export FCF.EqDec.
 Require Import FCF.Fold.
 
+Local Ltac Tauto.intuition_solver ::= auto with comp bool zarith.
 
 Inductive Comp : Set -> Type :=
 | Ret : forall (A : Set), eq_dec A -> A -> Comp A
@@ -67,7 +68,7 @@ Lemma comp_EqDec : forall (A : Set),
   Comp A ->
   EqDec A.
 
-  induction 1; intuition.
+  induction 1; intuition auto with typeclass_instances.
   exists (fun a1 a2 => if e a1 a2 then true else false).
   intuition.
   destruct (e x y); simpl in *; trivial. discriminate.
