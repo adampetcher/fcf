@@ -11,6 +11,7 @@ Set Implicit Arguments.
 Require Import ZArith.
 Require Import micromega.Lia.
 
+Local Ltac Tauto.intuition_solver ::= auto with zarith.
 
 (* log2 is like log_inf except it returns nat, so I don't have to reason about an unnecessary conversion. This function is only used to implement lognat below.*)
 Fixpoint log2(n : positive) : nat :=

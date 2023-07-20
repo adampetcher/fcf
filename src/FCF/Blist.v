@@ -14,6 +14,8 @@ Require Import FCF.Fold.
 Require Import ZArith.
 Local Open Scope list_scope.
 
+Local Ltac Tauto.intuition_solver ::= auto with arith bool zarith.
+
 Definition Blist := list bool.
 
 Definition Blist_eq_dec := (list_eq_dec bool_dec).

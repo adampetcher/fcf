@@ -13,6 +13,8 @@ Require Import List.
 Require Import FCF.StdNat.
 Require Import FCF.Rat.
 
+Local Ltac Tauto.intuition_solver ::= auto with crelations bool.
+
 Section Limit.
 
   Variable A : Set.

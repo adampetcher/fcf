@@ -15,6 +15,8 @@ Require Import Bool.
 
 Local Open Scope rat_scope.
 
+Local Ltac Tauto.intuition_solver ::= auto with crelations datatypes arith.
+
 (* The traditional functional zip and unzip. *)
 (* TODO: get rid of these and replace with combine and split *)
 Definition unzip(A B : Set)(ls : list (A * B)) :=

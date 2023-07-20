@@ -11,6 +11,8 @@ Require Export Arith.Div2.
 Require Export Coq.Numbers.Natural.Peano.NPeano. 
 Require Import Coq.NArith.BinNat.
 
+Local Ltac Tauto.intuition_solver ::= auto with crelations arith.
+
 Lemma mult_same_r : forall n1 n2 n3,
   n3 > 0 ->
   n1 * n3 = n2 * n3 ->
