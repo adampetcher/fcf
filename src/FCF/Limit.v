@@ -66,7 +66,7 @@ Section Limit.
   Variable plus_0_eq : forall (a1 a2 : A),
     eq a2 zero ->
     eq a1 (plus a1 a2).
-  Variable plus_le_compat : forall a1 a2 a3 a4,
+  Variable add_le_mono : forall a1 a2 a3 a4,
     le a1 a2 ->
     le a3 a4 ->
     le (plus a1 a3) (plus a2 a4).
@@ -171,15 +171,15 @@ Section Limit.
     eapply le_trans.
     eapply (triangle_inequality _ _ x1).
     eapply le_trans.
-    eapply plus_le_compat.
+    eapply add_le_mono.
     eapply le_trans.
     eapply le_eq.
     eapply distance_comm.
     eapply H1.
-    eapply Max.max_lub_l; eauto.
+    eapply Nat.max_lub_l; eauto.
     trivial.
     eapply H2.
-    eapply Max.max_lub_r; eauto.
+    eapply Nat.max_lub_r; eauto.
     trivial.
     eapply le_eq.
     eapply half_plus.
@@ -252,12 +252,12 @@ Theorem rat_inf_limit_2_trans : forall f1 f2 f3,
   eapply leRat_trans.
   eapply ratDistance_le_trans.
   eapply H3.
-  eapply Max.max_lub_l.
+  eapply Nat.max_lub_l.
   eapply H5.
   trivial.
   eapply H8.
   eapply H4.
-  eapply Max.max_lub_r.
+  eapply Nat.max_lub_r.
   eapply H5.
   eauto.
   trivial.
@@ -288,24 +288,24 @@ Lemma rat_inf_limit_squeeze : forall (f1 f2 f: nat -> Rat -> Prop) c (v : Rat),
   eapply leRat_trans.
   eapply ratDistance_le_max.
   eapply H1.
-  eapply Max.max_lub_l.
+  eapply Nat.max_lub_l.
   eauto.
   eapply H9.
   eapply H10.
 
   eapply H2.
-  eapply Max.max_lub_l.
+  eapply Nat.max_lub_l.
   eauto.
   eapply H9.
   eapply H11.
 
-  eapply maxRat_leRat_same; eauto using Max.max_lub_l, Max.max_lub_r.
+  eapply maxRat_leRat_same; eauto using Nat.max_lub_l, Nat.max_lub_r.
 
 Qed.
 
 Lemma rat_inf_limit_div_2 : forall (f : nat -> Rat -> Prop)(v : Rat),
   rat_inf_limit f v ->
-  rat_inf_limit (fun n => (f (div2 n))) v.
+  rat_inf_limit (fun n => (f (Nat.div2 n))) v.
 
   unfold rat_inf_limit, inf_limit.
   intuition.
@@ -313,7 +313,7 @@ Lemma rat_inf_limit_div_2 : forall (f : nat -> Rat -> Prop)(v : Rat),
   
   econstructor.
   intuition.
-  specialize (H1 (div2 n')).
+  specialize (H1 (Nat.div2 n')).
   eapply H1.
 
   eapply div2_ge; eauto.
@@ -335,7 +335,7 @@ Lemma rat_inf_limit_sum : forall (f1 f2 : nat -> Rat -> Prop) v1 v2,
   edestruct (H2 (ratHalf epsilon)).
   eapply ratHalf_ne_0.
   intuition.
-  exists (Max.max x x0).
+  exists (Nat.max x x0).
   intuition.
   unfold ratAdd_rel in *.
   destruct (H n').
@@ -347,10 +347,10 @@ Lemma rat_inf_limit_sum : forall (f1 f2 : nat -> Rat -> Prop) v1 v2,
   rewrite H5.
   rewrite ratHalf_add.
   intuition.
-  eapply Max.max_lub_r.
+  eapply Nat.max_lub_r.
   eauto.
   trivial.
-  eapply Max.max_lub_l.
+  eapply Nat.max_lub_l.
   eauto.
   trivial.
 Qed.
@@ -375,7 +375,7 @@ Lemma rat_inf_limit_difference : forall (f1 f2 : nat -> Rat -> Prop) c1 c2,
   edestruct (H2 (ratHalf epsilon)).
   eapply ratHalf_ne_0.
   intuition. 
-  exists (Max.max x x0).
+  exists (Nat.max x x0).
   intuition.
   unfold ratSubtract_rel in *.
   destruct (H n').
@@ -392,7 +392,7 @@ Lemma rat_inf_limit_difference : forall (f1 f2 : nat -> Rat -> Prop) c1 c2,
     rewrite H4.
     rewrite ratHalf_add.
     intuition.
-    eapply Max.max_lub_l.
+    eapply Nat.max_lub_l.
     eauto.
     trivial.
   }
@@ -406,7 +406,7 @@ Lemma rat_inf_limit_difference : forall (f1 f2 : nat -> Rat -> Prop) c1 c2,
   rewrite H5.
   rewrite <- ratAdd_0_l.
   intuition.
-  eapply Max.max_lub_r.
+  eapply Nat.max_lub_r.
   eauto.
   trivial.
 
@@ -434,7 +434,7 @@ Lemma rat_inf_limit_difference : forall (f1 f2 : nat -> Rat -> Prop) c1 c2,
   eapply ratSubtract_0_inv.
   trivial.
 
-  exists (Max.max x x0).
+  exists (Nat.max x x0).
   intuition.
   destruct (H n').
   destruct (H0 n').
@@ -444,7 +444,7 @@ Lemma rat_inf_limit_difference : forall (f1 f2 : nat -> Rat -> Prop) c1 c2,
   eapply leRat_trans.
   eapply ratDistance_le_sum.
   eapply H5.
-  eapply Max.max_lub_r.
+  eapply Nat.max_lub_r.
   eauto.
   trivial.
   eapply leRat_trans.
@@ -460,7 +460,7 @@ Lemma rat_inf_limit_difference : forall (f1 f2 : nat -> Rat -> Prop) c1 c2,
   eapply leRat_trans.
   rewrite ratDistance_comm.
   eapply H4.
-  eapply Max.max_lub_l.
+  eapply Nat.max_lub_l.
   eauto.
   trivial.
   eapply minRat_le_r.
@@ -476,12 +476,12 @@ Lemma rat_inf_limit_difference : forall (f1 f2 : nat -> Rat -> Prop) c1 c2,
   trivial.
 
   eapply H4.
-  eapply Max.max_lub_l.
+  eapply Nat.max_lub_l.
   eauto.
   trivial.
 
   eapply H5.
-  eapply Max.max_lub_r.
+  eapply Nat.max_lub_r.
   eauto.
   trivial.
 
@@ -540,13 +540,13 @@ Lemma rat_inf_limit_product : forall (f1 f2 : nat -> Rat -> Prop) c1 c2,
   eapply ratMult_leRat_compat.
   eapply ratDistance_le_sum.
   eapply H6; [idtac | eapply H10].
-  eapply le_trans.
+  eapply Nat.le_trans.
   eapply (maxList_correct (x :: x0 :: x1 :: nil)).
   simpl.
   intuition.
   trivial.
   eapply H4; [idtac | eapply H9].
-  eapply le_trans.
+  eapply Nat.le_trans.
   eapply (maxList_correct (x :: x0 :: x1 :: nil)).
   simpl.
   intuition.
@@ -555,7 +555,7 @@ Lemma rat_inf_limit_product : forall (f1 f2 : nat -> Rat -> Prop) c1 c2,
   eapply (ratAdd_any_leRat_l 1).
   eapply leRat_refl.
   eapply H5; [idtac | eapply H10].
-  eapply le_trans.
+  eapply Nat.le_trans.
   eapply (maxList_correct (x :: x0 :: x1 :: nil)).
   simpl.
   intuition.
@@ -651,7 +651,7 @@ Lemma rat_inf_limit_trans : forall (f1 f2 : nat -> Rat -> Prop) a,
   edestruct (H0 (ratHalf epsilon)).
   eapply ratHalf_ne_0.
   intuition.  
-  exists (Max.max x x0).
+  exists (Nat.max x x0).
   intuition.
   destruct (H1 n').
   eapply leRat_trans.
@@ -660,10 +660,10 @@ Lemma rat_inf_limit_trans : forall (f1 f2 : nat -> Rat -> Prop) a,
   rewrite H4.
   rewrite ratHalf_add.
   intuition.
-  eapply Max.max_lub_r.
+  eapply Nat.max_lub_r.
   eauto.
   eauto.
-  eapply Max.max_lub_l.
+  eapply Nat.max_lub_l.
   eauto.
   trivial.
   trivial.
@@ -895,7 +895,7 @@ Lemma rat_inf_limit_exp_0 : forall (f : nat -> Rat -> Prop) a,
   eapply half_distance_1_le; trivial.
   trivial.
 
-  exists (Max.max x x0).
+  exists (Nat.max x x0).
   intuition.
   unfold expRat_rel in *.
   destruct (H1 n').
@@ -906,14 +906,14 @@ Lemma rat_inf_limit_exp_0 : forall (f : nat -> Rat -> Prop) a,
   eapply expRat_leRat_compat.
   eapply ratDistance_le_sum.
   eapply H3.
-  eapply Max.max_lub_l.
+  eapply Nat.max_lub_l.
   eauto.
   trivial.
   
   eapply expRat_le'.
   eauto.
   eapply half_distance_1_le; trivial.
-  eapply Max.max_lub_r.
+  eapply Nat.max_lub_r.
   eauto.
  
 Qed.
@@ -1066,13 +1066,13 @@ Lemma rat_inf_limit_mono  : forall (f : nat -> Rat -> Prop) (g : nat -> nat)(v :
   econstructor.
   intuition.
   eapply (H3 (g n')).
-  eapply le_trans.
+  eapply Nat.le_trans.
   2:{
     eapply H0.
     eapply H5.
   }
   rewrite <- H4.
-  eapply le_refl.
+  eapply Nat.le_refl.
   trivial.
 Qed.
 

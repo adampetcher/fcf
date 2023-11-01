@@ -1546,7 +1546,7 @@ Section PRF_Encryption_concrete.
       intuition.
 
       simpl.
-      repeat rewrite plus_0_r.
+      repeat rewrite Nat.add_0_r.
 
       (* lia can't handle the functions -- remove them *)
       assert (A1_cost (eta + eta + (x + (eta + (eta + eta)))) =
@@ -1777,8 +1777,8 @@ Section PRF_Encryption.
       econstructor.
       econstructor.
       eapply H8.
-      eapply le_refl.
-      eapply le_refl.
+      eapply Nat.le_refl.
+      eapply Nat.le_refl.
       intuition.
       eapply PRFE_Encrypt_OC_qam.
       intuition.

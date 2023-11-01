@@ -1050,7 +1050,7 @@ Lemma list_pred_allNatsLt :
   econstructor.
 
   rewrite app_length.
-  rewrite plus_comm.
+  rewrite Nat.add_comm.
   simpl.
   
   eapply list_pred_rev.
@@ -1064,7 +1064,7 @@ Lemma list_pred_allNatsLt :
 
   intuition.
   rewrite app_nth2.
-  rewrite minus_diag.
+  rewrite Nat.sub_diag.
   simpl.
   trivial.
   intuition.
@@ -1554,7 +1554,7 @@ Lemma lookupIndex_lt_length :
   
   destruct (eqd a0 a); subst.
   lia.
-  eapply lt_n_S.
+  apply ->Nat.succ_lt_mono.
   eapply IHls.
   trivial.
   
@@ -1574,7 +1574,7 @@ Lemma fold_add_init_nat_h :
      init1 + fold_left (fun acc a => acc + (f a))%nat ls init2)%nat.
   
   induction ls; intuition; simpl in *.
-  rewrite <- plus_assoc.
+  rewrite <- Nat.add_assoc.
   eapply IHls.
   
 Qed.
@@ -1585,7 +1585,7 @@ Lemma fold_add_init_nat :
      init + fold_left (fun acc a => acc + (f a))%nat ls O)%nat.
   
   intuition.
-  rewrite <- (plus_0_r init) at 1.
+  rewrite <- (Nat.add_0_r init) at 1.
   rewrite fold_add_init_nat_h.
   trivial.
 Qed.
@@ -1626,7 +1626,7 @@ Lemma fold_add_nat_Permutation :
   f_equal.
   eauto.
   
-  rewrite plus_comm.
+  rewrite Nat.add_comm.
   trivial.
 Qed.
 
@@ -1687,13 +1687,13 @@ Lemma fold_add_nat_filter_partition :
   destruct (P a); simpl;
   repeat rewrite (fold_add_init_nat _ _ (f a)).
   rewrite IHls.
-  repeat rewrite plus_assoc.
+  repeat rewrite Nat.add_assoc.
   trivial.
   
   rewrite IHls.
-  repeat rewrite plus_assoc.
+  repeat rewrite Nat.add_assoc.
   f_equal.
-  rewrite plus_comm.
+  rewrite Nat.add_comm.
   trivial.
   
 Qed.
@@ -1721,7 +1721,8 @@ Lemma fold_left_add_removePresent :
   simpl.
   
   repeat rewrite (@fold_add_init_nat _ _ _ (f a)).
-  rewrite <- minus_plus_simpl_l_reverse.
+  rewrite Nat.sub_add_distr, Nat.add_sub_swap, Nat.sub_diag, Nat.add_0_l
+    by (exact (Nat.le_refl _)).
   f_equal.
   eapply fold_add_nat_Permutation.
   eapply intersect_comm_Permutation; intuition.
@@ -1743,8 +1744,8 @@ Lemma fold_left_add_removePresent :
   eapply intersect_comm_Permutation; intuition.
        
   rewrite (@fold_add_nat_filter_partition _ (fun a => if (in_dec eqd a u) then true else false) _ ls).
-  rewrite <- plus_0_r at 1.
-  eapply plus_le_compat; intuition.
+  rewrite <- Nat.add_0_r at 1.
+  eapply Nat.add_le_mono; intuition.
   
   trivial.
   trivial.
@@ -2003,7 +2004,7 @@ Lemma nth_lt_length :
   destruct i; subst.
   lia.
   
-  eapply lt_n_S.
+  apply ->Nat.succ_lt_mono.
   eauto.
   
 Qed.
@@ -2187,7 +2188,7 @@ Theorem list_pred_app_both_if :
    eapply list_pred_app in H0.
    rewrite H in H0.
    rewrite ?firstn_app, ?skipn_app, ?firstn_ge_all,
-     ?minus_diag, ?firstn_O, ?app_nil_r in * by lia.
+     ?Nat.sub_diag, ?firstn_O, ?app_nil_r in * by lia.
    firstorder.
 Qed.
 

@@ -170,7 +170,7 @@ Section DupProb.
     eapply leRat_trans.
     2:{
       eapply leRat_terms.
-      eapply le_n_Sn.
+      eapply Nat.le_succ_diag_r.
       reflexivity.
     }
 
@@ -185,7 +185,7 @@ Section DupProb.
     eapply leRat_terms; lia.
     eapply leRat_terms; intuition.
     simpl.
-    eapply mult_le_compat; intuition.
+    eapply Nat.mul_le_mono; intuition.
 
     eapply leRat_trans.
     2:{

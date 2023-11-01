@@ -430,7 +430,7 @@ Lemma lognat_prod_sum_gen_h : forall (a' a b: nat)(pf1 : (a <> 0))(pf2 : (b <> 0
   rewrite <- (lognat_prod_sum H0) in H.
   assert (lognat pf3 = S (lognat H1)). 
   generalize pf3.
-  rewrite mult_assoc_reverse.
+  rewrite <-Nat.mul_assoc.
   intros. 
   rewrite (lognat_prod_sum _ pf0).
   trivial.
@@ -449,7 +449,7 @@ Lemma lognat_prod_sum_gen_h : forall (a' a b: nat)(pf1 : (a <> 0))(pf2 : (b <> 0
 
   assert (2 * x <> 0). lia. 
   assert (x * b <> 0). destruct x; destruct b; simpl; congruence.
-  assert (2 * x * b <> 0). rewrite mult_assoc_reverse. lia.
+assert (2 * x * b <> 0). rewrite <-Nat.mul_assoc. lia.
   subst.
   rewrite (lognat_odd _ H1) in H.
   rewrite <- (lognat_prod_sum n) in H.
@@ -462,12 +462,12 @@ Lemma lognat_prod_sum_gen_h : forall (a' a b: nat)(pf1 : (a <> 0))(pf2 : (b <> 0
   assert (S (2 * x) * b = b + 2 * x * b). intuition.
   rewrite H4.
   intros. 
-  eapply le_trans.
+  eapply Nat.le_trans.
   2:{
     eapply (lognat_monotonic H3). intuition.
   }
   generalize H3.
-  rewrite mult_assoc_reverse.
+  rewrite <-Nat.mul_assoc.
   intros. 
   rewrite <- (lognat_prod_sum H2).
   lia.

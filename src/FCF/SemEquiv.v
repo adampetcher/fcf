@@ -645,13 +645,13 @@ Lemma low_tree_approx_same_inv_h : forall n (A : Set)(eqd : eq_dec A)(c : Comp A
   rewrite <- ratAdd_den_same.
   rewrite H8.
   rewrite <- ratMult_num_den.
-  rewrite mult_1_r.
+  rewrite Nat.mul_1_r.
   unfold posnatMult.
   unfold natToPosnat.
   rewrite <- H5.
   eapply eqRat_terms; trivial.
   unfold natToPosnat, posnatToNat.
-  rewrite mult_comm.
+  rewrite Nat.mul_comm.
   simpl.
   trivial.
 Qed.    
@@ -913,10 +913,10 @@ Lemma low_tree_approx_same_h : forall n (A : Set)(eqd : eq_dec A)(c : Comp A)(t 
   repeat rewrite <- ratMult_num_den.
   rewrite <- ratAdd_den_same.
   eapply eqRat_terms.
-  repeat rewrite mult_1_r.
+  repeat rewrite Nat.mul_1_r.
   trivial.
   unfold posnatMult, natToPosnat, posnatToNat.
-  rewrite mult_comm.
+  rewrite Nat.mul_comm.
   simpl.
   trivial.
 Qed.
@@ -1415,7 +1415,7 @@ Lemma lowDistApprox_le_1 : forall (A : Set)(c : Comp A) a n r,
   rewrite H2.
   eapply rat_le_1.
   
-  eapply le_trans.
+  eapply Nat.le_trans.
   eapply pred_count_le_length.
   eapply H.
   
@@ -1604,7 +1604,7 @@ Lemma lowDistApprox_bind_evalDist_limit : forall (A B :Set)(c1 : Comp B)(c2 : B 
   intuition.
   eapply H12.
 
-  eapply le_trans.
+  eapply Nat.le_trans.
   eapply maxList_correct; eauto.
   eauto.
   trivial.
@@ -1663,7 +1663,7 @@ Lemma lowDistApprox_bind_evalDist_limit : forall (A B :Set)(c1 : Comp B)(c2 : B 
   intuition.
   simpl in *.
   eapply H12.
-  eapply le_trans.
+  eapply Nat.le_trans.
   eapply maxList_correct; eauto.
   eauto.
   trivial.
@@ -1739,11 +1739,11 @@ Lemma lowDistApprox_bind_evalDist_limit : forall (A B :Set)(c1 : Comp B)(c2 : B 
   eapply ratDistance_ratMult_le.
 
   eapply H5.
-  eapply Max.max_lub_l.
+  eapply Nat.max_lub_l.
   eapply H1.
   trivial.
   eapply H4.
-  eapply Max.max_lub_r.
+  eapply Nat.max_lub_r.
   eapply H1.
   trivial.
   trivial.
@@ -1770,7 +1770,7 @@ Lemma lowDistApprox_bind_evalDist_limit : forall (A B :Set)(c1 : Comp B)(c2 : B 
   rewrite ratMult_1_l.
   eapply leRat_refl.
   unfold posnatMult, natToPosnat, posnatToNat.
-  rewrite mult_comm.
+  rewrite Nat.mul_comm.
   trivial.
 
 Qed.
@@ -2259,17 +2259,17 @@ Lemma datMap_depth_better' : forall (B : Set)(tb1 tb2 : DistApproxTree B),
   eauto.
   eauto.
   destruct (le_dec (datDepth tb1) (datDepth tb2)).
-  rewrite Max.max_r in H3; eauto.
+  rewrite Nat.max_r in H3; eauto.
   lia.
-  rewrite Max.max_l in H3; lia.
+  rewrite Nat.max_l in H3; lia.
   eauto.
   
   eapply IHdat_better2.
   eauto.
   eauto.
   destruct (le_dec (datDepth tb1) (datDepth tb2)).
-  rewrite Max.max_r in H3; lia.
-  rewrite Max.max_l in H3; lia.
+  rewrite Nat.max_r in H3; lia.
+  rewrite Nat.max_l in H3; lia.
   eauto.
   
 Qed.
@@ -2281,14 +2281,14 @@ Lemma datCorrect_datDepth : forall (A : Set)(c : Comp A) n t,
   induction 1; intuition; simpl in *.
   
   destruct (le_dec (datDepth t1) (datDepth t2)).
-  rewrite Max.max_r; eauto.
+  rewrite Nat.max_r; eauto.
   lia.
-  rewrite Max.max_l; lia.
+  rewrite Nat.max_l; lia.
 Qed.
 
 Lemma dat_better_bind_div2 : forall (A B : Set)(c1 : Comp B)(c2 : B -> Comp A) n t1 t2,
   dat_correct_bind c1 c2 n t1 ->
-  dat_correct_bind2 c1 c2 (div2 n) t2 ->
+  dat_correct_bind2 c1 c2 (Nat.div2 n) t2 ->
   dat_better t1 t2.
   
   intuition.
@@ -2306,11 +2306,11 @@ Lemma dat_better_bind_div2 : forall (A B : Set)(c1 : Comp B)(c2 : B -> Comp A) n
   simpl.
   eauto.
   
-  eapply le_trans.
+  eapply Nat.le_trans.
   2:{
     eapply div2_ge_double.
   }
-  eapply plus_le_compat.
+  eapply Nat.add_le_mono.
   auto.
   eapply datCorrect_datDepth.
   eauto.
@@ -2323,7 +2323,7 @@ Qed.
 Lemma lowDistApprox_bind_le_div2 : forall (A B : Set)(c1 : Comp B)(c2 : B -> Comp A) a n r1 r2,
   well_formed_comp c1 ->
   (forall b, In b (getSupport c1) -> well_formed_comp (c2 b)) ->
-  lowDistApprox_bind c1 c2 a (div2 n) r1 ->
+  lowDistApprox_bind c1 c2 a (Nat.div2 n) r1 ->
   lowDistApprox (Bind c1 c2) a n r2 ->
   r1 <= r2.
   
@@ -2410,7 +2410,7 @@ Qed.
 Lemma lowDistApprox_bind_div2_left_total : forall (A B : Set)(c1 : Comp B)(c2 : B -> Comp A) a,
   well_formed_comp c1 ->
   (forall b, In b (getSupport c1) -> well_formed_comp (c2 b)) ->
-  left_total (fun n => lowDistApprox_bind c1 c2 a (div2 n)).
+  left_total (fun n => lowDistApprox_bind c1 c2 a (Nat.div2 n)).
   
   intuition.
   unfold left_total.
@@ -2518,7 +2518,7 @@ Theorem lowDistApprox_Rnd: forall n2 n1 (a : Bvector n1) r,
   
   induction n2; intuition; simpl in *.
   
-  rewrite plus_0_r in *.
+  rewrite Nat.add_0_r in *.
   unfold lowDistApprox in *.
   destruct H.
   destruct H.
@@ -2721,7 +2721,7 @@ Theorem lowDistApprox_Rnd: forall n2 n1 (a : Bvector n1) r,
   rewrite <- ratMult_num_den.
   eapply eqRat_trans.
   eapply eqRat_terms.
-  eapply mult_comm.
+  eapply Nat.mul_comm.
   eapply posnatMult_1_r.
   
   rewrite rat_remove_common_factor.
@@ -2853,7 +2853,7 @@ Qed.
 
 Lemma lowDistApprox_repeat_sqrt_div2_left_total : forall (A : Set)(c : Comp A)(P : A -> bool) a,
   well_formed_comp c ->
-  left_total (fun n => (lowDistApprox_repeat c P a (Nat.sqrt (div2 n)))).
+  left_total (fun n => (lowDistApprox_repeat c P a (Nat.sqrt (Nat.div2 n)))).
 
   unfold left_total.
   intuition.
@@ -3996,7 +3996,7 @@ Lemma datRepeat_depth_better: forall (n2 : nat) (A : Set) (t2 t1 t1' : DistAppro
   inversion H1; clear H1; subst.
   inversion H; clear H; subst.
   simpl in *.
-  rewrite mult_0_r in *.
+  rewrite Nat.mul_0_r in *.
   simpl in *.
   assert (depth0  >= (max (datDepth t2_1) (datDepth t2_2))).
   lia.
@@ -4007,8 +4007,8 @@ Lemma datRepeat_depth_better: forall (n2 : nat) (A : Set) (t2 t1 t1' : DistAppro
   lia.
   eauto.
   eauto.
-  rewrite mult_0_r; simpl. 
-  eapply Max.max_lub_l.
+  rewrite Nat.mul_0_r; simpl. 
+  eapply Nat.max_lub_l.
   eauto.
   trivial.
   trivial.
@@ -4020,8 +4020,8 @@ Lemma datRepeat_depth_better: forall (n2 : nat) (A : Set) (t2 t1 t1' : DistAppro
   lia.
   eauto.
   trivial.
-  rewrite mult_0_r; simpl. 
-  eapply Max.max_lub_r.
+  rewrite Nat.mul_0_r; simpl. 
+  eapply Nat.max_lub_r.
   eauto.
   trivial.
   trivial.
@@ -4041,7 +4041,7 @@ Lemma datRepeat_depth_better: forall (n2 : nat) (A : Set) (t2 t1 t1' : DistAppro
   congruence.
   lia.
   
-  rewrite mult_comm in H3.
+  rewrite Nat.mul_comm in H3.
   simpl in *.
 
   eapply IHn2.
@@ -4052,15 +4052,15 @@ Lemma datRepeat_depth_better: forall (n2 : nat) (A : Set) (t2 t1 t1' : DistAppro
   remember (n2 * n1)%nat as x.
   lia.
 
-  eapply le_trans.
+  eapply Nat.le_trans.
   2:{
     eapply H3.
   }
-  rewrite plus_0_r.
-  rewrite plus_comm.
-  eapply plus_le_compat.
+  rewrite Nat.add_0_r.
+  rewrite Nat.add_comm.
+  eapply Nat.add_le_mono.
   eauto.
-  rewrite mult_comm.
+  rewrite Nat.mul_comm.
   trivial.
   trivial.
   trivial.
@@ -4076,11 +4076,11 @@ Lemma datRepeat_depth_better: forall (n2 : nat) (A : Set) (t2 t1 t1' : DistAppro
   trivial.
   eauto.
   trivial.
-  eapply le_trans.
-  eapply plus_le_compat.
-  eapply le_refl.
-  eapply (Max.max_lub_l (datDepth t2_1) (datDepth t2_2)).
-  eapply le_refl.
+  eapply Nat.le_trans.
+  eapply Nat.add_le_mono.
+  eapply Nat.le_refl.
+  eapply (Nat.max_lub_l (datDepth t2_1) (datDepth t2_2)).
+  eapply Nat.le_refl.
   lia.
   trivial.
   trivial.
@@ -4091,11 +4091,11 @@ Lemma datRepeat_depth_better: forall (n2 : nat) (A : Set) (t2 t1 t1' : DistAppro
   trivial.
   eauto.
   trivial.
-  eapply le_trans.
-  eapply plus_le_compat.
-  eapply le_refl.
-  eapply (Max.max_lub_r (datDepth t2_1) (datDepth t2_2)).
-  eapply le_refl.
+  eapply Nat.le_trans.
+  eapply Nat.add_le_mono.
+  eapply Nat.le_refl.
+  eapply (Nat.max_lub_r (datDepth t2_1) (datDepth t2_2)).
+  eapply Nat.le_refl.
   lia.
   trivial.
   trivial.
@@ -4105,7 +4105,7 @@ Qed.
 Lemma dat_better_repeat_sqrt : forall (A : Set) (c : Comp A)(P : A -> bool)(n : nat) (t1 t2 : DistApproxTree A),
   (exists a, In a (filter P (getSupport c))) ->
   dat_correct_repeat c P n t1 ->
-  dat_correct_repeat2 c P (Nat.sqrt (div2 n)) t2 -> 
+  dat_correct_repeat2 c P (Nat.sqrt (Nat.div2 n)) t2 -> 
   well_formed_comp c ->
   dat_better t1 t2.
 
@@ -4129,11 +4129,11 @@ Lemma dat_better_repeat_sqrt : forall (A : Set) (c : Comp A)(P : A -> bool)(n : 
   eapply sqrt_le_lin_gen.
   eapply div2_le.
   
-  eapply le_trans.
-  eapply plus_le_compat.
+  eapply Nat.le_trans.
+  eapply Nat.add_le_mono.
   eapply Nat.sqrt_spec.
   lia.
-  eapply le_trans.
+  eapply Nat.le_trans.
   eapply datCorrect_datDepth.
   eauto.
   eapply Nat.sqrt_le_lin.
@@ -4162,7 +4162,7 @@ Lemma lowDistApprox_repeat_sqrt_le : forall n (A : Set)(c : Comp A)(P : A -> boo
   well_formed_comp c ->
   (exists a, In a (filter P (getSupport c))) ->
   lowDistApprox (Repeat c P) a n v1 ->
-  lowDistApprox_repeat c P a (Nat.sqrt (div2 n)) v2 -> 
+  lowDistApprox_repeat c P a (Nat.sqrt (Nat.div2 n)) v2 -> 
   n > 1 ->
   v2 <= v1.
 
@@ -4197,9 +4197,9 @@ Lemma lowDistApprox_repeat_sqrt_le : forall n (A : Set)(c : Comp A)(P : A -> boo
   lia.
   simpl.
   
-  eapply lt_le_trans.
+  eapply Nat.lt_le_trans.
   econstructor.
-  eapply le_trans.
+  eapply Nat.le_trans.
   rewrite <- Nat.sqrt_1.
   eauto.
   eapply Nat.sqrt_le_mono.
@@ -5094,7 +5094,7 @@ Lemma lowDistApprox_limit_repeat : forall (A : Set)(c : Comp A)(P : A -> bool) a
   rat_inf_limit (lowDistApprox (Repeat c P) a) (evalDist (Repeat c P) a).
 
   intuition.
-  eapply (@rat_inf_limit_squeeze (fun n => (lowDistApprox_repeat c P a (Nat.sqrt (div2 n)))) (fun n => eqRat (evalDist (Repeat c P) a))).
+  eapply (@rat_inf_limit_squeeze (fun n => (lowDistApprox_repeat c P a (Nat.sqrt (Nat.div2 n)))) (fun n => eqRat (evalDist (Repeat c P) a))).
 
   eapply rat_inf_limit_mono.
   eapply lowDistApprox_repeat_limit; trivial.
@@ -5106,7 +5106,7 @@ Lemma lowDistApprox_limit_repeat : forall (A : Set)(c : Comp A)(P : A -> bool) a
 
   intuition.
   exists (2 * (y * y))%nat.
-  rewrite div2_double.
+  rewrite Nat.div2_double.
   rewrite Nat.sqrt_square.
   trivial.
 
@@ -5155,7 +5155,7 @@ Theorem evalDet_evalDist_equiv : forall (A : Set)(c : Comp A),
   eapply lowDistApprox_Ret_inv. eauto.
   eapply rat0_le_all.
  
-  eapply (@rat_inf_limit_squeeze (fun n => lowDistApprox_bind c1 c2 a (div2 n)) (lowDistApprox_bind c1 c2 a)); intuition.
+  eapply (@rat_inf_limit_squeeze (fun n => lowDistApprox_bind c1 c2 a (Nat.div2 n)) (lowDistApprox_bind c1 c2 a)); intuition.
   eapply rat_inf_limit_div_2.
   eapply lowDistApprox_bind_evalDist_limit; eauto.
   eapply lowDistApprox_bind_evalDist_limit; eauto.

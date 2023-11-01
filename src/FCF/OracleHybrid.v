@@ -489,8 +489,8 @@ Section OracleMapHybrid.
     econstructor.
     intuition.
     econstructor.
-    rewrite mult_1_r.
-    rewrite plus_0_r.
+    rewrite Nat.mul_1_r.
+    rewrite Nat.add_0_r.
     eapply max_queries.
     eauto.
   Qed.
@@ -627,7 +627,7 @@ Section OracleMapHybrid.
     fcf_inline_first.
     fcf_simp.
     
-    rewrite plus_0_r in H6.
+    rewrite Nat.add_0_r in H6.
     destruct (ge_dec i (length l)).
     rewrite skipn_ge_nil; trivial.
     unfold oracleMap.

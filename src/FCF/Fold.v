@@ -1228,9 +1228,9 @@ Lemma fold_left_max_ge_init : forall (ls : list nat)(n : nat),
   fold_left max ls n >= n.
   
   induction ls; intuition; simpl in *.
-  eapply le_trans.
-  eapply Max.max_lub_l.
-  eapply le_refl.
+  eapply Nat.le_trans.
+  eapply Nat.max_lub_l.
+  eapply Nat.le_refl.
   eapply IHls.
 Qed.
 
@@ -1244,9 +1244,9 @@ Lemma maxList_correct_h : forall (ls : list nat)(n init : nat),
   simpl in *.
   intuition; subst.
   
-  eapply le_trans.
-  eapply Max.max_lub_r.
-  eapply le_refl.
+  eapply Nat.le_trans.
+  eapply Nat.max_lub_r.
+  eapply Nat.le_refl.
   eapply fold_left_max_ge_init.
 Qed.
 
@@ -2164,7 +2164,7 @@ Lemma sumList_rel_factor_constant : forall (p1 p2 : posnat) (A : Type)(rel : A -
   unfold posnatMult, natToPosnat, posnatToNat.
   destruct p1.
   destruct p2.
-  apply mult_comm.
+  apply Nat.mul_comm.
   trivial.
 Qed.
 
@@ -3435,7 +3435,7 @@ Lemma allNatsLt_length :
   induction n; intuition; simpl in *.
   rewrite app_length.
   rewrite IHn.
-  rewrite plus_comm.
+  rewrite Nat.add_comm.
   trivial.
 Qed.
 
@@ -3551,7 +3551,7 @@ Lemma nth_allNatsLt_lt :
   assert (k = n).
   lia.
   rewrite H0.
-  rewrite minus_diag.
+  rewrite Nat.sub_diag.
   simpl.
   trivial.
   rewrite allNatsLt_length.
@@ -3943,7 +3943,7 @@ Theorem nth_skipn_eq :
     nth x (skipn y ls) def = nth (x + y) ls def.
   
   induction y; intuition; simpl in *.
-  rewrite plus_0_r.
+  rewrite Nat.add_0_r.
   trivial.
   
   destruct ls.
@@ -3951,9 +3951,9 @@ Theorem nth_skipn_eq :
   rewrite nth_nil.
   trivial.
   
-  rewrite plus_comm.
+  rewrite Nat.add_comm.
   simpl.
-  rewrite plus_comm.
+  rewrite Nat.add_comm.
   eapply 
     IHy.
   
@@ -4630,9 +4630,8 @@ Theorem nth_option_Some_lt :
   discriminate.
   destruct i.
   lia.
-  eapply lt_n_S.
+  apply ->Nat.succ_lt_mono.
   eauto.
-  
 Qed.
 
 Theorem nth_option_app_None : 
@@ -4888,7 +4887,7 @@ Lemma forNats_In :
 
   intuition; subst.
   lia.
-  eapply lt_trans.
+  eapply Nat.lt_trans.
   eapply IHn.
   trivial.
   lia.

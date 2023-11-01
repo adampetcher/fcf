@@ -75,18 +75,18 @@ Ltac rattac_one :=
     (* rules that solve goals *)
     | [|- posnatMult ?x1 ?x2 = posnatMult ?x2 ?x1] => apply posnatMult_comm
     | [|- posnatToNat (posnatMult ?x1 ?x2) = posnatToNat (posnatMult ?x2 ?x1)] => rewrite posnatMult_comm; trivial
-    | [|- ?x1 * ?x2 = ?x2 * ?x1 ] => apply mult_comm
+    | [|- ?x1 * ?x2 = ?x2 * ?x1 ] => apply Nat.mul_comm
     | [|- (mult (?x1 + ?x2) _)  = (mult (?x2 + ?x1) _ )] => f_equal
     | [|- ?x1 * ?x2 * _ = ?x2 * ?x1 * _ ] => f_equal
     | [ |- posnatToNat ?p > 0 ] => destruct p; unfold posnatToNat; lia
       (* inversion on hypotheses *)
     | [H1 : ?n * ?x = ?n0 * ?x1, H2: ?n1 * ?x1 = ?n * ?x0 |- ?n1 * ?x = ?n0 * ?x0 ] => eapply (@mult_same_l x1)(* ;
-      [idtac | rewrite mult_assoc ;
-        rewrite (mult_comm x1 n1);
+      [idtac | rewrite Nat.mul_assoc ;
+        rewrite (Nat.mul_comm x1 n1);
           rewrite H2;
-            rewrite <- mult_assoc ;
-              rewrite (mult_comm x x0) ;
-                repeat rewrite mult_assoc;
+            rewrite <- Nat.mul_assoc ;
+              rewrite (Nat.mul_comm x x0) ;
+                repeat rewrite Nat.mul_assoc;
                   f_equal] *) 
     | [H : ?x = ?n * (posnatToNat ?p) |- ?x = (posnatToNat ?p) * ?n ] => rewrite H
     | [H : RatIntro _ _ = RatIntro _ _ |- _ ] => inversion H; clear H; subst
@@ -117,7 +117,7 @@ Ltac rattac_one :=
     end.
 Ltac rattac :=
   intuition idtac; unfold ratCD in *;
-    repeat (rattac_one; subst); repeat rewrite mult_1_r; repeat rewrite plus_0_r; trivial; try congruence; try lia.
+    repeat (rattac_one; subst); repeat rewrite Nat.mul_1_r; repeat rewrite Nat.add_0_r; trivial; try congruence; try lia.
 
 Lemma ratCD_comm : forall r1 r2 n1 n2 d n1' n2' d',
   ratCD r1 r2 = (n1, n2, d) ->
@@ -229,18 +229,18 @@ Theorem leRat_trans : forall r1 r2 r3,
   rattac.
 
   eapply (@mult_le_compat_r_iff x1); trivial.
-  rewrite <- mult_assoc.
-  rewrite (mult_comm x).
-  rewrite mult_assoc.
-  eapply le_trans.
-  eapply mult_le_compat.
+  rewrite <- Nat.mul_assoc.
+  rewrite (Nat.mul_comm x).
+  rewrite Nat.mul_assoc.
+  eapply Nat.le_trans.
+  eapply Nat.mul_le_mono.
   eapply l.
   eauto.
 
-  repeat rewrite <- mult_assoc.
-  repeat rewrite (mult_comm x0).
-  repeat rewrite mult_assoc.
-  eapply mult_le_compat; eauto.
+  repeat rewrite <- Nat.mul_assoc.
+  repeat rewrite (Nat.mul_comm x0).
+  repeat rewrite Nat.mul_assoc.
+  eapply Nat.mul_le_mono; eauto.
 Qed.
 
 Theorem eqRat_impl_leRat : forall r1 r2,
@@ -336,7 +336,7 @@ Theorem ratAdd_0_r : forall r,
   rattac;
   inversion H;
   subst;
-  rewrite mult_1_r;
+  rewrite Nat.mul_1_r;
   trivial.
 Qed.
 
@@ -363,13 +363,13 @@ Theorem ratAdd_assoc : forall r1 r2 r3,
   Local Open Scope nat_scope.
 
   Ltac arithNormalize_step :=
-    repeat rewrite mult_succ_r in *;
-      repeat rewrite mult_plus_distr_r in *;
-        repeat rewrite mult_plus_distr_l in *;
-          repeat rewrite mult_minus_distr_r in *;
-            repeat rewrite mult_minus_distr_l in *;
-              repeat rewrite plus_assoc in *;
-                repeat rewrite mult_assoc in *.
+    repeat rewrite Nat.mul_succ_r in *;
+      repeat rewrite Nat.mul_add_distr_r in *;
+        repeat rewrite Nat.mul_add_distr_l in *;
+          repeat rewrite Nat.mul_sub_distr_r in *;
+            repeat rewrite Nat.mul_sub_distr_l in *;
+              repeat rewrite Nat.add_assoc in *;
+                repeat rewrite Nat.mul_assoc in *.
 
   Ltac arithNormalize := repeat arithNormalize_step.
 
@@ -380,12 +380,12 @@ Theorem ratAdd_assoc : forall r1 r2 r3,
       | [|- _ + (?x1 * ?x2 * ?x3) = _ + (?x1 * ?x3 * ?x2) ] => f_equal
       | [|- _ + (?x1 * ?x2 * ?x3 * ?x4 * ?x5 * ?x6) = _ + (?x1 * ?x3 * ?x2 * ?x4 * ?x5 * ?x6) ] => f_equal
       | [|- _ * ?x1 = _ * ?x1] => f_equal
-      | [|- _ * ?x = _ ] => rewrite mult_comm; repeat rewrite mult_assoc; arithSimplify
-      | [|- _ + ?x = _ ] => rewrite plus_comm; repeat rewrite plus_assoc; arithSimplify
-      | [|- _ * ?x1 <= _ * ?x1] => apply mult_le_compat; auto
-      | [|- _ * ?x1 <= _ * ?x1] => apply plus_le_compat; auto
-      | [|- _ * ?x <= _ ] => rewrite mult_comm; repeat rewrite mult_assoc; arithSimplify
-      | [|- _ + ?x <= _ ] => rewrite plus_comm; repeat rewrite plus_assoc; arithSimplify
+      | [|- _ * ?x = _ ] => rewrite Nat.mul_comm; repeat rewrite Nat.mul_assoc; arithSimplify
+      | [|- _ + ?x = _ ] => rewrite Nat.add_comm; repeat rewrite Nat.add_assoc; arithSimplify
+      | [|- _ * ?x1 <= _ * ?x1] => apply Nat.mul_le_mono; auto
+      | [|- _ * ?x1 <= _ * ?x1] => apply Nat.add_le_mono; auto
+      | [|- _ * ?x <= _ ] => rewrite Nat.mul_comm; repeat rewrite Nat.mul_assoc; arithSimplify
+      | [|- _ + ?x <= _ ] => rewrite Nat.add_comm; repeat rewrite Nat.add_assoc; arithSimplify
       
     end.
 
@@ -417,13 +417,13 @@ Lemma ratAdd_eqRat_compat_l : forall r1 r2 r3,
   arithNormalize.
   f_equal.
   f_equal.
-  rewrite mult_comm.
-  rewrite (mult_comm _ x1).
-  repeat rewrite mult_assoc.
+  rewrite Nat.mul_comm.
+  rewrite (Nat.mul_comm _ x1).
+  repeat rewrite Nat.mul_assoc.
   f_equal.
-  rewrite mult_comm.
+  rewrite Nat.mul_comm.
   rewrite e.
-  apply mult_comm.
+  apply Nat.mul_comm.
   do 3 arithSimplify.
 Qed.
 
@@ -448,19 +448,19 @@ Lemma ratAdd_leRat_compat_l : forall r1 r2 r3,
   unfold leRat, bleRat in *.
   rattac.
   arithNormalize.  
-  apply plus_le_compat.
+  apply Nat.add_le_mono.
 
-  apply mult_le_compat; trivial.
-  repeat rewrite <- mult_assoc.
-  repeat rewrite (mult_comm x0).
-  repeat rewrite mult_assoc.
-  apply mult_le_compat; trivial.
+  apply Nat.mul_le_mono; trivial.
+  repeat rewrite <- Nat.mul_assoc.
+  repeat rewrite (Nat.mul_comm x0).
+  repeat rewrite Nat.mul_assoc.
+  apply Nat.mul_le_mono; trivial.
   
-  apply mult_le_compat; trivial.
-  rewrite <- mult_assoc.
-  rewrite (mult_comm x1).
-  rewrite mult_assoc.
-  apply mult_le_compat; trivial.  
+  apply Nat.mul_le_mono; trivial.
+  rewrite <- Nat.mul_assoc.
+  rewrite (Nat.mul_comm x1).
+  rewrite Nat.mul_assoc.
+  apply Nat.mul_le_mono; trivial.  
 Qed.
 
 Theorem ratAdd_leRat_compat : forall r1 r2 r3 r4,
@@ -512,14 +512,14 @@ Theorem ratMult_eqRat_compat : forall (r1 r2 r3 r4 : Rat),
 
   rattac.
   
-  repeat rewrite mult_assoc.
-  rewrite <- (mult_assoc n1).
-  rewrite (mult_comm n).
-  rewrite mult_assoc.
-  rewrite <- mult_assoc.
+  repeat rewrite Nat.mul_assoc.
+  rewrite <- (Nat.mul_assoc n1).
+  rewrite (Nat.mul_comm n).
+  rewrite Nat.mul_assoc.
+  rewrite <- Nat.mul_assoc.
   rewrite e.
   rewrite e0.
-  rewrite mult_assoc.
+  rewrite Nat.mul_assoc.
   do 3 arithSimplify.
 
 Qed.
@@ -547,27 +547,27 @@ Theorem ratAdd_0 : forall r1 r2,
 
   intuition.
   rattac.
-  rewrite mult_0_l in e.
+  rewrite Nat.mul_0_l in e.
   unfold posnatToNat in *.
   simpl in *.
   destruct p1.
   destruct p0.
-  rewrite mult_1_r in e.
-  apply plus_is_O in e.
+  rewrite Nat.mul_1_r in e.
+  apply Nat.eq_add_0 in e.
   destruct e as [H0 e].
-  eapply mult_is_O in H0.
+  eapply Nat.eq_mul_0 in H0.
   lia.
   
   rattac.
-  rewrite mult_0_l in e.
+  rewrite Nat.mul_0_l in e.
   unfold posnatToNat in *.
   simpl in *.
   destruct p1.
   destruct p0.
-  rewrite mult_1_r in e.
-  apply plus_is_O in e.
+  rewrite Nat.mul_1_r in e.
+  apply Nat.eq_add_0 in e.
   destruct e as [e H1].
-  eapply mult_is_O in H1.
+  eapply Nat.eq_mul_0 in H1.
   lia.
 
   rewrite (ratAdd_0_r 0).
@@ -621,7 +621,7 @@ Lemma ratMult_1_l : forall r,
   
   rattac.
   inversion H; clear H; subst.
-  repeat rewrite mult_1_l in *.
+  repeat rewrite Nat.mul_1_l in *.
   trivial.
 Qed.
 
@@ -631,11 +631,11 @@ Theorem ratMult_0 : forall r1 r2,
 
   intuition.
   rattac.
-  rewrite mult_0_l in e.
+  rewrite Nat.mul_0_l in e.
   unfold posnatToNat in *.
   simpl in *.
-  rewrite mult_1_r in e.
-  apply mult_is_O in e.
+  rewrite Nat.mul_1_r in e.
+  apply Nat.eq_mul_0 in e.
   intuition; subst.
   left.
   apply rat_num_0.
@@ -672,7 +672,7 @@ Theorem leRat_num : forall n1 n2 d,
   leRat (RatIntro n1 d) (RatIntro n2 d).
 
   rattac.
-  eapply mult_le_compat; eauto.
+  eapply Nat.mul_le_mono; eauto.
 Qed.
 
 
@@ -733,7 +733,7 @@ Theorem ratIdentityIndiscernables : forall r1 r2,
   rewrite H0 in H2.
   rattac.
   inversion e; clear e; subst.
-  apply mult_is_O in H2; intuition.
+  apply Nat.eq_mul_0 in H2; intuition.
   unfold posnatMult in *.
   inversion H5; clear H5; subst.
   assert ((RatIntro n4 (exist (fun n : nat => n > 0) x0 g0)) <= (RatIntro n3 (exist (fun n : nat => n > 0) x g))).
@@ -751,7 +751,7 @@ Theorem ratIdentityIndiscernables : forall r1 r2,
   unfold posnatMult in *.
   simpl in *.
   inversion H5; clear H5; subst.
-  apply mult_is_O in e. intuition.
+  apply Nat.eq_mul_0 in e. intuition.
   symmetry.
   eapply nat_minus_eq; trivial.
 
@@ -784,7 +784,7 @@ Lemma ratDistance_comm_2 : forall r1 r2 r3 r4,
 
     apply minus_eq_compat.
     arithSimplify.
-    rewrite (mult_comm _ x).
+    rewrite (Nat.mul_comm _ x).
     arithNormalize.
     arithSimplify.
     unfold minRat, maxRat in *.
@@ -836,12 +836,12 @@ Lemma ratSubtract_partition : forall r1 r2 r3,
   unfold ratSubtract in *.
   rattac.
   arithNormalize.
-  rewrite <- NPeano.Nat.add_sub_swap.
+  rewrite <- Nat.add_sub_swap.
   eapply minus_eq_compat.
   rewrite minus_add_assoc.
-  rewrite plus_comm.
+  rewrite Nat.add_comm.
   rewrite <- minus_add_assoc.
-  rewrite <- plus_0_r at 1.
+  rewrite <- Nat.add_0_r at 1.
   apply plus_eq_compat.
   do 4 arithSimplify.
   symmetry.
@@ -849,9 +849,9 @@ Lemma ratSubtract_partition : forall r1 r2 r3,
   do 4 arithSimplify.
   apply le_eq.
   do 5 arithSimplify.
-  do 4 (apply mult_le_compat; trivial).
+  do 4 (apply Nat.mul_le_mono; trivial).
   do 4 arithSimplify.
-  do 4 (apply mult_le_compat; trivial).
+  do 4 (apply Nat.mul_le_mono; trivial).
 
 Qed.
 
@@ -862,13 +862,13 @@ Lemma ratAdd_any_leRat_l : forall r1 r2 r3,
   rattac.
   arithNormalize.
   assert (n * x * x0 <= n0 * x0 * x1)%nat.
-  rewrite (mult_comm (n0 * x0) x1).
-  rewrite mult_assoc.
-  apply mult_le_compat; trivial.
-  rewrite (mult_comm x1).
+  rewrite (Nat.mul_comm (n0 * x0) x1).
+  rewrite Nat.mul_assoc.
+  apply Nat.mul_le_mono; trivial.
+  rewrite (Nat.mul_comm x1).
   trivial.
-  rewrite <- plus_0_r at 1.
-  apply plus_le_compat; eauto.
+  rewrite <- Nat.add_0_r at 1.
+  apply Nat.add_le_mono; eauto.
   apply le_0_n.
 Qed.
 
@@ -927,14 +927,14 @@ Lemma ratSubtract_leRat_r : forall r1 r2 r3,
   inversion H3; clear H3; subst.
   arithNormalize.
   assert (n * x3 * x3 * x1 <= n0 * x3 * x3 * x2)%nat.
-  rewrite <- mult_comm.
-  rewrite <- (mult_comm x2).
-  repeat rewrite mult_assoc.
-  eapply mult_le_compat; trivial.
-  eapply mult_le_compat; trivial.
-  rewrite mult_comm.
+  rewrite <- Nat.mul_comm.
+  rewrite <- (Nat.mul_comm x2).
+  repeat rewrite Nat.mul_assoc.
+  eapply Nat.mul_le_mono; trivial.
+  eapply Nat.mul_le_mono; trivial.
+  rewrite Nat.mul_comm.
   rewrite l.
-  rewrite mult_comm.
+  rewrite Nat.mul_comm.
   trivial.
   assert (n3 * x1 * x3 * x2 = n3 * x2 * x3 * x1)%nat.
   do 3 arithSimplify.
@@ -954,14 +954,14 @@ Lemma ratSubtract_leRat_l:
   arithNormalize.
   
   assert (n * x3 * x1 * x3 <= n0 * x3 * x2 * x3)%nat.
-  apply mult_le_compat; trivial.
-  rewrite <- (mult_comm x1).
-  rewrite <- (mult_comm x2).
-  repeat rewrite mult_assoc.
-  apply mult_le_compat; trivial.
-  rewrite mult_comm.
+  apply Nat.mul_le_mono; trivial.
+  rewrite <- (Nat.mul_comm x1).
+  rewrite <- (Nat.mul_comm x2).
+  repeat rewrite Nat.mul_assoc.
+  apply Nat.mul_le_mono; trivial.
+  rewrite Nat.mul_comm.
   rewrite l.
-  rewrite mult_comm.
+  rewrite Nat.mul_comm.
   trivial.
   
   assert (n3 * x2 * x1 * x3 = n3 * x1 * x2 * x3)%nat.
@@ -1116,10 +1116,10 @@ Theorem ratSubtract_le : forall r1 r2 d,
   arithNormalize.
 
   apply minus_le.
-  rewrite <- (mult_assoc n).
-  rewrite (mult_comm x0).
-  rewrite mult_assoc.
-  apply mult_le_compat; trivial.
+  rewrite <- (Nat.mul_assoc n).
+  rewrite (Nat.mul_comm x0).
+  rewrite Nat.mul_assoc.
+  apply Nat.mul_le_mono; trivial.
 
 Qed.
 
@@ -1161,21 +1161,21 @@ Lemma ratSubtract_eqRat_compat : forall r1 r2 r3 r4,
   arithNormalize.
   apply minus_eq_compat.
   arithSimplify.
-  rewrite <- (mult_assoc n1).
-  rewrite (mult_comm x2).
-  rewrite mult_assoc.
+  rewrite <- (Nat.mul_assoc n1).
+  rewrite (Nat.mul_comm x2).
+  rewrite Nat.mul_assoc.
   arithSimplify.
   trivial.
 
-  rewrite <- (mult_assoc (n2 * x1)).
-  rewrite (mult_comm x).
-  rewrite mult_assoc.
+  rewrite <- (Nat.mul_assoc (n2 * x1)).
+  rewrite (Nat.mul_comm x).
+  rewrite Nat.mul_assoc.
   arithSimplify.
-  rewrite <- (mult_assoc n2).
-  rewrite (mult_comm x1 x0).
-  rewrite mult_assoc.
+  rewrite <- (Nat.mul_assoc n2).
+  rewrite (Nat.mul_comm x1 x0).
+  rewrite Nat.mul_assoc.
   arithSimplify.
-  rewrite mult_comm.
+  rewrite Nat.mul_comm.
   trivial.
 Qed.
 
@@ -1274,12 +1274,12 @@ Lemma ratSubtract_add_same_r : forall r1 r2 r3,
   unfold ratSubtract.
   rattac.
   arithNormalize.
-  rewrite (plus_comm (n2 * x0 * x1 * x0 * x1 * x)).
-  rewrite NPeano.Nat.sub_add_distr.
+  rewrite (Nat.add_comm (n2 * x0 * x1 * x0 * x1 * x)).
+  rewrite Nat.sub_add_distr.
   apply minus_eq_compat.
-  rewrite <- NPeano.Nat.add_sub_assoc.
+  rewrite <- Nat.add_sub_assoc.
   rewrite minus_diag_eq.
-  rewrite plus_0_r.
+  rewrite Nat.add_0_r.
   do 5 arithSimplify.
   do 5 arithSimplify.
   eapply le_eq.
@@ -1295,12 +1295,12 @@ Lemma ratSubtract_add_same_l : forall r1 r2 r3,
   unfold ratSubtract.
   rattac.
   arithNormalize.
-  rewrite NPeano.Nat.sub_add_distr.
+  rewrite Nat.sub_add_distr.
   apply minus_eq_compat.
-  rewrite plus_comm.
-  rewrite <- NPeano.Nat.add_sub_assoc.
+  rewrite Nat.add_comm.
+  rewrite <- Nat.add_sub_assoc.
   rewrite minus_diag_eq.
-  rewrite plus_0_r.
+  rewrite Nat.add_0_r.
   do 5 arithSimplify.
   do 5 arithSimplify.
   eapply le_eq.
@@ -1328,11 +1328,11 @@ Lemma ratSubtract_ratAdd_assoc: forall r1 r2 r3,
   f_equal.
   do 5 arithSimplify.
   do 5 arithSimplify.
-  do 3 (eapply mult_le_compat; trivial).
-  repeat rewrite <- mult_assoc.
-  repeat rewrite (mult_comm x).
-  repeat rewrite mult_assoc.
-  apply mult_le_compat; trivial.
+  do 3 (eapply Nat.mul_le_mono; trivial).
+  repeat rewrite <- Nat.mul_assoc.
+  repeat rewrite (Nat.mul_comm x).
+  repeat rewrite Nat.mul_assoc.
+  apply Nat.mul_le_mono; trivial.
 Qed.
 
 Lemma ratAdd_add_same_r : forall r1 r2 r3,
@@ -1537,7 +1537,7 @@ Theorem ratS_num : forall n,
   rattac.
   unfold natToPosnat in *.
   inversion H0; clear H0; subst.
-  repeat rewrite mult_1_r.
+  repeat rewrite Nat.mul_1_r.
   inversion H; clear H; subst.
   trivial.
 Qed.
@@ -1776,8 +1776,8 @@ Lemma ratMult_3_ratAdd : forall r,
   inversion H0; clear H0; subst.
   simpl.
   arithNormalize.
-  repeat rewrite mult_0_r.
-  repeat rewrite plus_0_r.
+  repeat rewrite Nat.mul_0_r.
+  repeat rewrite Nat.add_0_r.
   trivial.
 Qed.
 
@@ -1787,13 +1787,13 @@ Lemma ratMult_small_le : forall r1 r2,
   
   rattac.
   inversion H0; clear H0; subst.
-  rewrite mult_1_r in l.
-  rewrite mult_1_l in l.
-  rewrite mult_assoc.
-  rewrite <- (mult_assoc n2).
-  rewrite (mult_comm n).
-  rewrite mult_assoc.
-  apply mult_le_compat;
+  rewrite Nat.mul_1_r in l.
+  rewrite Nat.mul_1_l in l.
+  rewrite Nat.mul_assoc.
+  rewrite <- (Nat.mul_assoc n2).
+  rewrite (Nat.mul_comm n).
+  rewrite Nat.mul_assoc.
+  apply Nat.mul_le_mono;
     auto.
   
 Qed.
@@ -1974,7 +1974,7 @@ Lemma posnatMult_1_r : forall p,
   destruct p2.
   unfold posnatToNat.
   inversion Heqp2; subst.
-  apply mult_1_r.
+  apply Nat.mul_1_r.
   
 Qed.
 
@@ -2041,24 +2041,24 @@ Lemma ratMult_same_r_inv : forall r1 r2 r3,
   eapply n2.
   clear n2.
   arithNormalize.
-  rewrite <- (mult_assoc n) in e.
-  rewrite (mult_comm n0) in e.
+  rewrite <- (Nat.mul_assoc n) in e.
+  rewrite (Nat.mul_comm n0) in e.
   arithNormalize.
-  rewrite <- mult_assoc in e.
-  rewrite <- (mult_assoc n1) in e.
-  rewrite <- (mult_comm x1) in e.
-  rewrite (mult_assoc n1) in e.
-  rewrite <- (mult_assoc (n1 * x1)) in e.
+  rewrite <- Nat.mul_assoc in e.
+  rewrite <- (Nat.mul_assoc n1) in e.
+  rewrite <- (Nat.mul_comm x1) in e.
+  rewrite (Nat.mul_assoc n1) in e.
+  rewrite <- (Nat.mul_assoc (n1 * x1)) in e.
   eapply mult_same_r.
   2:{
     eapply e.
   }
-  rewrite mult_0_r in H0.
-  rewrite plus_0_l in H0.
+  rewrite Nat.mul_0_r in H0.
+  rewrite Nat.add_0_l in H0.
   destruct (eq_nat_dec n0 0). intuition.
   assert (~n0 * x0 = O)%nat.
   intros H1.
-  eapply mult_is_O in H1.
+  eapply Nat.eq_mul_0 in H1.
   intuition.
   remember (n0 * x0)%nat as a.
   lia.
@@ -2070,8 +2070,8 @@ Lemma rat_le_1 : forall n (d : posnat),
   
   rattac.
   inversion H1; clear H1; subst.
-  rewrite mult_1_r.
-  rewrite mult_1_l.
+  rewrite Nat.mul_1_r.
+  rewrite Nat.mul_1_l.
   trivial.
 Qed.
 
@@ -2090,13 +2090,13 @@ Lemma ratMult_2 : forall r,
   rattac.
   inversion H; clear H; subst.
   arithNormalize.
-  rewrite mult_0_r.
-  rewrite plus_0_r.
+  rewrite Nat.mul_0_r.
+  rewrite Nat.add_0_r.
   f_equal.
   f_equal.
-  rewrite <- mult_assoc.
-  rewrite <- mult_assoc.
-  rewrite mult_comm.
+  rewrite <- Nat.mul_assoc.
+  rewrite <- Nat.mul_assoc.
+  rewrite Nat.mul_comm.
   simpl.
   trivial.
 Qed.
@@ -2129,7 +2129,7 @@ Lemma ratInverse_prod_1 : forall r,
   eapply num_dem_same_rat1.
   unfold posnatMult, natToPosnat, posnatToNat.
   destruct p.
-  apply mult_comm.
+  apply Nat.mul_comm.
 Qed.
 
 Fixpoint expRat r n :=
@@ -2150,16 +2150,16 @@ Lemma ratInverse_nz : forall (r : Rat),
   destruct p.
   destruct p0.
   inversion H0; clear H0; subst.
-  rewrite mult_1_r in e.
-  rewrite mult_1_r in e.
+  rewrite Nat.mul_1_r in e.
+  rewrite Nat.mul_1_r in e.
   lia.
 
   unfold posnatToNat, natToPosnat in *.
   destruct p.
   destruct p0.
   inversion H0; clear H0; subst.
-  rewrite mult_1_r in e.
-  rewrite mult_0_l in e.
+  rewrite Nat.mul_1_r in e.
+  rewrite Nat.mul_0_l in e.
   lia.  
 
 Qed.
@@ -2208,7 +2208,7 @@ Lemma ratInverse_leRat : forall r1 r2,
   eapply rat_num_0.
   destruct n.
   exfalso.
-  rewrite mult_0_l in l.
+  rewrite Nat.mul_0_l in l.
   simpl in *.
   remember (n0 * x1)%nat as a.
   nia.
@@ -2228,17 +2228,17 @@ Lemma ratAdd_not_leRat : forall r1 r2,
   unfold posnatMult, natToPosnat, posnatToNat in *.
   destruct p1.
   destruct p0.
-  rewrite mult_plus_distr_r in l.
-  rewrite <- mult_assoc in l.
-  rewrite (mult_comm x) in l.
+  rewrite Nat.mul_add_distr_r in l.
+  rewrite <- Nat.mul_assoc in l.
+  rewrite (Nat.mul_comm x) in l.
   assert ((n1 * x0 * x0) = O)%nat.
   remember (n0 * (x0 * x))%nat as a.
   remember (n1 * x0 * x0)%nat as b.
   lia.
-  apply mult_is_O in H1;
+  apply Nat.eq_mul_0 in H1;
     intuition; 
       subst.
-  apply mult_is_O in H2;
+  apply Nat.eq_mul_0 in H2;
     intuition;
       subst.
   apply rat_num_0.
@@ -2305,7 +2305,7 @@ Lemma ratSubtract_ratAdd_distr : forall r1 r2 r3,
   unfold ratSubtract, ratAdd.
   rattac.
   arithNormalize.
-  rewrite NPeano.Nat.sub_add_distr.
+  rewrite Nat.sub_add_distr.
   f_equal.
   f_equal.
   do 5 arithSimplify.
@@ -2326,17 +2326,17 @@ Lemma ratSubtract_ratAdd_assoc_1 : forall r1 r2 r3,
   do 5 arithSimplify.
   do 5 arithSimplify.
   unfold natToPosnat, posnatToNat in *.
-  eapply mult_le_compat; trivial.
-  eapply mult_le_compat; trivial.
-  eapply mult_le_compat; trivial.
+  eapply Nat.mul_le_mono; trivial.
+  eapply Nat.mul_le_mono; trivial.
+  eapply Nat.mul_le_mono; trivial.
   
-  rewrite <- (mult_assoc).
-  rewrite (mult_comm x).
-  rewrite mult_assoc.
-  rewrite <- (mult_assoc n3).
-  rewrite (mult_comm x).
-  rewrite mult_assoc.
-  eapply mult_le_compat; trivial.
+  rewrite <- (Nat.mul_assoc).
+  rewrite (Nat.mul_comm x).
+  rewrite Nat.mul_assoc.
+  rewrite <- (Nat.mul_assoc n3).
+  rewrite (Nat.mul_comm x).
+  rewrite Nat.mul_assoc.
+  eapply Nat.mul_le_mono; trivial.
   
 Qed.
 
@@ -2369,14 +2369,14 @@ Lemma eqRat_ratMult_same_r : forall r1 r2 r3,
   eapply n2.
   eapply (@mult_same_l (n * x0)).
   eapply mult_gt_0.
-  rewrite mult_1_r in n3.
-  rewrite mult_0_l in n3.
+  rewrite Nat.mul_1_r in n3.
+  rewrite Nat.mul_0_l in n3.
   lia.
   trivial.
-  rewrite (mult_comm).
-  rewrite mult_assoc.
-  rewrite <- (mult_assoc n0).
-  rewrite (mult_comm x).
+  rewrite (Nat.mul_comm).
+  rewrite Nat.mul_assoc.
+  rewrite <- (Nat.mul_assoc n0).
+  rewrite (Nat.mul_comm x).
   arithNormalize.
   rewrite e.
   do 3 arithSimplify.
@@ -2518,7 +2518,7 @@ Lemma ratMult_eq_rat1 : forall n1 n2 (nz1 : nz n1)(nz2 : nz n2),
   rewrite <- ratMult_num_den.
   eapply num_dem_same_rat1.
   unfold posnatMult, natToPosnat, posnatToNat.
-  eapply mult_comm.
+  eapply Nat.mul_comm.
   
 Qed.
 
@@ -2565,7 +2565,7 @@ Lemma leRat_terms : forall n1 n2 (d1 d2 : posnat),
   RatIntro n1 d1 <= RatIntro n2 d2.
 
   rattac.
-  eapply mult_le_compat; trivial.
+  eapply Nat.mul_le_mono; trivial.
 
 Qed.
 
@@ -2623,7 +2623,7 @@ Lemma expRat_le_half_exists : forall r,
   eapply expRat_leRat_compat.
   eapply leRat_terms.
   eapply l.
-  eapply le_refl.
+  eapply Nat.le_refl.
 
   rewrite expRat_terms.
 
@@ -2632,7 +2632,7 @@ Lemma expRat_le_half_exists : forall r,
   lia.
   simpl.
   destruct (eq_nat_dec x O); subst.
-  rewrite mult_0_l.
+  rewrite Nat.mul_0_l.
   rewrite rat_num_0.
   eapply rat0_le_all.
 
@@ -2658,21 +2658,21 @@ Lemma expRat_le_half_exists : forall r,
 
   assert (posnatToNat (pos (2 * (x * expnat x x))) <= posnatToNat (pos (expnat (S x) x + x * expnat (S x) x)))%nat.
   unfold natToPosnat, posnatToNat.
-  rewrite mult_assoc.
-  rewrite (mult_comm 2 x).
-  rewrite <- mult_assoc.
-  rewrite <- (plus_0_l (x * (2 * expnat x x))).
-  eapply plus_le_compat.
+  rewrite Nat.mul_assoc.
+  rewrite (Nat.mul_comm 2 x).
+  rewrite <- Nat.mul_assoc.
+  rewrite <- (Nat.add_0_l (x * (2 * expnat x x))).
+  eapply Nat.add_le_mono.
   intuition.
-  eapply mult_le_compat.
+  eapply Nat.mul_le_mono.
   intuition.
   eapply expnat_base_S_same.
   lia.
 
   eapply leRat_trans.
   eapply leRat_terms.
-  rewrite <- (mult_1_l (x * expnat x x)).
-  eapply le_refl.
+  rewrite <- (Nat.mul_1_l (x * expnat x x)).
+  eapply Nat.le_refl.
   unfold natToPosnat, posnatToNat.
   eapply H2.
   assert (nz (x * expnat x x)).
@@ -2740,7 +2740,7 @@ Lemma expRat_half_le_exp_exists : forall d,
   2:{
     eapply leRat_terms.
     eapply H0.
-    eapply le_refl.
+    eapply Nat.le_refl.
   }
   erewrite expnat_1.
   eapply leRat_terms.
@@ -2892,11 +2892,11 @@ Theorem le_ratHalf_0 : forall r,
   destruct p.
   unfold natToPosnat in *.
   unfold posnatToNat in *.
-  rewrite mult_1_r in *.
-  rewrite (mult_comm x) in l.
-  rewrite mult_assoc in *.
+  rewrite Nat.mul_1_r in *.
+  rewrite (Nat.mul_comm x) in l.
+  rewrite Nat.mul_assoc in *.
   assert (n * 2 <= n)%nat.
-  eapply mult_le_compat_r_iff; eauto.
+  lia.
   lia.
 Qed.
 
@@ -2908,7 +2908,7 @@ Lemma ratSubtract_0_r : forall r,
   arithNormalize.
   inversion H; clear H; subst.
   simpl.
-  rewrite <- minus_n_O.
+  rewrite Nat.sub_0_r.
   do 2 arithSimplify.
   
 Qed.
@@ -2935,8 +2935,8 @@ Lemma ratSubtract_0_inv : forall r1 r2,
   intuition.
   unfold ratSubtract in *.
   rattac.
-  rewrite mult_0_l in e.
-  apply mult_is_O in e.
+  rewrite Nat.mul_0_l in e.
+  apply Nat.eq_mul_0 in e.
   lia.
 Qed.
 
@@ -3323,12 +3323,12 @@ Lemma ratSubtract_half : forall x,
   rattac.
   arithNormalize.
   inversion H; clear H; subst.
-  rewrite <- (mult_assoc (n * x * 2)).
-  rewrite (mult_comm (n * x)).
-  repeat rewrite mult_assoc.
+  rewrite <- (Nat.mul_assoc (n * x * 2)).
+  rewrite (Nat.mul_comm (n * x)).
+  repeat rewrite Nat.mul_assoc.
   simpl.
-  rewrite (plus_0_r).
-  repeat rewrite mult_plus_distr_r.
+  rewrite (Nat.add_0_r).
+  repeat rewrite Nat.mul_add_distr_r.
   remember (n * x * x * 2)%nat as a.
   lia.
 Qed.
@@ -3456,13 +3456,12 @@ Lemma leRat_0_eq :
   
   intuition.
   rattac.
-  symmetry.
-  eapply le_n_0_eq.
+  eapply Nat.le_0_r.
   unfold natToPosnat, posnatToNat in *.
-  rewrite mult_1_r in l.
+  rewrite Nat.mul_1_r in l.
   rewrite l.
   destruct p.
-  rewrite mult_0_l.
+  rewrite Nat.mul_0_l.
   intuition.
 Qed.
 
@@ -3476,8 +3475,8 @@ Lemma rat_le_1_if :
   unfold leRat, bleRat, ratCD, rat1 in *.
   unfold natToPosnat, posnatToNat in *.
   destruct d.
-  rewrite mult_1_r in H.
-  rewrite mult_1_l in H.
+  rewrite Nat.mul_1_r in H.
+  rewrite Nat.mul_1_l in H.
   destruct (le_gt_dec n x).
   lia.
   discriminate.
@@ -3504,7 +3503,7 @@ Theorem ratFraction_le_1 :
   
   unfold posnatMult, natToPosnat, posnatToNat.
   destruct p.
-  rewrite mult_comm.
+  rewrite Nat.mul_comm.
   intuition.
 Qed.
 

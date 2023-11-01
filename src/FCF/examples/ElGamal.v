@@ -56,7 +56,7 @@ Section ElGamal.
     repeat simp_in_support.
     rewrite <- associativity.
     repeat rewrite groupExp_mult.
-    rewrite mult_comm.
+    rewrite Nat.mul_comm.
     rewrite left_inverse.
     apply left_identity.
   Qed.

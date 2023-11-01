@@ -83,7 +83,7 @@ Section RndGrpElem.
               (fun z => (modNat (z + (modNatAddInverse (groupLog g y) order) + (groupLog g x))) order) 
               (fun z => (modNat (z + (groupLog g y) + (modNatAddInverse (groupLog g x) order)) order))); intuition.
 
-    rewrite <- plus_assoc.
+    rewrite <- Nat.add_assoc.
     rewrite <- modNat_plus.
     assert ((x0 + groupLog g y + modNatAddInverse (groupLog g x) order +
       (modNatAddInverse (groupLog g y) order + groupLog g x)) = 
@@ -94,15 +94,15 @@ Section RndGrpElem.
     rewrite H0.
     rewrite modNat_plus.
     rewrite modNatAddInverse_correct.
-    rewrite plus_0_l.
+    rewrite Nat.add_0_l.
     rewrite modNat_plus.
     rewrite modNatAddInverse_correct.
-    rewrite plus_0_l.
+    rewrite Nat.add_0_l.
     eapply modNat_eq.
     eapply RndNat_support_lt.
     trivial.
 
-    rewrite <- plus_assoc.
+    rewrite <- Nat.add_assoc.
     rewrite <- modNat_plus.
     assert ((x0 + modNatAddInverse (groupLog g y) order + groupLog g x +
       (groupLog g y + modNatAddInverse (groupLog g x) order)) = 
@@ -112,10 +112,10 @@ Section RndGrpElem.
     rewrite H0.
     rewrite modNat_plus.
     rewrite modNatAddInverse_correct.
-    rewrite plus_0_l.
+    rewrite Nat.add_0_l.
     rewrite modNat_plus.
     rewrite modNatAddInverse_correct.
-    rewrite plus_0_l.
+    rewrite Nat.add_0_l.
     eapply modNat_eq.
     eapply RndNat_support_lt.
     trivial.
@@ -136,7 +136,7 @@ Section RndGrpElem.
     rewrite groupExp_mod.
     rewrite modNat_plus.
     rewrite modNatAddInverse_correct_gen.
-    rewrite plus_0_l.
+    rewrite Nat.add_0_l.
     rewrite <- groupExp_mod.
     rewrite group_cyclic.
     destruct (EqDec_dec GroupElement_EqDec x x).

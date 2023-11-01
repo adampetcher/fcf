@@ -667,7 +667,7 @@ Theorem arrayLookup_allNats_eq :
   rewrite app_length in H.
   rewrite fst_split_app_eq in H.
   simpl in *.
-  rewrite plus_comm in H.
+  rewrite Nat.add_comm in H.
   simpl in *.
   eapply app_inj_tail in H.
   intuition.
