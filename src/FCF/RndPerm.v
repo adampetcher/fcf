@@ -334,7 +334,7 @@ Theorem allNats_nth_pred :
  
   rewrite app_length.
   simpl.
-  rewrite plus_comm.
+  rewrite Nat.add_comm.
   simpl.
 
   eapply list_pred_app_both.

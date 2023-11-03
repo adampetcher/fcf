@@ -80,7 +80,7 @@ Section DistSingle_impl_Mult.
     unfold computeHybrid.
     unfold minus.
     fold minus.
-    rewrite <- minus_n_O.
+    rewrite Nat.sub_0_r.
     unfold forNats.
     fold forNats.
     unfold compMap.
@@ -348,7 +348,7 @@ Section DistSingle_impl_Mult.
     fold compMap.
     comp_simp.
     inline_first.
-    rewrite <- minus_n_O.
+    rewrite Nat.sub_0_r.
     comp_skip.
     comp_simp.
     simpl.
@@ -366,7 +366,7 @@ Section DistSingle_impl_Mult.
     comp_skip.
     
     inline_first.
-    rewrite minus_diag.
+    rewrite Nat.sub_diag.
     unfold forNats.
     unfold compMap.
     comp_simp.

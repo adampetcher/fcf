@@ -7,8 +7,6 @@ Set Implicit Arguments.
 
 Require Export Arith.
 Require Export micromega.Lia.
-Require Export Arith.Div2.
-Require Export Coq.Numbers.Natural.Peano.NPeano. 
 Require Import Coq.NArith.BinNat.
 
 Local Ltac Tauto.intuition_solver ::= auto with crelations arith.
@@ -27,7 +25,7 @@ Lemma mult_same_r : forall n1 n2 n3,
   f_equal.
   eapply IHn1; eauto.
   
-  eapply plus_reg_l. eauto.
+  eapply Nat.add_cancel_l. eauto.
 Qed.
 
 Lemma mult_same_l : forall n3 n1 n2,
@@ -37,8 +35,8 @@ Lemma mult_same_l : forall n3 n1 n2,
   
   intuition.
   eapply mult_same_r; eauto.
-  rewrite mult_comm.
-  rewrite (mult_comm n2 n3).
+  rewrite Nat.mul_comm.
+  rewrite (Nat.mul_comm n2 n3).
   trivial.
 Qed.
 
@@ -128,7 +126,7 @@ Lemma posnatMult_comm : forall p1 p2,
   unfold posnatMult.
   destruct p1; destruct p2.
   econstructor.
-  apply mult_comm.
+  apply Nat.mul_comm.
 Qed.  
 
 Coercion posnatToNat : posnat >-> nat.
@@ -172,7 +170,7 @@ Theorem expnat_pos : forall x n,
 Qed.
 
 Lemma div2_le : forall n,
-  le (div2 n) n.
+  le (Nat.div2 n) n.
   
   intuition.
 
@@ -182,17 +180,17 @@ Lemma div2_le : forall n,
 Qed.
 
 Lemma div2_ge_double : forall n, 
-  n >= (div2 n) + (div2 n).
+  n >= (Nat.div2 n) + (Nat.div2 n).
   
   intuition.
-  destruct (Even.even_odd_dec n).
+  destruct (Nat.Even_Odd_dec n).
   
-  rewrite (even_double n) at 1.
-  unfold double.
+  rewrite (Nat.Even_double n) at 1.
+  unfold Nat.double.
   lia.
   trivial.
-  rewrite (odd_double n) at 1.
-  unfold double.
+  rewrite (Nat.Odd_double n) at 1.
+  unfold Nat.double.
   lia.
   trivial.
 Qed.
@@ -318,10 +316,10 @@ Lemma modNatAddInverse_correct_gen : forall x y p,
   rewrite <- H.
   rewrite modNat_plus.
   rewrite minus_add_assoc.
-  rewrite (plus_comm).
+  rewrite (Nat.add_comm).
   rewrite <- minus_add_assoc.
-  rewrite minus_diag.
-  rewrite plus_0_r.
+  rewrite Nat.sub_diag.
+  rewrite Nat.add_0_r.
   apply modNat_arg_eq.
   
   trivial.
@@ -386,7 +384,7 @@ Lemma modNat_divides : forall x p,
   destruct (modNat_correct x p).
   rewrite H in H0.
   econstructor.
-  rewrite plus_0_r in H0.
+  rewrite Nat.add_0_r in H0.
   eauto.
 Qed.
 
@@ -406,7 +404,7 @@ Lemma modNatAddInverse_sum_0 : forall x y p,
   rewrite modNat_plus in H.
   unfold modNatAddInverse in *.
   rewrite minus_add_assoc in H; intuition.
-  rewrite plus_comm in H.
+  rewrite Nat.add_comm in H.
   
   apply modNat_divides in H.
   destruct H.
@@ -432,7 +430,7 @@ Lemma modNatAddInverse_sum_0 : forall x y p,
   destruct x0.
   
   simpl in H.
-  rewrite plus_0_r in H.
+  rewrite Nat.add_0_r in H.
   lia.
   
   assert (p > 0).
@@ -455,10 +453,10 @@ Lemma modNat_correct_if : forall x y z (p : posnat),
   apply IHx in H0.
   
   rewrite H0.
-  rewrite plus_comm.
+  rewrite Nat.add_comm.
   rewrite modNat_plus.
   rewrite modNat_arg_eq.
-  rewrite plus_0_l.
+  rewrite Nat.add_0_l.
   trivial.
 Qed.
 
@@ -468,7 +466,7 @@ Lemma modNat_mult : forall x (p : posnat),
   induction x; intuition; simpl in *.
   rewrite modNat_plus.
   rewrite modNat_arg_eq.
-  rewrite plus_0_l.
+  rewrite Nat.add_0_l.
   eauto.
   
 Qed.
@@ -508,7 +506,7 @@ Lemma modNat_add_same_l : forall x y z p,
   rewrite modNat_plus in H5.
   
   rewrite modNat_mult in H5.
-  rewrite plus_0_l in H5.
+  rewrite Nat.add_0_l in H5.
   auto.
   
 Qed.
@@ -519,9 +517,9 @@ Lemma modNat_add_same_r : forall x y z p,
   
   intuition.
   eapply (modNat_add_same_l x y z).
-  rewrite plus_comm.
+  rewrite Nat.add_comm.
   rewrite H.
-  rewrite plus_comm.
+  rewrite Nat.add_comm.
   trivial.
 Qed.
 
@@ -530,30 +528,30 @@ Lemma expnat_base_S : forall n k,
 
   induction n; intuition.
   simpl in *.
-  eapply le_trans.
+  eapply Nat.le_trans.
   
   2:{
-    eapply plus_le_compat.
+    eapply Nat.add_le_mono.
     eapply IHn.
-    eapply mult_le_compat.
-    eapply le_refl.
+    eapply Nat.mul_le_mono.
+    eapply Nat.le_refl.
     eapply IHn.
   }
 
-  rewrite mult_plus_distr_l.
-  repeat rewrite mult_assoc.
-  repeat rewrite plus_assoc.
-  eapply plus_le_compat.
-  rewrite plus_comm.
-  eapply plus_le_compat.
-  rewrite <- (plus_0_r (expnat k n)) at 1.
-  eapply plus_le_compat. 
+  rewrite Nat.mul_add_distr_l.
+  repeat rewrite Nat.mul_assoc.
+  repeat rewrite Nat.add_assoc.
+  eapply Nat.add_le_mono.
+  rewrite Nat.add_comm.
+  eapply Nat.add_le_mono.
+  rewrite <- (Nat.add_0_r (expnat k n)) at 1.
+  eapply Nat.add_le_mono. 
   lia.
   intuition.
   intuition.
 
-  rewrite (mult_comm k n).
-  rewrite <- (mult_assoc n).
+  rewrite (Nat.mul_comm k n).
+  rewrite <- (Nat.mul_assoc n).
   destruct n; simpl; intuition.
 Qed.
 
@@ -563,8 +561,8 @@ Lemma expnat_base_S_same : forall n,
 
   intuition.
   simpl in *.
-  rewrite plus_0_r.
-  eapply le_trans.
+  rewrite Nat.add_0_r.
+  eapply Nat.le_trans.
   2:{
     eapply expnat_base_S.
   }
@@ -578,81 +576,49 @@ Lemma sqrt_le_lin_gen : forall a b,
     Nat.sqrt a <= b)%nat.
   
   intuition.
-  eapply le_trans.
+  eapply Nat.le_trans.
   eapply Nat.sqrt_le_lin.
   trivial.
 Qed.
 
 Lemma div2_le_mono : forall n1 n2,
   (n1 <= n2 -> 
-    div2 n1 <= div2 n2)%nat.
+    Nat.div2 n1 <= Nat.div2 n2)%nat.
   
-  induction n1; intuition.
-  destruct n2.
-  lia.
-  destruct (Even.even_odd_dec n1).
-  destruct (Even.even_odd_dec n2).
-  repeat rewrite <- even_div2; trivial.
-  eapply IHn1.
-  lia.
-  
-  rewrite <- even_div2; trivial.
-  rewrite <- odd_div2; trivial.
-  econstructor.
-  eapply IHn1.
-  lia.
-  
-  destruct (Even.even_odd_dec n2).
-  destruct (lt_dec n1 n2).
-  assert (n1 <= (S n2))%nat.
-  lia.
-  destruct n2.
-  lia.
-  rewrite <- odd_div2; trivial.
-  rewrite <- even_div2.
-  rewrite <- odd_div2.
-  eapply le_n_S.
-  eapply IHn1.
-  lia.
-  inversion e.
-  trivial.
-  trivial.
-  assert (n1 = n2).
-  lia.
-  subst.
-  exfalso.
-  eapply Even.not_even_and_odd; eauto.
-  
-  rewrite <- odd_div2; trivial.
-  rewrite <- odd_div2; trivial.
-  eapply le_n_S.
-  eapply IHn1.
-  lia.
-  
+  assert (I : 0 < 2) by now apply Nat.lt_0_succ.
+  intros n1 n2;
+  destruct (Nat.Even_Odd_dec n1) as [[k1 ->] | [k1 ->]];
+  destruct (Nat.Even_Odd_dec n2) as [[k2 ->] | [k2 ->]]; intros H.
+  - now rewrite 2!Nat.div2_double; apply Nat.mul_le_mono_pos_l with (1 := I).
+  - rewrite Nat.div2_double, Nat.add_1_r, Nat.div2_succ_double.
+    apply Nat.mul_le_mono_pos_l with (1 := I). lia.
+  - rewrite Nat.div2_double, Nat.add_1_r, Nat.div2_succ_double.
+    apply Nat.mul_le_mono_pos_l with (1 := I). lia.
+  - rewrite 2!Nat.add_1_r, 2!Nat.div2_succ_double. lia.
 Qed.
 
 Lemma div2_ge : forall n n',
   n >= n' ->
   forall x,
     (n' = 2 * x)%nat ->
-    div2 n >= x.
+    Nat.div2 n >= x.
   
   induction 1; intuition; subst; simpl in *.
-  specialize (div2_double x); intuition; simpl in *.
+  specialize (Nat.div2_double x); intuition; simpl in *.
   rewrite H.
   lia.
   
   destruct m.
   lia.
-  destruct (Even.even_odd_dec m).
-  rewrite even_div2.
-  assert (div2 (S m) >= x).
+  destruct (Nat.Even_Odd_dec m).
+  rewrite Nat.Even_div2.
+  assert (Nat.div2 (S m) >= x).
   eapply IHle.
   trivial.
   lia.
   trivial.
   
-  rewrite odd_div2.
+  rewrite Nat.Odd_div2.
   
   eapply IHle.
   trivial.
@@ -685,11 +651,11 @@ Lemma le_expnat_2 : forall n,
   (n <= expnat 2 n)%nat.
 
   induction n; intuition; simpl in *.
-  rewrite plus_0_r.
+  rewrite Nat.add_0_r.
   assert (S n = 1 + n)%nat.
   lia.
   rewrite H.
-  eapply plus_le_compat.
+  eapply Nat.add_le_mono.
   eapply expnat_2_ge_1.
   trivial.
   
@@ -699,7 +665,7 @@ Lemma expnat_1 : forall k,
   expnat 1%nat k = 1%nat.
 
   induction k; intuition; simpl in *.
-  rewrite plus_0_r.
+  rewrite Nat.add_0_r.
   trivial.
 
 Qed.
@@ -711,8 +677,7 @@ Theorem expnat_base_le :
     expnat n2 k.
   
   induction k; intuition; simpl in *.
-  eapply mult_le_compat; intuition.
-  
+  eapply Nat.mul_le_mono; intuition.
 Qed.
 
 Theorem expnat_double_le : 
@@ -722,12 +687,12 @@ Theorem expnat_double_le :
 
   induction k; intuition; simpl in *.
   lia.
-  rewrite plus_0_r.
-  rewrite <- mult_plus_distr_l.
-  eapply mult_le_compat.
+  rewrite Nat.add_0_r.
+  rewrite <- Nat.mul_add_distr_l.
+  eapply Nat.mul_le_mono.
   trivial.
-  rewrite <- plus_0_r at 1.
-  rewrite <- plus_assoc.
+  rewrite <- Nat.add_0_r at 1.
+  rewrite <- Nat.add_assoc.
   eapply IHk.
   trivial.
 Qed.
@@ -751,7 +716,7 @@ Theorem nat_half_plus :
   destruct H0.
   intuition.
   destruct x1.
-  rewrite plus_0_r in H3.
+  rewrite Nat.add_0_r in H3.
   exists x0.
   exists 1.
   subst.
@@ -768,7 +733,7 @@ Qed.
 Theorem log2_div2 : 
   forall x y,
     S y = Nat.log2 x ->
-    Nat.log2 (div2 x) = y.
+    Nat.log2 (Nat.div2 x) = y.
   
   intuition.
   specialize (Nat.log2_double); intuition.
@@ -781,16 +746,16 @@ Theorem log2_div2 :
   intuition.
   subst.
   destruct x1.
-  rewrite plus_0_r in *.
-  rewrite div2_double.
+  rewrite Nat.add_0_r in *.
+  rewrite Nat.div2_double.
   rewrite H0 in H.
   lia.
   lia.
   
   destruct x1.
   
-  rewrite plus_comm.
-  rewrite div2_double_plus_one.
+  rewrite Nat.add_comm.
+  rewrite Nat.add_1_l, Nat.div2_succ_double.
   
   rewrite Nat.log2_succ_double in H.
   lia.
@@ -820,7 +785,7 @@ Theorem expnat_plus :
   
   induction k1; simpl in *; intuition.
   rewrite IHk1.
-  rewrite mult_assoc.
+  rewrite Nat.mul_assoc.
   trivial.
   
 Qed.
@@ -831,8 +796,8 @@ Theorem expnat_ge_1 :
     1 <= expnat n k.
   
   induction k; intuition; simpl in *.
-  rewrite <- mult_1_r at 1.
-  eapply mult_le_compat.
+  rewrite <- Nat.mul_1_r at 1.
+  eapply Nat.mul_le_mono.
   lia.
   eauto.
 Qed.
@@ -845,14 +810,14 @@ Theorem expnat_exp_le :
     expnat n n2 <= expnat n n4.
   
   induction n2; destruct n4; simpl in *; intuition; try lia.
-  rewrite <- mult_1_l at 1.
-  eapply mult_le_compat.
+  rewrite <- Nat.mul_1_l at 1.
+  eapply Nat.mul_le_mono.
   lia.
   eapply expnat_ge_1; trivial.
   
   destruct (eq_nat_dec n 0); subst.
   simpl; intuition.
-  eapply mult_le_compat; intuition.
+  eapply Nat.mul_le_mono; intuition.
   eapply IHn2.
   lia.
   lia.
@@ -866,15 +831,13 @@ Lemma mult_lt_compat :
     a * c < b * d.
   
   intuition.
-  eapply le_lt_trans.
-  eapply mult_le_compat.
+  eapply Nat.le_lt_trans.
+  eapply Nat.mul_le_mono.
   assert (a <= b).
   lia.
   eapply H1.
-  eapply le_refl.
-  eapply mult_lt_compat_l.
-  trivial.
-  lia.
+  eapply Nat.le_refl.
+  apply Nat.mul_lt_mono_pos_l; lia.
 Qed.
 
 Theorem orb_same_eq_if : 

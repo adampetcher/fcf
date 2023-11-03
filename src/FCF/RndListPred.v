@@ -327,7 +327,7 @@ Section DupList.
     reflexivity.
     eapply ratMult_leRat_compat.
     eapply leRat_terms.
-    eapply mult_le_compat.
+    eapply Nat.mul_le_mono.
     trivial.  
     lia.
     trivial.

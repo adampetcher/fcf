@@ -254,12 +254,12 @@ refine {| eqb := (fun x y => (leb x y) && (leb y x)) |}.
 intuition.
 apply andb_true_iff in H.
 intuition.
-eapply le_antisym;
+eapply Nat.le_antisymm;
 eapply leb_iff; eauto.
 
 apply andb_true_iff.
 intuition;
-eapply leb_iff; subst; eapply le_refl.
+eapply leb_iff; subst; eapply Nat.le_refl.
 Qed.
 
 

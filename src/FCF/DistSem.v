@@ -363,7 +363,7 @@ Lemma evalDist_lossless : forall (A : Set)(c : Comp A),
   rewrite sumList_body_const.
   rewrite getAllBvectors_length.
   rewrite <- ratMult_num_den.
-  rewrite mult_1_l.
+  rewrite Nat.mul_1_l.
   eapply num_dem_same_rat1.
 
   rewrite posnatMult_1_r.
@@ -515,7 +515,7 @@ Lemma evalDist_sum_le_1 : forall (A : Set)(c : Comp A),
   rewrite sumList_body_const.
   rewrite getAllBvectors_length.
   rewrite <- ratMult_num_den.
-  rewrite mult_1_l.
+  rewrite Nat.mul_1_l.
   eapply eqRat_impl_leRat.
   eapply num_dem_same_rat1.
 

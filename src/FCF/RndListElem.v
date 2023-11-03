@@ -76,7 +76,7 @@ Theorem firstIndexOf_in_lt :
   destruct (eqd a0 a); subst.
   lia.
 
-  eapply lt_n_S.
+  apply ->Nat.succ_lt_mono.
   eauto.
 Qed.
 

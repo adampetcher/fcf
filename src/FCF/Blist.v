@@ -111,7 +111,7 @@ Theorem shiftOut_None_inv : forall n ls,
   n > length ls.
   
   induction n; destruct ls; intuition; simpl in *; try discriminate.
-  apply gt_n_S.
+  apply ->Nat.succ_lt_mono.
   eapply IHn.
   case_eq (shiftOut ls n); intuition; trivial.
   rewrite H0 in H.
@@ -308,7 +308,7 @@ Lemma getAllBvectors_length : forall n,
   induction n; intuition; simpl in *.
   rewrite app_length.
   repeat rewrite map_length.
-  rewrite plus_0_r.
+  rewrite Nat.add_0_r.
   f_equal; eauto.
 Qed.
 
@@ -318,12 +318,8 @@ Lemma getAllBvectors_length_nz : forall n,
   induction n; intuition; simpl in *.
   rewrite app_length.
   repeat rewrite map_length.
-  rewrite <- plus_0_r.
-  eapply gt_trans.
-  eapply plus_gt_compat_l.
-  apply IHn.
-  repeat rewrite plus_0_r.
-  apply IHn.
+  apply Nat.lt_le_trans with (1 := IHn).
+  now apply Nat.le_add_r.
 Qed.
 
 Theorem in_getAllBvectors : forall (n : nat)(v : Bvector n),
@@ -600,7 +596,7 @@ Lemma getAllBlists_app_In_length : forall n ls,
 
   subst;
   rewrite app_length; simpl;
-  rewrite plus_comm; simpl;
+  rewrite Nat.add_comm; simpl;
   f_equal;
   eapply IHn; eauto.
 Qed.
@@ -699,7 +695,7 @@ Theorem getAllBlists_length : forall n,
   induction n; intuition; simpl in *.
   rewrite app_length.
   repeat rewrite map_length.
-  rewrite plus_0_r.
+  rewrite Nat.add_0_r.
   rewrite <- IHn.
   trivial.
 Qed.

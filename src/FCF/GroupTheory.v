@@ -81,16 +81,16 @@ Section GroupProperties.
     ((x^n1)^n2) = (x^(n1 * n2)).
 
     induction n2; intuition; simpl in *.
-    rewrite mult_0_r.
+    rewrite Nat.mul_0_r.
     trivial.
 
-    rewrite mult_comm.
+    rewrite Nat.mul_comm.
     simpl.
 
     rewrite groupExp_plus.
     f_equal.
     rewrite IHn2.
-    rewrite mult_comm.
+    rewrite Nat.mul_comm.
     trivial.
   Qed.
 
@@ -127,7 +127,7 @@ Section FiniteCyclicGroupProperties.
     g^(c1 * order + v) = g^v.
     
     induction c1; intuition; simpl in *.
-    rewrite <- plus_assoc.
+    rewrite <- Nat.add_assoc.
     rewrite (groupExp_plus order).
     rewrite groupOrder; trivial.
     rewrite groupIdent; trivial.

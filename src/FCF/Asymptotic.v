@@ -34,29 +34,29 @@ Theorem polynomial_nz_equiv :
   intuition.
   lia.
   rewrite H.
-  rewrite plus_assoc.
-  eapply plus_le_compat; intuition.
+  rewrite Nat.add_assoc.
+  eapply Nat.add_le_mono; intuition.
   simpl.
   destruct (eq_nat_dec x 0).
   subst.
   simpl.
-  repeat rewrite mult_1_r.
-  rewrite <- plus_0_l at 1.
-  eapply plus_le_compat; intuition.
+  repeat rewrite Nat.mul_1_r.
+  rewrite <- Nat.add_0_l at 1.
+  eapply Nat.add_le_mono; intuition.
   
-  rewrite <- plus_0_l at 1.
-  rewrite <- plus_0_r at 1.
+  rewrite <- Nat.add_0_l at 1.
+  rewrite <- Nat.add_0_r at 1.
   
-  eapply plus_le_compat; intuition.
-  eapply plus_le_compat; intuition.
-  eapply mult_le_compat; intuition.
+  eapply Nat.add_le_mono; intuition.
+  eapply Nat.add_le_mono; intuition.
+  eapply Nat.mul_le_mono; intuition.
   destruct (eq_nat_dec n 0); subst.
   
   rewrite expnat_0;
     lia.
   
-  rewrite <- mult_1_l at 1.
-  eapply mult_le_compat; intuition.
+  rewrite <- Nat.mul_1_l at 1.
+  eapply Nat.mul_le_mono; intuition.
   lia.
 Qed.        
 
@@ -84,19 +84,19 @@ Theorem polynomial_plus :
   exists (x4 + x1).
   intuition.
   
-  eapply le_trans.
-  eapply plus_le_compat.
+  eapply Nat.le_trans.
+  eapply Nat.add_le_mono.
   eapply H6; trivial.
   eapply H7; trivial.
-  rewrite mult_plus_distr_r.
-  repeat rewrite plus_assoc.
-  eapply plus_le_compat; trivial.
-  rewrite plus_comm.
-  rewrite plus_assoc.
-  eapply plus_le_compat; trivial.
-  rewrite plus_comm.
-  eapply plus_le_compat;
-    eapply mult_le_compat; intuition.
+  rewrite Nat.mul_add_distr_r.
+  repeat rewrite Nat.add_assoc.
+  eapply Nat.add_le_mono; trivial.
+  rewrite Nat.add_comm.
+  rewrite Nat.add_assoc.
+  eapply Nat.add_le_mono; trivial.
+  rewrite Nat.add_comm.
+  eapply Nat.add_le_mono;
+    eapply Nat.mul_le_mono; intuition.
   
   eapply expnat_exp_le; intuition.
   eapply expnat_exp_le; intuition.
@@ -145,77 +145,77 @@ Theorem polynomial_mult :
   exists (3 * (x3 * x0 * x4 * x1)).
   exists (x4 * x1).
   intros n.
-  eapply le_trans.
-  eapply mult_le_compat.
+  eapply Nat.le_trans.
+  eapply Nat.mul_le_mono.
   eapply H6; intuition.
   eapply H7; intuition.
-  repeat rewrite mult_plus_distr_l.
-  repeat rewrite mult_plus_distr_r.
+  repeat rewrite Nat.mul_add_distr_l.
+  repeat rewrite Nat.mul_add_distr_r.
   
-  rewrite plus_assoc.
-  eapply plus_le_compat; trivial.
+  rewrite Nat.add_assoc.
+  eapply Nat.add_le_mono; trivial.
   
   rewrite expnat_plus.
   simpl.
-  rewrite plus_0_r.
-  repeat rewrite mult_plus_distr_r.
-  rewrite plus_assoc.
-  eapply plus_le_compat.
-  eapply plus_le_compat.
-  rewrite (mult_comm (expnat n x)).
-  repeat rewrite mult_assoc.
-  eapply mult_le_compat. 2: reflexivity.
-  rewrite mult_comm.
-  rewrite mult_assoc.
-  eapply mult_le_compat. 2: reflexivity.
-  rewrite <- mult_1_r at 1.
-  rewrite <- mult_1_r at 1.
-  eapply mult_le_compat. 2: auto with zarith.
-  eapply mult_le_compat. 2: auto with zarith.
-  rewrite mult_comm.
+  rewrite Nat.add_0_r.
+  repeat rewrite Nat.mul_add_distr_r.
+  rewrite Nat.add_assoc.
+  eapply Nat.add_le_mono.
+  eapply Nat.add_le_mono.
+  rewrite (Nat.mul_comm (expnat n x)).
+  repeat rewrite Nat.mul_assoc.
+  eapply Nat.mul_le_mono. 2: reflexivity.
+  rewrite Nat.mul_comm.
+  rewrite Nat.mul_assoc.
+  eapply Nat.mul_le_mono. 2: reflexivity.
+  rewrite <- Nat.mul_1_r at 1.
+  rewrite <- Nat.mul_1_r at 1.
+  eapply Nat.mul_le_mono. 2: auto with zarith.
+  eapply Nat.mul_le_mono. 2: auto with zarith.
+  rewrite Nat.mul_comm.
   reflexivity.
 
   destruct (eq_nat_dec n 0); subst.
   repeat rewrite expnat_0.
   simpl.
-  repeat rewrite mult_0_r.
+  repeat rewrite Nat.mul_0_r.
   reflexivity.
   trivial.
   trivial.
-  rewrite (mult_comm (expnat n x)).
-  repeat rewrite mult_assoc.
-  eapply mult_le_compat; trivial.
-  rewrite <- mult_1_r at 1.
-  eapply mult_le_compat; trivial.
-  rewrite <- mult_1_r at 1.
-  eapply mult_le_compat; trivial.
-  rewrite mult_comm.
-  eapply mult_le_compat; trivial.
-  rewrite <- mult_1_l at 1.
-  eapply mult_le_compat; trivial.
+  rewrite (Nat.mul_comm (expnat n x)).
+  repeat rewrite Nat.mul_assoc.
+  eapply Nat.mul_le_mono; trivial.
+  rewrite <- Nat.mul_1_r at 1.
+  eapply Nat.mul_le_mono; trivial.
+  rewrite <- Nat.mul_1_r at 1.
+  eapply Nat.mul_le_mono; trivial.
+  rewrite Nat.mul_comm.
+  eapply Nat.mul_le_mono; trivial.
+  rewrite <- Nat.mul_1_l at 1.
+  eapply Nat.mul_le_mono; trivial.
   eapply expnat_ge_1.
   lia.
   
   destruct (eq_nat_dec n 0); subst.
   repeat rewrite expnat_0.
   simpl.
-  repeat rewrite mult_0_r.
+  repeat rewrite Nat.mul_0_r.
   intuition.
   trivial.
   trivial.
-  rewrite (mult_comm (expnat n x)).
-  repeat rewrite mult_assoc.
-  rewrite <- mult_1_r at 1.
-  eapply mult_le_compat; trivial.
-  rewrite <- mult_assoc.
-  rewrite (mult_comm (expnat n x2)).
-  rewrite mult_assoc.
-  eapply mult_le_compat; trivial.
-  eapply mult_le_compat; trivial.
-  rewrite <- mult_1_r at 1.
-  eapply mult_le_compat; trivial.
-  rewrite <- mult_1_r at 1.
-  eapply mult_le_compat; trivial.
+  rewrite (Nat.mul_comm (expnat n x)).
+  repeat rewrite Nat.mul_assoc.
+  rewrite <- Nat.mul_1_r at 1.
+  eapply Nat.mul_le_mono; trivial.
+  rewrite <- Nat.mul_assoc.
+  rewrite (Nat.mul_comm (expnat n x2)).
+  rewrite Nat.mul_assoc.
+  eapply Nat.mul_le_mono; trivial.
+  eapply Nat.mul_le_mono; trivial.
+  rewrite <- Nat.mul_1_r at 1.
+  eapply Nat.mul_le_mono; trivial.
+  rewrite <- Nat.mul_1_r at 1.
+  eapply Nat.mul_le_mono; trivial.
   eapply expnat_ge_1.
   lia.
 Qed.     
@@ -303,8 +303,8 @@ Lemma negligible_plus :
   rewrite H8 in H3.
   
   eapply H2.
-  eapply le_lt_trans.
-  eapply Max.le_max_r.
+  eapply Nat.le_lt_trans.
+  eapply Nat.le_max_r.
   eauto.
 
   rewrite H7.
@@ -321,8 +321,8 @@ Lemma negligible_plus :
   
   rewrite H8 in H3.
   eapply H1.
-  eapply le_lt_trans.
-  eapply Max.le_max_l.
+  eapply Nat.le_lt_trans.
+  eapply Nat.le_max_l.
   eauto.
   
   rewrite H7.
@@ -349,7 +349,7 @@ Theorem double_log_plus_3_le_h :
   
   induction y; intuition; simpl in *.
   lia.
-  rewrite plus_0_r in *.
+  rewrite Nat.add_0_r in *.
   
   assert (S (y + S y + 3)  = 
     (y + y + 3) + 2).
@@ -367,14 +367,14 @@ Theorem double_log_plus_3_le_h :
   lia.
   lia.
   
-  eapply le_trans.
+  eapply Nat.le_trans.
   2:{
     eapply H2.
   }
   simpl.
   lia.
   
-  assert ( y + y + 3 <= div2 x).
+  assert ( y + y + 3 <= Nat.div2 x).
   eapply IHy.
   
   symmetry.
@@ -382,12 +382,12 @@ Theorem double_log_plus_3_le_h :
   trivial.
   lia.
   
-  assert (2 <= div2 x).
-  assert (2 = div2 4).
+  assert (2 <= Nat.div2 x).
+  assert (2 = Nat.div2 4).
   trivial.
   rewrite H3.
   eapply div2_le_mono.
-  eapply le_trans.
+  eapply Nat.le_trans.
   2:{
     eapply Nat.log2_le_lin.
     destruct (eq_nat_dec 0 x); subst.
@@ -397,8 +397,8 @@ Theorem double_log_plus_3_le_h :
   }
   lia.
   
-  eapply le_trans.
-  eapply plus_le_compat.
+  eapply Nat.le_trans.
+  eapply Nat.add_le_mono.
   eapply H2.
   
   eapply H3.
@@ -415,14 +415,14 @@ Theorem S_log_square_lt_h :
   
   induction y; intuition; simpl in *.
   lia.
-  assert (y = Nat.log2 (div2 x)).
+  assert (y = Nat.log2 (Nat.div2 x)).
   symmetry.
   eapply log2_div2.
   trivial.
 
-  rewrite (mult_comm _ (S (S y))).
+  rewrite (Nat.mul_comm _ (S (S y))).
   simpl.
-  rewrite (mult_comm _ (S y)) in IHy.
+  rewrite (Nat.mul_comm _ (S y)) in IHy.
   simpl in *.
   
   assert ( S (S (y + S (S (y + (y + (y + y * y)))))) = 
@@ -451,23 +451,23 @@ Theorem S_log_square_lt_h :
   lia.
   lia.
   
-  eapply le_trans.
+  eapply Nat.le_trans.
   2:{
     eapply H3.
   }
   simpl.
   lia.
   
-  assert ( S (y + (y + y * y)) <= div2 x).
+  assert ( S (y + (y + y * y)) <= Nat.div2 x).
   eapply IHy.
   trivial.
   lia.
   
-  assert (2 * y + 3 <= div2 x).
+  assert (2 * y + 3 <= Nat.div2 x).
   eapply double_log_plus_3_le_h; trivial.
   lia.
-  eapply le_trans.
-  eapply plus_le_compat.
+  eapply Nat.le_trans.
+  eapply Nat.add_le_mono.
   eapply H2.
   eapply H3.
   
@@ -482,7 +482,7 @@ Theorem S_log_square_lt :
   
   intuition.
   eapply S_log_square_lt_h; trivial.
-  eapply le_trans.
+  eapply Nat.le_trans.
   2:{
     eapply Nat.log2_le_mono.
     eapply H.
@@ -499,7 +499,7 @@ Theorem log_square_lt :
   
   assert (Nat.log2 x < S (Nat.log2 x)).
   lia.
-  eapply lt_le_trans.
+  eapply Nat.lt_le_trans.
   
   eapply mult_lt_compat.
   eapply H0.
@@ -518,7 +518,7 @@ Theorem poly_lt_exp_ge_6 :
   
   specialize (Nat.log2_spec_alt); intuition.
   destruct (H1 x).
-  eapply lt_le_trans.
+  eapply Nat.lt_le_trans.
   2:{
     eapply H.
   }
@@ -528,7 +528,7 @@ Theorem poly_lt_exp_ge_6 :
   (* This case split probably isn't necessary *)
   destruct (eq_nat_dec x0 0).
   rewrite e in H3.
-  rewrite plus_0_r in *.
+  rewrite Nat.add_0_r in *.
   rewrite H3.
   rewrite <- Nat.pow_mul_r.
   
@@ -541,13 +541,13 @@ Theorem poly_lt_exp_ge_6 :
   lia.
   rewrite <- H3.
   trivial.
-  eapply le_lt_trans.
-  eapply mult_le_compat.
-  eapply le_refl.
+  eapply Nat.le_lt_trans.
+  eapply Nat.mul_le_mono.
+  eapply Nat.le_refl.
   eapply H4.
   
   eapply log_square_lt.
-  eapply le_trans.
+  eapply Nat.le_trans.
   2:{
     eapply H0.
   }
@@ -558,7 +558,7 @@ Theorem poly_lt_exp_ge_6 :
   destruct (eq_nat_dec c 0).
   rewrite e.
   simpl.
-  eapply le_lt_trans.
+  eapply Nat.le_lt_trans.
   assert (1 <= expnat 2 0).
   trivial.
   eapply H4.
@@ -571,7 +571,7 @@ Theorem poly_lt_exp_ge_6 :
   lia.
   eapply Nat.log2_spec.
   lia.
-  eapply lt_le_trans.
+  eapply Nat.lt_le_trans.
   eapply H4.
       
   rewrite <- Nat.pow_mul_r.
@@ -580,20 +580,20 @@ Theorem poly_lt_exp_ge_6 :
   assert (c <= S (Nat.log2 x)).
   eapply (@Nat.pow_le_mono_r_iff 2).
   lia.
-  eapply le_trans.
+  eapply Nat.le_trans.
   eapply H.
   
-  eapply lt_le_weak.
+  eapply Nat.lt_le_incl.
   eapply Nat.log2_spec.
   lia.
   
-  eapply le_trans.
-  eapply mult_le_compat.
-  eapply le_refl.
+  eapply Nat.le_trans.
+  eapply Nat.mul_le_mono.
+  eapply Nat.le_refl.
   eapply H6.
   
   eapply S_log_square_lt.
-  eapply le_trans.
+  eapply Nat.le_trans.
   2:{
     eapply H0.
   }
@@ -612,21 +612,21 @@ Theorem poly_lt_exp :
   exists (expnat 2 (max c 6)).
   intuition.
   eapply poly_lt_exp_ge_6.
-  eapply le_trans.
+  eapply Nat.le_trans.
   2:{
     eapply H.
   }
   eapply Nat.pow_le_mono_r.
   lia.
-  eapply Max.le_max_l.
+  eapply Nat.le_max_l.
   
-  eapply le_trans.
+  eapply Nat.le_trans.
   2:{
     eapply H.
   }
   eapply Nat.pow_le_mono_r.
   lia.
-  eapply Max.le_max_r.
+  eapply Nat.le_max_r.
 Qed.
     
 Theorem negligible_exp_den : 
@@ -682,7 +682,7 @@ Theorem negligible_const_mult :
   rewrite <- ratMult_num_den.
   eapply eqRat_terms.
   symmetry.
-  eapply mult_1_r.
+  eapply Nat.mul_1_r.
   unfold natToPosnat, posnatToNat, posnatMult.
   rewrite expnat_plus.
   trivial.
@@ -703,10 +703,10 @@ Theorem negligible_const_mult :
   eapply rat_le_1.
   destruct d.
   unfold natToPosnat, posnatToNat, posnatMult.
-  rewrite mult_comm.
-  eapply mult_le_compat.
+  rewrite Nat.mul_comm.
+  eapply Nat.mul_le_mono.
       
-  eapply le_trans.
+  eapply Nat.le_trans.
   eapply le_expnat_2.
   eapply expnat_base_le.
   lia.
@@ -761,7 +761,7 @@ Theorem negligible_exp :
   rewrite <- ratMult_num_den.
   eapply eqRat_terms; trivial.
   unfold posnatToNat, natToPosnat, posnatMult.
-  eapply mult_1_l.
+  eapply Nat.mul_1_l.
   
 Qed.
 
@@ -776,9 +776,9 @@ Theorem negligible_const_num :
   intuition.
   rewrite <- ratMult_num_den.
   eapply eqRat_terms.
-  eapply mult_1_r.
+  eapply Nat.mul_1_r.
   unfold natToPosnat, posnatToNat, posnatMult.
-  eapply mult_1_l.
+  eapply Nat.mul_1_l.
 Qed.
 
 Theorem negligible_poly_num : 
@@ -793,7 +793,7 @@ Theorem negligible_poly_num :
   intuition.
   eapply leRat_terms.
   eapply H.
-  eapply le_refl.
+  eapply Nat.le_refl.
   
   eapply negligible_eq. 
   eapply negligible_plus.
@@ -812,7 +812,7 @@ Theorem negligible_poly_num :
   assert (posnatToNat (pos expnat 2 n) = posnatToNat (posnatMult (pos 1) (pos expnat 2 n))).
   unfold natToPosnat, posnatToNat, posnatMult.
   symmetry.
-  eapply mult_1_l.
+  eapply Nat.mul_1_l.
   eapply H0.
   eapply eqRat_refl.
 Qed.

@@ -14,15 +14,15 @@ Theorem modNat_mult_eq :
   destruct (modNat_correct b c).
   rewrite H.
   clear H;
-    rewrite mult_plus_distr_l.
+    rewrite Nat.mul_add_distr_l.
   rewrite modNat_plus.
-  rewrite mult_assoc.
+  rewrite Nat.mul_assoc.
   rewrite modNat_mult.
-  rewrite plus_0_l.
+  rewrite Nat.add_0_l.
   symmetry.
   rewrite modNat_plus.
   rewrite modNat_mult.
-  rewrite plus_0_l.
+  rewrite Nat.add_0_l.
   rewrite (@modNat_eq _ (modNat b c)).
   trivial.
   eapply modNat_lt.
@@ -127,26 +127,26 @@ Section Pedersen.
     eapply (comp_spec_iso (fun z => modNat (x * z) order) (fun z => modNat (z * multInverseModOrder x) order)).
   
     intuition.
-    rewrite (mult_comm x0).
+    rewrite (Nat.mul_comm x0).
     rewrite <- modNat_mult_eq.
-    rewrite mult_assoc.
-    rewrite mult_comm.
+    rewrite Nat.mul_assoc.
+    rewrite Nat.mul_comm.
     rewrite modNat_mult_eq.
     rewrite  multInverseCorrect.
-    rewrite mult_1_r.
+    rewrite Nat.mul_1_r.
     eapply modNat_eq.
     eapply RndNat_support_lt.
     trivial.
 
     intuition.
-    rewrite mult_comm.
+    rewrite Nat.mul_comm.
     rewrite <- modNat_mult_eq.
-    rewrite mult_assoc.
-    rewrite mult_comm.
+    rewrite Nat.mul_assoc.
+    rewrite Nat.mul_comm.
     rewrite modNat_mult_eq.
-    rewrite (mult_comm _ x).
+    rewrite (Nat.mul_comm _ x).
     rewrite  multInverseCorrect.
-    rewrite mult_1_r.
+    rewrite Nat.mul_1_r.
     eapply modNat_eq.
     eapply RndNat_support_lt.
     trivial.
@@ -343,23 +343,23 @@ Section Pedersen.
         intuition.
         
         unfold modNatAddInverse.
-        rewrite mult_minus_distr_l.
+        rewrite Nat.mul_sub_distr_l.
         rewrite modNat_mult_eq.
         remember (modNat b c) as z.
         eapply (modNat_add_same_r (modNat (a * z) c)).
         rewrite Nat.sub_add.
         rewrite modNat_arg_eq.
-        rewrite plus_comm.
+        rewrite Nat.add_comm.
         rewrite <- modNat_plus.
-        rewrite plus_comm.
+        rewrite Nat.add_comm.
         rewrite Nat.sub_add.
         symmetry.
         apply modNat_mult.
-        eapply mult_le_compat; intuition.
+        eapply Nat.mul_le_mono; intuition.
         subst.
-        eapply lt_le_weak.
+        eapply Nat.lt_le_incl.
         apply modNat_lt.
-        eapply lt_le_weak.
+        eapply Nat.lt_le_incl.
         apply modNat_lt.
       Qed.
 
@@ -369,11 +369,11 @@ Section Pedersen.
           modNat (a * c) d = modNat (b * c) d.
         
         intuition.
-        rewrite mult_comm.
+        rewrite Nat.mul_comm.
         rewrite modNat_mult_eq.
         rewrite H0.
         rewrite <- modNat_mult_eq.
-        rewrite mult_comm.
+        rewrite Nat.mul_comm.
         intuition.
       Qed.
 
@@ -426,45 +426,45 @@ Section Pedersen.
       eapply (modNat_eq_compat_gen order) in H4.
       
       repeat rewrite <- modNat_plus in H4.
-      rewrite <- (plus_comm  (x * n2)) in H4.
-      rewrite <- (plus_assoc _ n1) in H4.
-      rewrite (plus_comm (x * n2)) in H4.
+      rewrite <- (Nat.add_comm  (x * n2)) in H4.
+      rewrite <- (Nat.add_assoc _ n1) in H4.
+      rewrite (Nat.add_comm (x * n2)) in H4.
       symmetry in H4.
       rewrite modNat_plus in H4.
       rewrite modNatAddInverse_correct in H4.
-      rewrite plus_0_l in H4.
+      rewrite Nat.add_0_l in H4.
       symmetry in H4.
-      rewrite (plus_comm) in H4.
-      rewrite plus_assoc in H4.
+      rewrite (Nat.add_comm) in H4.
+      rewrite Nat.add_assoc in H4.
       eapply (plus_add_same_r_if (modNatAddInverse (x * n0) order)) in H4.
       eapply (modNat_eq_compat_gen order) in H4.
       rewrite <- modNat_plus in H4.
-      rewrite <- plus_assoc in H4.
-      rewrite plus_comm in H4.
+      rewrite <- Nat.add_assoc in H4.
+      rewrite Nat.add_comm in H4.
       rewrite modNat_plus in H4.
       rewrite modNatAddInverse_correct in H4.
-      rewrite plus_0_l in H4.
+      rewrite Nat.add_0_l in H4.
       rewrite <- modNat_plus in H4.
       
       symmetry in H4.
-      rewrite (plus_comm (x * n2)) in H4.
+      rewrite (Nat.add_comm (x * n2)) in H4.
       rewrite modNat_plus in H4.
       rewrite modNatAddInverse_mult in H4.
       rewrite <- modNat_plus in H4.
-      rewrite <- mult_plus_distr_l in H4.
+      rewrite <- Nat.mul_add_distr_l in H4.
       
       
       apply (modNat_mult_same_r _ _ (multInverseModOrder (n2 + modNatAddInverse n0 order)))in H4.
-      rewrite <- mult_assoc in H4.
+      rewrite <- Nat.mul_assoc in H4.
       rewrite modNat_mult_eq in H4.
-      rewrite (plus_comm n2) in H4.
+      rewrite (Nat.add_comm n2) in H4.
       rewrite multInverseCorrect in H4.
-      rewrite mult_1_r in H4.
+      rewrite Nat.mul_1_r in H4.
       rewrite modNat_eq in H4.
       rewrite H4.
       clear H4.
-      rewrite (plus_comm (modNatAddInverse n1 order)).
-      rewrite (plus_comm n2).
+      rewrite (Nat.add_comm (modNatAddInverse n1 order)).
+      rewrite (Nat.add_comm n2).
       trivial.
       
       eapply RndNat_support_lt; intuition.

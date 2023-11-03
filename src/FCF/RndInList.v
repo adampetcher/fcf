@@ -25,23 +25,23 @@ Theorem qam_count_gen :
   (* Bind case *)
   repeat simp_in_support.
   destruct x.
-  rewrite mult_plus_distr_r.
+  rewrite Nat.mul_add_distr_r.
   pose proof H4.
   eapply (IHqueries_at_most _ count) in H4.
   eapply (H1 _ _ S count) in H5.
   rewrite H5.
-  rewrite plus_comm.
-  rewrite <- (plus_assoc).
-  rewrite (plus_comm (q2 * n)).
-  rewrite plus_assoc.
-  eapply plus_le_compat.
+  rewrite Nat.add_comm.
+  rewrite <- (Nat.add_assoc).
+  rewrite (Nat.add_comm (q2 * n)).
+  rewrite Nat.add_assoc.
+  eapply Nat.add_le_mono.
   eauto.
-  eapply le_refl.
+  eapply Nat.le_refl.
   intuition.
   intuition.
 
   (* query case *)
-  rewrite plus_0_r.
+  rewrite Nat.add_0_r.
   eapply H; eauto.
 
   (* ret case *)
@@ -62,7 +62,7 @@ Theorem qam_count_gen :
   (s, s0) (q2 * n)
   ).
   
-  eapply le_trans.
+  eapply Nat.le_trans.
   eapply IHqueries_at_most.
   intuition.
   simpl.
@@ -74,16 +74,16 @@ Theorem qam_count_gen :
   eauto.
   eauto.
   simpl.
-  rewrite mult_assoc.
+  rewrite Nat.mul_assoc.
   intuition.
 
   (* trans case *)
-  eapply le_trans.
+  eapply Nat.le_trans.
   eapply IHqueries_at_most.
   eauto.
   eauto.
-  eapply plus_le_compat; intuition.
-  eapply mult_le_compat; intuition.
+  eapply Nat.add_le_mono; intuition.
+  eapply Nat.mul_le_mono; intuition.
 
   Unshelve.
   repeat econstructor.
@@ -214,15 +214,15 @@ Theorem oc_eventProb :
   intuition.
   eapply ratMult_leRat_compat; intuition.
   eapply H2.
-  eapply plus_le_compat; intuition.
+  eapply Nat.add_le_mono; intuition.
 
-  eapply le_trans.
+  eapply Nat.le_trans.
   eapply (qam_count_gen _ _ _ _ _ i).
   intuition.
   eapply H5.
   eauto.
   eauto.
-  rewrite mult_comm.
+  rewrite Nat.mul_comm.
   reflexivity.
 
   rewrite H6.
@@ -240,10 +240,10 @@ Theorem oc_eventProb :
   1, 3: reflexivity.
   intuition.
   eapply H2.
-  rewrite mult_plus_distr_l.
-  rewrite plus_comm.
-  repeat rewrite <- plus_assoc.
-  eapply plus_le_compat; intuition.
+  rewrite Nat.mul_add_distr_l.
+  rewrite Nat.add_comm.
+  repeat rewrite <- Nat.add_assoc.
+  eapply Nat.add_le_mono; intuition.
 
   rewrite H1; intuition.
   rewrite <- ratMult_1_l.
@@ -370,7 +370,7 @@ Theorem oc_eventProb :
   repeat simp_in_support.
   destruct x.
   simpl in *.
-  rewrite mult_comm.
+  rewrite Nat.mul_comm.
   eapply qam_count_gen.
   eapply H0.
   intuition.
@@ -384,10 +384,10 @@ Theorem oc_eventProb :
   rewrite <- ratMult_num_den.
   eapply eqRat_terms; intuition.
   eapply H2.
-  eapply plus_le_compat. 2: reflexivity.
-  rewrite <- mult_assoc.
-  eapply mult_le_compat. reflexivity.
-  rewrite mult_comm.
+  eapply Nat.add_le_mono. 2: reflexivity.
+  rewrite <- Nat.mul_assoc.
+  eapply Nat.mul_le_mono. reflexivity.
+  rewrite Nat.mul_comm.
   reflexivity.
 
   rewrite IHqueries_at_most.
@@ -424,8 +424,8 @@ Theorem oc_eventProb_0_1 :
   eapply oc_eventProb; intuition.
   eauto.
   rewrite H4.
-  rewrite mult_1_l.
-  rewrite plus_0_r.
+  rewrite Nat.mul_1_l.
+  rewrite Nat.add_0_r.
   intuition.
 Qed.
 
@@ -446,7 +446,7 @@ Theorem qam_count :
       count b <= q.
 
   intuition.
-  eapply le_trans.
+  eapply Nat.le_trans.
   eapply qam_count_gen; eauto.
   lia.
 
@@ -889,6 +889,4 @@ Section RndInAdaptive.
     eapply leRat_terms; intuition.
 
   Qed.
-
-
 End RndInAdaptive.
