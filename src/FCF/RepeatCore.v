@@ -314,8 +314,9 @@ Section DistSingle_impl_Mult.
     comp_skip.
     comp_simp.
     comp_skip.
+    epose proof hybrid_replace_c2_equiv as HH.
     comp_skip.
-    eapply hybrid_replace_c2_equiv.
+    eapply HH.
     eapply RndNat_support_lt; intuition.
     
   Qed.
@@ -328,8 +329,9 @@ Section DistSingle_impl_Mult.
     comp_skip.
     comp_simp.
     comp_skip.
+    epose proof hybrid_replace_c1_equiv as HH.
     comp_skip.
-    eapply hybrid_replace_c1_equiv.
+    eapply HH.
     eapply RndNat_support_lt; intuition.
     
   Qed.
