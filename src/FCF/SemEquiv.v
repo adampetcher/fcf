@@ -14,6 +14,7 @@ Require Import FCF.StdNat.
 Require Import FCF.Fold.
 Require Import FCF.Limit.
 Require Import Permutation.
+Require Import ZifyNat.
 
 Local Open Scope rat_scope.
 Local Open Scope list_scope.

@@ -6,6 +6,7 @@ Set Implicit Arguments.
 
 Require Import FCF.FCF.
 Require Import FCF.CompFold.
+Require Import ZifyNat.
 Local Open Scope list_scope.
 
 Fixpoint hasDups (A : Set)(eqd : EqDec A)(ls : list A) :=
@@ -165,7 +166,7 @@ Section DupProb.
         (length ls / 2^eta + (length ls ^ 2) / 2 ^ eta)
           <=
         (S (length ls * 1 + length ls * S (length ls * 1)) / 2 ^ eta)
-              ).
+              ). {
     
     eapply leRat_trans.
     2:{
@@ -183,9 +184,10 @@ Section DupProb.
 
     eapply ratAdd_leRat_compat.
     eapply leRat_terms; lia.
-    eapply leRat_terms; intuition.
-    simpl.
+    eapply leRat_terms; intuition;
+    simpl;
     eapply Nat.mul_le_mono; intuition.
+    }
 
     eapply leRat_trans.
     2:{
