@@ -5,6 +5,7 @@ src/FCF/Array.v
 src/FCF/Asymptotic.v
 src/FCF/Bernoulli.v
 src/FCF/Blist.v
+src/FCF/Bvector.v
 src/FCF/Class.v
 src/FCF/Comp.v
 src/FCF/CompFold.v
