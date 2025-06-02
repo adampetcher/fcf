@@ -5,6 +5,7 @@
 
 Set Implicit Arguments.
 
+From Coq Require Import FinFun.
 Require Import FCF.DistSem.
 Require Import FCF.Fold.
 Require Import Permutation.
@@ -2736,8 +2737,8 @@ Theorem repeat_fission_indep : forall (A B : Set)(eqda : EqDec A)(eqdb : EqDec B
   intuition idtac.
   rewrite Fold.flatten_map_eq.
   apply DetSem.getUnique_NoDup_eq.
-  apply FinFun.Injective_map_NoDup.
-  unfold FinFun.Injective.
+  apply Injective_map_NoDup.
+  unfold Injective.
   intuition idtac.
   pairInv.
   trivial.
