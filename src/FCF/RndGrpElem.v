@@ -81,7 +81,7 @@ Section RndGrpElem.
 
     eapply (evalDist_iso 
               (fun z => (modNat (z + (modNatAddInverse (groupLog g y) order) + (groupLog g x))) order) 
-              (fun z => (modNat (z + (groupLog g y) + (modNatAddInverse (groupLog g x) order)) order))); intuition.
+              (fun z => (modNat (z + (groupLog g y) + (modNatAddInverse (groupLog g x) order)) order))); intuition auto with *.
 
     rewrite <- Nat.add_assoc.
     rewrite <- modNat_plus.
@@ -140,7 +140,7 @@ Section RndGrpElem.
     rewrite <- groupExp_mod.
     rewrite group_cyclic.
     destruct (EqDec_dec GroupElement_EqDec x x).
-    intuition.
+    intuition auto with *.
     congruence.
     apply g_generator.
     apply g_generator.
@@ -151,7 +151,7 @@ Section RndGrpElem.
     apply g_generator.
 
     destruct (EqDec_dec GroupElement_EqDec
-         (groupExp g (x0 + modNatAddInverse (groupLog g y) order + groupLog g x)) x); intuition.
+         (groupExp g (x0 + modNatAddInverse (groupLog g y) order + groupLog g x)) x); intuition auto with *.
     exfalso.
     eapply n.
     rewrite groupExp_plus in e.

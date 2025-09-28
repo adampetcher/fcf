@@ -95,7 +95,7 @@ Qed.
 Theorem getSupport_In_evalDist : forall (A : Set)(c : Comp A)(a : A),
   In a (getSupport c) <-> ~(evalDist c a == 0).
 
-  induction c; simpl in *; intuition.
+  induction c; simpl in *; intuition auto with *.
   subst.
   destruct (e a0 a0).
   eapply rat1_ne_rat0.
@@ -105,7 +105,7 @@ Theorem getSupport_In_evalDist : forall (A : Set)(c : Comp A)(a : A),
   destruct (e a a0); subst.
   intuition.
   right.
-  intuition.
+  intuition auto with *.
 
   apply in_getUnique_if in H0.
   apply in_flatten in H0.
@@ -173,7 +173,7 @@ Theorem getSupport_In_evalDist : forall (A : Set)(c : Comp A)(a : A),
   eapply IHc.
   trivial.
   exfalso.
-  intuition.
+  intuition auto with *.
 
 Qed.
 
@@ -183,7 +183,7 @@ Theorem getSupport_not_In_evalDist_h : forall (A : Set)(c : Comp A)(a : A),
   induction c; intuition; simpl in *.
   intuition.
   destruct (e a a0); subst;
-  intuition.
+  intuition auto with *.
 
   eapply sumList_0.
   intuition.
@@ -216,7 +216,7 @@ Theorem getSupport_not_In_evalDist_h : forall (A : Set)(c : Comp A)(a : A),
   unfold indicator.
   rewrite H0.
   rewrite ratMult_0_l.
-  intuition.  
+  intuition auto with *.
 Qed.
 
 Theorem getSupport_not_In_evalDist : forall (A : Set)(c : Comp A)(a : A),
@@ -257,7 +257,7 @@ Lemma evalDist_sum_bind_eq : forall (A B : Set)(eqdb : eq_dec B)(eqda : eq_dec A
   
   eapply eqRat_trans.
   eapply sumList_factor_constant_l.
-  eapply ratMult_eqRat_compat; intuition.
+  eapply ratMult_eqRat_compat; intuition auto with *.
   
   eapply eqRat_symm.
   eapply sumList_subset; intuition.
@@ -342,7 +342,7 @@ Lemma evalDist_lossless : forall (A : Set)(c : Comp A),
   unfold sumList; simpl in *.
   destruct (pf a a); intuition.
   rewrite <- ratAdd_0_l.
-  intuition.    
+  intuition auto with *.
   
   eapply eqRat_trans.
   apply evalDist_sum_bind_eq.
@@ -386,7 +386,7 @@ Lemma evalDist_lossless : forall (A : Set)(c : Comp A),
   eapply filter_In.
   eapply H1.
   trivial.
-  destruct (filter P (getSupport c)); simpl in *; intuition.
+  destruct (filter P (getSupport c)); simpl in *; intuition auto with *.
 
 Qed.
 
@@ -402,7 +402,7 @@ Lemma sumList_filter_evalDist_le_1 : forall (A : Set)(c : Comp A)(P : A -> bool)
   eapply leRat_trans.
   eapply sumList_filter_le.
   rewrite evalDist_lossless.
-  intuition.
+  intuition auto with *.
   trivial.
   
   rewrite <- evalDist_lossless in H2; eauto.
@@ -493,7 +493,7 @@ Lemma evalDist_sum_le_1 : forall (A : Set)(c : Comp A),
   unfold sumList; simpl in *.
   destruct (e a a); intuition.
   rewrite <- ratAdd_0_l.
-  intuition.    
+  intuition auto with *.
   
   eapply leRat_trans.
   eapply eqRat_impl_leRat.
@@ -546,7 +546,7 @@ Lemma evalDist_sum_le_1 : forall (A : Set)(c : Comp A),
   eapply H.
   trivial.
   trivial.
-  intuition.
+  intuition auto with *.
 
   destruct (filter b (getSupport c)); simpl in *.
   unfold sumList.
@@ -597,7 +597,7 @@ Lemma evalDist_le_1 : forall (A : Set)(c : Comp A) a,
     symmetry.
     eapply ratMult_1_r.
   }
-  intuition.
+  intuition auto with *.
   
   eapply rat0_le_all.
   
@@ -687,10 +687,10 @@ Theorem evalDist_1_0 :
     sumList (a :: b :: nil)%list (evalDist c)).
   repeat rewrite sumList_cons.
   rewrite ratAdd_comm.
-  eapply ratAdd_eqRat_compat; intuition.
+  eapply ratAdd_eqRat_compat; intuition auto with *.
   rewrite ratAdd_0_r at 1.
-  eapply ratAdd_eqRat_compat; intuition.
-  unfold sumList; simpl; intuition.
+  eapply ratAdd_eqRat_compat; intuition auto with *.
+  unfold sumList; simpl; intuition auto with *.
   
   rewrite H2.
   eapply evalDist_le_1_gen; intuition.

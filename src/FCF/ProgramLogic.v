@@ -42,7 +42,7 @@ Theorem sumList_filter_complement :
   rewrite <- (evalDist_lossless H).
   rewrite (sumList_filter_partition (eqb a)).
   rewrite ratAdd_comm.
-  eapply ratAdd_eqRat_compat; intuition.
+  eapply ratAdd_eqRat_compat; intuition auto with *.
   destruct (eq_Rat_dec (evalDist c a) 0).
   rewrite e.
   eapply sumList_0; intuition.
@@ -51,11 +51,11 @@ Theorem sumList_filter_complement :
   rewrite eqb_leibniz in H2; subst.
   trivial.
 
-  rewrite (@sumList_exactly_one _ a); intuition.
+  rewrite (@sumList_exactly_one _ a); intuition auto with *.
   eapply filter_NoDup.
   eapply getSupport_NoDup.
   eapply filter_In; intuition.
-  eapply getSupport_In_evalDist; intuition.
+  eapply getSupport_In_evalDist; intuition auto with *.
   eapply eqb_refl.
   apply filter_In in H0; intuition.
   rewrite eqb_leibniz in H3; subst.
@@ -200,8 +200,8 @@ Theorem list_choice :
   simpl in *.
   intuition.
 
-  edestruct (H a); intuition.
-  edestruct (H0); intuition.
+  edestruct (H a); intuition auto with *.
+  edestruct (H0); intuition auto with *.
   exists (fun a0 => if (eqd a a0) then x else (x0 a0)).
   intuition.
   inversion H3; clear H3; subst.
@@ -271,13 +271,13 @@ Theorem comp_spec_seq :
   dist_compute.
   rewrite H5.
   rewrite ratMult_1_r.
-  eapply ratMult_eqRat_compat; intuition.
+  eapply ratMult_eqRat_compat; intuition auto with *.
   specialize (H2 a).
   intuition idtac.
   rewrite H2.
   
   unfold marginal_l.
-  intuition.
+  intuition auto with *.
 
   eapply getSupport_NoDup.
 
@@ -319,10 +319,10 @@ Theorem comp_spec_seq :
   dist_compute.
   rewrite H5.
   rewrite ratMult_1_r.
-  eapply ratMult_eqRat_compat; intuition.
+  eapply ratMult_eqRat_compat; intuition auto with *.
   specialize (H2 a); intuition idtac.
   rewrite H6.
-  unfold marginal_r; intuition.
+  unfold marginal_r; intuition auto with *.
 
   eapply getSupport_NoDup.
   eapply in_support_marginal_r; eauto.
@@ -625,7 +625,7 @@ Theorem eq_impl_comp_spec :
   dist_simp.
   unfold snd.
   eapply eqRat_refl.
-  intuition.
+  intuition auto with *.
   rewrite (@sumList_exactly_one _ x).
   case_eq (eqb y r2); intuition.
   rewrite eqb_leibniz in H2.
@@ -638,7 +638,7 @@ Theorem eq_impl_comp_spec :
   rewrite H1.
   symmetry.
   rewrite ratAdd_0_r at 1.
-  eapply ratAdd_eqRat_compat; intuition.
+  eapply ratAdd_eqRat_compat; intuition auto with *.
   symmetry.
   eapply sumList_0.
   intuition.
@@ -687,7 +687,7 @@ Theorem eq_impl_comp_spec :
   symmetry.
   rewrite <- ratMult_1_l at 1.
   rewrite <- ratMult_assoc.
-  eapply ratMult_eqRat_compat; intuition.
+  eapply ratMult_eqRat_compat; intuition auto with *.
   symmetry.
   eapply eqRat_trans.
   eapply ratMult_eqRat_compat.
@@ -999,7 +999,7 @@ Theorem le_impl_comp_spec :
     Pr  [ret eqb y r2 ]).
   dist_simp.
   simpl.
-  intuition.
+  intuition auto with *.
   rewrite H5 at 1.
   clear H5.
 
@@ -1020,12 +1020,12 @@ Theorem le_impl_comp_spec :
   eapply ratFraction_le_1.
   eapply ratSubtract_leRat.
   eapply evalDist_le_1.
-  intuition.
+  intuition auto with *.
   
   eapply ratFraction_le_1.
   eapply ratSubtract_leRat.
   eapply evalDist_le_1.
-  intuition.
+  intuition auto with *.
 
   eapply filter_NoDup.
   eapply getSupport_NoDup.
@@ -1049,7 +1049,7 @@ Theorem le_impl_comp_spec :
   eapply ratFraction_le_1.
   eapply ratSubtract_leRat.
   eapply evalDist_le_1.
-  intuition.
+  intuition auto with *.
 
   intuition.
 
@@ -1074,15 +1074,15 @@ Theorem le_impl_comp_spec :
   eapply ratFraction_le_1.
   eapply ratSubtract_leRat.
   eapply evalDist_le_1.
-  intuition.
+  intuition auto with *.
 
   intuition.
   destruct b; intuition.
   apply filter_In in H5; intuition.
   discriminate.
 
-  intuition.
-  intuition.
+  intuition auto with *.
+  intuition auto with *.
 
   rewrite (@sumList_exactly_one _ x).
   rewrite sumList_factor_constant_r.
@@ -1240,7 +1240,7 @@ Theorem le_impl_comp_spec :
   rewrite <- ratMult_assoc.
   symmetry.
   rewrite <- ratMult_1_l at 1.
-  eapply ratMult_eqRat_compat; intuition.
+  eapply ratMult_eqRat_compat; intuition auto with *.
   symmetry.
   rewrite ratMult_comm.
   eapply ratInverse_prod_1.
@@ -1272,7 +1272,7 @@ Theorem le_impl_comp_spec :
   destruct (EqDec_dec bool_EqDec false true ).
   discriminate.
   rewrite ratMult_0_r.
-  intuition.
+  intuition auto with *.
 
   eapply eqRat_trans.
   eapply ratMult_eqRat_compat.
@@ -1464,7 +1464,7 @@ Theorem comp_spec_eq_refl :
     comp_spec eq c c.
 
   intuition.
-  eapply eq_impl_comp_spec_eq; intuition.
+  eapply eq_impl_comp_spec_eq; intuition auto with *.
 
 Qed.
 
@@ -1490,12 +1490,12 @@ Theorem comp_spec_eq_impl_eq :
   destruct (EqDec_dec bool_EqDec (@eqb _ eqd1 a0 x) true); intuition.
   rewrite eqb_leibniz in e.
   subst.
-  destruct (EqDec_dec bool_EqDec (@eqb _ eqd2 x x) true); intuition.
+  destruct (EqDec_dec bool_EqDec (@eqb _ eqd2 x x) true); intuition auto with *.
   exfalso.
   eapply n.
   eapply eqb_refl.
 
-  destruct (EqDec_dec bool_EqDec (@eqb _ eqd2 a0 x) true); intuition.
+  destruct (EqDec_dec bool_EqDec (@eqb _ eqd2 a0 x) true); intuition auto with *.
   rewrite eqb_leibniz in e.
   subst.
   exfalso.
@@ -1596,7 +1596,7 @@ Theorem comp_spec_left_ident :
   eapply eq_impl_comp_spec_eq.
   intuition.
   
-  specialize (@evalDist_left_ident eqRat); intuition.
+  specialize (@evalDist_left_ident eqRat); intuition auto with *.
 Qed.
 
 Theorem comp_spec_assoc : 
@@ -1606,7 +1606,7 @@ Theorem comp_spec_assoc :
   intuition.
   eapply eq_impl_comp_spec_eq.
   intuition.
-  eapply evalDist_assoc; intuition.
+  eapply evalDist_assoc; intuition auto with *.
 Qed.
 
 
@@ -2066,7 +2066,7 @@ Theorem oc_comp_spec_eq_until_bad :
   simpl in *.
 
   case_eq (bad1 b); intuition.
-  eapply comp_spec_irr_l; intuition.
+  eapply comp_spec_irr_l; intuition auto with *.
   eapply oc_comp_wf_inv; eauto.
   eapply H2.
   intuition; simpl.
@@ -2074,7 +2074,7 @@ Theorem oc_comp_spec_eq_until_bad :
   eauto.
   eauto.
   trivial.
-  eapply comp_spec_irr_r; intuition.
+  eapply comp_spec_irr_r; intuition auto with *.
   eapply oc_comp_wf_inv; eauto.
   eapply H3.
   intuition; simpl.
@@ -2248,7 +2248,7 @@ Theorem oc_comp_spec_eq_until_bad :
   2:{
     eapply comp_spec_right_ident.
   }
-  eapply comp_spec_irr_l; intuition.
+  eapply comp_spec_irr_l; intuition auto with *.
   eapply oc_comp_wf_inv; eauto.
   intuition.
   eapply H2; intuition.
@@ -2258,7 +2258,7 @@ Theorem oc_comp_spec_eq_until_bad :
   eauto.
   eauto.
   trivial.
-  eapply comp_spec_irr_r; intuition.
+  eapply comp_spec_irr_r; intuition auto with *.
   eapply oc_comp_wf_inv; eauto.
   intuition.
   eapply H3; intuition.

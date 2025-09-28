@@ -390,7 +390,7 @@ Section hF.
     comp_skip.
     comp_simp.
     simpl.
-    intuition.
+    intuition auto with *.
 
   Qed.
 
@@ -1205,7 +1205,7 @@ Section hF.
     eapply  G2_3_4_eq_until_bad.
     rewrite G2_3_bad_equiv.
     rewrite G2_3_bad_small.
-    intuition.
+    intuition auto with *.
 
   Qed.
 

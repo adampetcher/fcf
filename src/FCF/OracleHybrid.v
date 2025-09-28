@@ -119,7 +119,7 @@ Section OracleHybrid.
     fcf_skip.
     fcf_simp.
     simpl.
-    intuition.
+    intuition auto with *.
   Qed.
 
   Theorem O1_count_wf :
@@ -211,7 +211,7 @@ Section OracleHybrid.
     intuition; simpl in *.   
     fcf_compute.
     destruct (gt_dec b1 q); trivial.
-    destruct (gt_dec (snd (snd b0)) q); intuition; discriminate.
+    destruct (gt_dec (snd (snd b0)) q); intuition auto with *; discriminate.
   
     destruct (gt_dec b1 q).
     lia.
@@ -666,7 +666,7 @@ Section OracleMapHybrid.
     rewrite OMH_G1_equiv.
     rewrite OMH_G2_equiv.
 
-    eapply G1_G2_close; intuition.
+    eapply G1_G2_close; intuition auto with *.
 
     apply OMH_G_oc_wf.
 

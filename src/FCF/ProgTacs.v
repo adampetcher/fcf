@@ -25,7 +25,7 @@ Ltac prog_ret_l :=
   eapply comp_spec_eq_trans_l; [eapply comp_spec_left_ident | idtac].
 
 Ltac prog_ret_r :=
-  eapply comp_spec_eq_trans_r; [idtac | eapply comp_spec_symm; eapply comp_spec_consequence; [eapply comp_spec_left_ident | intuition] ].
+  eapply comp_spec_eq_trans_r; [idtac | eapply comp_spec_symm; eapply comp_spec_consequence; [eapply comp_spec_left_ident | intuition auto with *] ].
 
 Ltac prog_ret s :=
   match s with
@@ -35,11 +35,11 @@ Ltac prog_ret s :=
 
 Ltac prog_irr_l := 
   eapply comp_spec_irr_l; 
-  [ intuition | wftac | intuition].
+  [ intuition auto with * | wftac | intuition auto with *].
   
 Ltac prog_irr_r := 
   eapply comp_spec_irr_r; 
-    [ intuition | wftac | intuition].
+    [ intuition auto with * | wftac | intuition auto with *].
 
 
 Ltac prog_simp_1 := unfold setLet; try prog_ret_l; try prog_ret_r; cbv beta iota; destructLet. (* we only want to destruct identifiers, so we must cbv first*)
@@ -51,13 +51,13 @@ Ltac prog_simp_weak_1 := unfold setLet; try prog_ret_l.
 Ltac prog_simp_weak := repeat prog_simp_weak_1.
 
 Ltac prog_skip :=
-      eapply comp_spec_seq; [eauto with inhabited | eauto with inhabited | (try eapply comp_spec_eq_refl; intuition) | intuition]; intuition; subst; prog_simp_weak; intuition.
+      eapply comp_spec_seq; [eauto with inhabited | eauto with inhabited | (try eapply comp_spec_eq_refl; intuition auto with *) | intuition auto with *]; intuition auto with *; subst; prog_simp_weak; intuition auto with *.
 
 Ltac prog_skip_pred p :=
-      eapply (@comp_spec_seq _ _ p); [eauto with inhabited | eauto with inhabited | (eauto; try eapply comp_spec_eq_refl; intuition) | intuition]; intuition; subst; prog_simp_weak; intuition.
+      eapply (@comp_spec_seq _ _ p); [eauto with inhabited | eauto with inhabited | (eauto; try eapply comp_spec_eq_refl; intuition auto with *) | intuition auto with *]; intuition auto with *; subst; prog_simp_weak; intuition auto with *.
 
 Ltac prog_skip_eq :=
-  eapply comp_spec_seq_eq; [eauto with inhabited | eauto with inhabited | (eauto; try eapply comp_spec_eq_refl; intuition) | intuition]; intuition; subst; prog_simp_weak; intuition.
+  eapply comp_spec_seq_eq; [eauto with inhabited | eauto with inhabited | (eauto; try eapply comp_spec_eq_refl; intuition auto with *) | intuition auto with *]; intuition auto with *; subst; prog_simp_weak; intuition auto with *.
 
 
 Ltac prog_inline_l :=
@@ -65,7 +65,7 @@ Ltac prog_inline_l :=
     | [ |- comp_spec _ (Bind (Bind ?c1 _ ) _) _] =>
       eapply comp_spec_eq_trans_l; 
         [eapply eq_impl_comp_spec_eq; intros ;
-          [eapply (evalDist_assoc c1); intuition ]
+          [eapply (evalDist_assoc c1); intuition auto with * ]
           | idtac]
   end.
 
@@ -76,7 +76,7 @@ Ltac prog_inline_r :=
       eapply comp_spec_eq_trans_r; 
         [idtac |
           eapply eq_impl_comp_spec_eq; intros ;
-            [symmetry;  eapply (evalDist_assoc c1); intuition ]
+            [symmetry;  eapply (evalDist_assoc c1); intuition auto with * ]
         ] 
         end.
 

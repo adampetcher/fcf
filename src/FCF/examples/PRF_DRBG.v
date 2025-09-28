@@ -698,9 +698,9 @@ Section PRF_DRBG.
      simpl.
      destruct ( in_dec (EqDec_dec (Bvector_EqDec eta)) v x).
      simpl.
-     intuition.
+     intuition auto with *.
      rewrite orb_false_l.
-     intuition.
+     intuition auto with *.
 
      rewrite evalDist_orb_le.
 

@@ -42,7 +42,7 @@ Theorem Bernoulli_correct :
   apply filter_In in H0.
   intuition.
   exfalso.
-  destruct (lt_dec a n); intuition.
+  destruct (lt_dec a n); intuition auto with *.
 
   eapply sumList_0.
   intros.
@@ -88,7 +88,7 @@ Theorem Bernoulli_correct_complement :
   eapply eqRat_trans.
   eapply evalDist_complement.
   eapply Bernoulli_wf.
-  eapply ratSubtract_eqRat_compat; intuition.
+  eapply ratSubtract_eqRat_compat; intuition auto with *.
   eapply Bernoulli_correct.
   trivial.
 Qed.

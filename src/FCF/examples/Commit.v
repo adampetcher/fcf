@@ -158,9 +158,9 @@ Section Pedersen.
     intuition.
     eapply eq_impl_comp_spec.
     eapply well_formed_RndNat.
-    intuition.
+    intuition auto with *.
     eapply well_formed_RndNat.
-    intuition.
+    intuition auto with *.
     eapply RndNat_uniform.
     eapply modNat_lt.
     eapply RndNat_support_lt.
@@ -247,7 +247,7 @@ Section Pedersen.
       eapply comp_spec_eq_impl_eq.
       apply group_OTP_exp.
       comp_simp.
-      intuition.
+      intuition auto with *.
 
     Qed.
 
@@ -397,7 +397,7 @@ Section Pedersen.
       simpl.
       rewrite evalDist_ret_0.
       eapply rat0_le_all.
-      intuition.
+      intuition auto with *.
       
       case_eq (eqb g0 (g ^ n * (g ^ x) ^ n0)); intuition.
       simpl.
@@ -408,7 +408,7 @@ Section Pedersen.
       
       case_eq (eqb x
                    (modNat ((n + modNatAddInverse n1 order) *
-                            multInverseModOrder (n2 + modNatAddInverse n0 order)) order)%nat); intuition.
+                            multInverseModOrder (n2 + modNatAddInverse n0 order)) order)%nat); intuition auto with *.
       exfalso.
       eapply eqb_false_iff in H3.
       eapply H3.
@@ -473,12 +473,12 @@ Section Pedersen.
       
       rewrite evalDist_ret_0.
       eapply rat0_le_all.
-      intuition.
+      intuition auto with *.
       
       simpl.
       rewrite evalDist_ret_0.
       eapply rat0_le_all.
-      intuition.
+      intuition auto with *.
     Qed.
     
     (*Print Assumptions PedersenComputionallyBinding.*)

@@ -267,7 +267,7 @@ Lemma sumList_f_inverse : forall (A B : Set)(ls : list A)(f : A -> B)(f_inv : B 
   intuition.
   unfold sumList.
   eapply fold_add_f_inverse;
-  intuition.
+  intuition auto with *.
 Qed.
 
 Theorem distro_iso_eq : forall (A B C D : Set)(f : C -> D)(f_inv : D -> C)(d : Comp D)(c : Comp C)(f1 : D -> Comp B)(f2 : C -> Comp A)(a : A)(b : B),
@@ -368,7 +368,7 @@ Lemma sumList_filter : forall (A : Set)(ls : list A)(f : A -> Rat)(P : A -> bool
   fold_left (fun r a => r + if (P a) then (f a) else 0) ls init  ==
   fold_left (fun r a => r + (f a)) (filter P ls) init.
 
-  induction ls; simpl in *; intuition.
+  induction ls; simpl in *; intuition auto with *.
 
   destruct (P a); simpl.
   eapply IHls.
@@ -377,7 +377,7 @@ Lemma sumList_filter : forall (A : Set)(ls : list A)(f : A -> Rat)(P : A -> bool
   symmetry.
   eapply ratAdd_0_r.
   
-  intuition.
+  intuition auto with *.
 Qed.
 
 
@@ -391,7 +391,7 @@ Theorem evalDist_left_ident_eq : forall (B : Set)(eqd : EqDec B)(b : B)(A : Set)
   destruct (EqDec_dec eqd b b).
   rewrite <- ratAdd_0_l.
   rewrite ratMult_1_l.
-  intuition.
+  intuition auto with *.
   congruence.
 
 Qed.
@@ -495,7 +495,7 @@ Theorem evalDist_commute_eq : forall (A B : Set)(c1 : Comp A)(c2 : Comp B)(C : S
   eapply sumList_body_eq.
   intuition.
   repeat rewrite <- ratMult_assoc.
-  eapply ratMult_eqRat_compat; intuition.
+  eapply ratMult_eqRat_compat; intuition auto with *.
   eapply ratMult_comm.
 Qed.
 
@@ -512,7 +512,7 @@ Lemma evalDist_Repeat_eq : forall (A : Set)(c1 c2 : Comp A)(P1 P2 : A -> bool) v
   eapply ratMult_eqRat_compat.
   unfold indicator.
   rewrite H0.
-  intuition.
+  intuition auto with *.
   eapply ratInverse_eqRat_compat.
   intuition.
   eapply getSupport_In_evalDist.
@@ -603,7 +603,7 @@ Theorem fundamental_lemma_h : forall (A : Set)(eqda : EqDec A)(c1 c2 : Comp (A *
   eapply sumList_le; intuition.
   apply filter_In in H1.
   intuition.
-  eapply ratMult_leRat_compat; intuition.
+  eapply ratMult_leRat_compat; intuition auto with *.
   destruct a0.
   simpl in *.
   subst.
@@ -623,7 +623,7 @@ Theorem fundamental_lemma_h : forall (A : Set)(eqda : EqDec A)(c1 c2 : Comp (A *
   eapply sumList_le; intuition.
   apply filter_In in H1.
   intuition.
-  eapply ratMult_leRat_compat; intuition.
+  eapply ratMult_leRat_compat; intuition auto with *.
   destruct a0.
   simpl in *.
   subst.
@@ -722,7 +722,7 @@ Theorem fundamental_lemma_h : forall (A : Set)(eqda : EqDec A)(c1 c2 : Comp (A *
   destruct a0; simpl in *.
   destruct b; simpl in *; try discriminate.
   rewrite H0.
-  intuition.
+  intuition auto with *.
 Qed.
 
 Theorem evalDist_right_ident : forall (A : Set)(eqd : EqDec A)(c : Comp A) a,
@@ -786,12 +786,12 @@ Theorem fundamental_lemma : forall (A B : Set)(eqda : EqDec A)(eqdb : EqDec B)(c
   eapply eqRat_refl.
   cbv beta.
   unfold fst.
-  intuition.
+  intuition auto with *.
 
   eapply eqRat_trans.
   eapply evalDist_assoc_eq.
   cbv beta.
-  eapply evalDist_seq_eq; intuition.
+  eapply evalDist_seq_eq; intuition auto with *.
   eapply evalDist_left_ident_eq.
 
   rewrite <- H2.
@@ -809,7 +809,7 @@ Theorem fundamental_lemma : forall (A B : Set)(eqda : EqDec A)(eqdb : EqDec B)(c
   eapply eqRat_refl.
   cbv beta.
   unfold snd.
-  intuition.
+  intuition auto with *.
   eapply eqRat_trans.
   eapply evalDist_assoc_eq.
   eapply eqRat_trans.
@@ -832,8 +832,8 @@ Theorem fundamental_lemma : forall (A B : Set)(eqda : EqDec A)(eqdb : EqDec B)(c
   cbv beta.
 
   simpl.
-  intuition.
-  intuition.
+  intuition auto with *.
+  intuition auto with *.
 Qed.
 
 
@@ -970,26 +970,26 @@ Lemma evalDist_seq_case_split_eq : forall (B : Set)(e : B -> bool) v v1 v2 (A : 
   
   rewrite (sumList_body_eq _ _ (fun b => ((evalDist c b) * (if (e b) then 1 else 0)) * v1)).
   rewrite sumList_factor_constant_r.
-  eapply ratMult_eqRat_compat; intuition.
+  eapply ratMult_eqRat_compat; intuition auto with *.
   rewrite <- H0.
   eapply sumList_body_eq; intuition.
   destruct (EqDec_dec bool_EqDec (e a0) true).
   rewrite e0.
-  intuition.
+  intuition auto with *.
   destruct (e a0); try congruence.
-  intuition.
+  intuition auto with *.
   
   intuition.
   case_eq (e a0); intuition.
   repeat rewrite ratMult_1_r.
-  eapply ratMult_eqRat_compat; intuition.
+  eapply ratMult_eqRat_compat; intuition auto with *.
   repeat rewrite ratMult_0_r.
   rewrite ratMult_0_l.
-  intuition.
+  intuition auto with *.
   
   rewrite (sumList_body_eq _ _ (fun b => ((evalDist c b) * (if (e b) then 0 else 1)) * v2)).
   rewrite sumList_factor_constant_r.
-  eapply ratMult_eqRat_compat; intuition.
+  eapply ratMult_eqRat_compat; intuition auto with *.
   rewrite <- H0.
   
   rewrite <- (@evalDist_lossless _ c).
@@ -998,30 +998,30 @@ Lemma evalDist_seq_case_split_eq : forall (B : Set)(e : B -> bool) v v1 v2 (A : 
   rewrite ratSubtract_ratAdd_assoc.
   rewrite ratSubtract_0.
   rewrite <- ratAdd_0_r.
-  intuition.
+  intuition auto with *.
   eapply eqRat_impl_leRat.
   eapply sumList_body_eq; intuition.
   destruct (EqDec_dec bool_EqDec (e a0) true).
   rewrite e0.
-  intuition.
+  intuition auto with *.
   destruct (e a0); try congruence.
-  intuition.
+  intuition auto with *.
   eapply eqRat_impl_leRat.
   eapply sumList_body_eq; intuition.
   destruct (EqDec_dec bool_EqDec (e a0) true).
   rewrite e0.
-  intuition.
+  intuition auto with *.
   destruct (e a0); try congruence.
-  intuition.
+  intuition auto with *.
   trivial.
   
   intuition.
   case_eq (e a0); intuition.
   repeat rewrite ratMult_0_r.
   rewrite ratMult_0_l.
-  intuition.
+  intuition auto with *.
   repeat rewrite ratMult_1_r.
-  eapply ratMult_eqRat_compat; intuition.
+  eapply ratMult_eqRat_compat; intuition auto with *.
 Qed.
 
 
@@ -1070,7 +1070,7 @@ Theorem evalDist_bind_distance : forall (A B : Set)(c1 c2 : Comp B)(c3 c4 : B ->
   rewrite sumList_factor_constant_r.
   rewrite evalDist_lossless.
   rewrite ratMult_1_l.
-  intuition.
+  intuition auto with *.
   trivial.
   
 Qed.
@@ -1091,7 +1091,7 @@ Lemma evalDist_Bind_1_le_l : forall (A B : Set) (b : Comp B) (a : B -> Comp A) (
   rewrite sumList_factor_constant_r.
   rewrite evalDist_lossless.
   rewrite ratMult_1_l.
-  intuition.
+  intuition auto with *.
   trivial.
 Qed.
 
@@ -1127,7 +1127,7 @@ Lemma evalDist_ret_eq :
   intuition.
   simpl.
   subst.
-  destruct (eqd1 a2 x); destruct (eqd2 a2 x); subst; intuition.
+  destruct (eqd1 a2 x); destruct (eqd2 a2 x); subst; intuition auto with *.
 Qed.
 
 Theorem evalDist_seq_step : 
@@ -1137,7 +1137,7 @@ Theorem evalDist_seq_step :
   
   intuition.
   simpl.
-  eapply sumList_body_eq; intuition.
+  eapply sumList_body_eq; intuition auto with *.
 
 Qed.
 
@@ -1167,7 +1167,7 @@ Theorem evalDist_1 :
   rewrite eqb_refl in H2.
   discriminate.
   rewrite H3.
-  destruct ( EqDec_dec eqd a a0); subst; intuition.
+  destruct ( EqDec_dec eqd a a0); subst; intuition auto with *.
   rewrite eqb_refl in H2.
   discriminate.
   
@@ -1193,7 +1193,7 @@ Theorem evalDist_bool_equiv_all :
   
   rewrite evalDist_complement.
   rewrite evalDist_complement.
-  eapply ratSubtract_eqRat_compat; intuition.
+  eapply ratSubtract_eqRat_compat; intuition auto with *.
   trivial.
   trivial.
 Qed.
@@ -1226,7 +1226,7 @@ Qed.
     RatRel (Basics.flip R).
 
 intuition.
-econstructor; intuition.
+econstructor; intuition auto with *.
 unfold Basics.flip.
 eapply refl.
 eapply eqRat_symm.
@@ -1260,7 +1260,7 @@ Qed.
   RatRel (fun r r1 : Rat => r1 == r).
 
 eapply RatRel_flip.
-intuition.
+intuition auto with *.
 
 Qed.
 
@@ -1308,7 +1308,7 @@ Lemma rel_sumList_compat :
   induction ls; intuition; simpl in *.
   unfold sumList; simpl.
   eapply refl.
-  intuition.
+  intuition auto with *.
   
   eapply trans.
   eapply refl.
@@ -1335,7 +1335,7 @@ Lemma rel_seq :
   eapply rel_sumList_compat; intuition.
   eapply mult_proper.
   eapply refl.
-  intuition.
+  intuition auto with *.
   intuition.
 Qed.
 
@@ -1366,7 +1366,7 @@ Lemma evalDist_bind_case_split :
   eauto.
   eapply refl.
   rewrite sumList_factor_constant_r.
-  eapply ratMult_eqRat_compat; intuition.
+  eapply ratMult_eqRat_compat; intuition auto with *.
   
   rewrite (sumList_filter_partition e) in H1.
   rewrite <- H1.
@@ -1375,8 +1375,8 @@ Lemma evalDist_bind_case_split :
   eapply sumList_body_eq; intuition.
   rewrite <- ratMult_1_r at 1.
   eapply ratMult_eqRat_compat.
-  intuition.
-  destruct ( EqDec_dec bool_EqDec (e a0) true); intuition.
+  intuition auto with *.
+  destruct ( EqDec_dec bool_EqDec (e a0) true); intuition auto with *.
   exfalso.
   eapply n.
   eapply filter_In.
@@ -1403,7 +1403,7 @@ Lemma evalDist_bind_case_split :
   destruct (e a0); intuition.
   eapply refl.
   rewrite sumList_factor_constant_r.
-  eapply ratMult_eqRat_compat; intuition.
+  eapply ratMult_eqRat_compat; intuition auto with *.
   
   rewrite <- H1.
   rewrite <- (@evalDist_lossless _ c); trivial.
@@ -1433,14 +1433,14 @@ Lemma evalDist_bind_case_split :
   eapply sumList_le; intuition.
   destruct (EqDec_dec bool_EqDec (e a0) true).
   rewrite e0.
-  intuition.
-  destruct (e a0); intuition.
+  intuition auto with *.
+  destruct (e a0); intuition auto with *.
 
   eapply sumList_le; intuition.
   destruct ( EqDec_dec bool_EqDec (e a0) true).
   destruct (e a0); try discriminate.
-  intuition.
-  destruct (e a0); intuition.
+  intuition auto with *.
+  destruct (e a0); intuition auto with *.
 Qed.
 
 Lemma rel_sumList_factor_r : 
@@ -1469,7 +1469,7 @@ Lemma rel_sumList_factor_r :
   }
   eapply add_proper.
   eapply refl.
-  intuition.
+  intuition auto with *.
   eapply IHls; intuition.
 Qed. 
 
@@ -1528,7 +1528,7 @@ Lemma rel_sumList_factor_r_r :
   simpl.
   eapply add_proper.
   eapply refl.
-  intuition.
+  intuition auto with *.
   eapply IHls; intuition.
 Qed. 
 
@@ -1717,7 +1717,7 @@ Theorem distro_irr_le
   eapply evalDist_sum_le_1.
   eapply leRat_refl.
   rewrite ratMult_1_l.
-  intuition.
+  intuition auto with *.
 Qed.
 
 Theorem oc_comp_wf : 
@@ -1772,8 +1772,8 @@ Theorem repeat_fission :
   case_eq (P a0); intuition.
   repeat rewrite ratMult_1_l.
   rewrite <- ratMult_assoc.
-  eapply ratMult_eqRat_compat; intuition.
-  eapply ratMult_eqRat_compat; intuition.
+  eapply ratMult_eqRat_compat; intuition auto with *.
+  eapply ratMult_eqRat_compat; intuition auto with *.
   eapply ratInverse_eqRat_compat.
   eapply sumList_nz.
   econstructor; intuition.
@@ -1808,7 +1808,7 @@ Theorem repeat_fission :
 
   rewrite flatten_map_eq.
   rewrite DetSem.getUnique_NoDup_eq.
-  intuition.
+  intuition auto with *.
 
   eapply map_NoDup; intuition.
   assert (snd (a1, a2) = a2).
@@ -1907,13 +1907,13 @@ Theorem repeat_fission :
   eapply getSupport_NoDup.
   destruct (EqDec_dec (pair_EqDec eqda eqdb) (a1, b0) (a1, a2)).
   pairInv.
-  intuition.
+  intuition auto with *.
   eapply ratMult_0_r.
   
   rewrite sumList_factor_constant_l.
   symmetry.
   rewrite <- ratMult_1_r at 1.
-  eapply ratMult_eqRat_compat; intuition.
+  eapply ratMult_eqRat_compat; intuition auto with *.
   symmetry.
   eapply eqRat_trans.
   eapply sumList_body_eq; intuition.
@@ -1937,7 +1937,7 @@ Theorem repeat_fission :
   congruence.
   eapply ratMult_0_r.
   repeat rewrite ratMult_0_r.
-  intuition.
+  intuition auto with *.
   eapply filter_NoDup.
   eapply getSupport_NoDup.
   eapply getSupport_NoDup.
@@ -1952,17 +1952,17 @@ Theorem repeat_fission :
   eapply H4.
   eapply filter_In; intuition.
   repeat rewrite ratMult_0_l.
-  intuition.
+  intuition auto with *.
 
   destruct H0.
-  eapply evalDist_irr_l; intuition.
+  eapply evalDist_irr_l; intuition auto with *.
   eapply well_formed_Repeat.
   unfold eq_dec; intuition.
   eapply (EqDec_dec _).
   trivial.
   eauto.
 
-  eapply evalDist_irr_l; intuition.
+  eapply evalDist_irr_l; intuition auto with *.
   simpl in *.
   apply filter_In in H3.
   intuition.
@@ -1978,7 +1978,7 @@ Theorem repeat_fission :
   simpl.
   rewrite H2.
   repeat rewrite ratMult_0_l.
-  intuition.
+  intuition auto with *.
 Qed.
 
 Lemma evalDistRepeat_sup_0 : 
@@ -1990,7 +1990,7 @@ Lemma evalDistRepeat_sup_0 :
   simpl.
   rewrite H.
   rewrite ratMult_0_r.
-  intuition.
+  intuition auto with *.
   
 Qed.
 
@@ -2004,7 +2004,7 @@ Lemma evalDistRepeat_pred_0 :
   unfold indicator.
   rewrite H.
   repeat rewrite ratMult_0_l.
-  intuition.
+  intuition auto with *.
   
 Qed.
 
@@ -2034,7 +2034,7 @@ Theorem repeat_snd_equiv :
   destruct (EqDec_dec eqd (snd a) x).
   rewrite ratMult_1_l.
   repeat rewrite ratMult_1_r.
-  eapply ratMult_eqRat_compat; intuition.
+  eapply ratMult_eqRat_compat; intuition auto with *.
   
   rewrite flatten_map_eq.
   eapply ratInverse_eqRat_compat.
@@ -2058,12 +2058,12 @@ Theorem repeat_snd_equiv :
   apply filter_In in H0; intuition.
   rewrite sumList_factor_constant_l.
   rewrite <- ratMult_1_r at 1.
-  eapply ratMult_eqRat_compat; intuition.
+  eapply ratMult_eqRat_compat; intuition auto with *.
   symmetry.
   destruct a0.
   simpl in *.
   rewrite (@sumList_exactly_one _ b).
-  destruct (EqDec_dec eqd b b); intuition.
+  destruct (EqDec_dec eqd b b); intuition auto with *.
   eapply filter_NoDup.
   eapply getUnique_NoDup.
   eapply filter_In; intuition.
@@ -2074,7 +2074,7 @@ Theorem repeat_snd_equiv :
   trivial.
 
   intuition.
-  destruct (EqDec_dec eqd b b0); subst; intuition.
+  destruct (EqDec_dec eqd b b0); subst; intuition auto with *.
 
   symmetry.
   eapply sumList_0.
@@ -2089,7 +2089,7 @@ Theorem repeat_snd_equiv :
   eapply ratMult_0_r.
   
   repeat rewrite ratMult_0_r.
-  intuition.
+  intuition auto with *.
   
   symmetry.
   eapply sumList_0; intuition.
@@ -2098,7 +2098,7 @@ Theorem repeat_snd_equiv :
   destruct (P (snd a)); simpl in *; discriminate.
   
   repeat rewrite ratMult_0_r.
-  intuition.
+  intuition auto with *.
   
   unfold indicator.
   rewrite H.
@@ -2112,7 +2112,7 @@ Theorem repeat_snd_equiv :
   simpl in *.
   destruct (EqDec_dec eqd b x); subst; try congruence.
   rewrite ratMult_0_r.
-  intuition.
+  intuition auto with *.
   
 Qed.
 
@@ -2142,7 +2142,7 @@ Theorem repeat_fst_equiv :
   destruct (EqDec_dec eqd (fst a) x).
   rewrite ratMult_1_l.
   repeat rewrite ratMult_1_r.
-  eapply ratMult_eqRat_compat; intuition.
+  eapply ratMult_eqRat_compat; intuition auto with *.
   
   rewrite flatten_map_eq.
   eapply ratInverse_eqRat_compat.
@@ -2166,12 +2166,12 @@ Theorem repeat_fst_equiv :
   apply filter_In in H0; intuition.
   rewrite sumList_factor_constant_l.
   rewrite <- ratMult_1_r at 1.
-  eapply ratMult_eqRat_compat; intuition.
+  eapply ratMult_eqRat_compat; intuition auto with *.
   symmetry.
   destruct a0.
   simpl in *.
   rewrite (@sumList_exactly_one _ a0).
-  destruct (EqDec_dec eqd a0 a0); intuition.
+  destruct (EqDec_dec eqd a0 a0); intuition auto with *.
   eapply filter_NoDup.
   eapply getUnique_NoDup.
   eapply filter_In; intuition.
@@ -2182,7 +2182,7 @@ Theorem repeat_fst_equiv :
   trivial.
   
   intuition.
-  destruct (EqDec_dec eqd a0 b0); subst; intuition.
+  destruct (EqDec_dec eqd a0 b0); subst; intuition auto with *.
   
   symmetry.
   eapply sumList_0.
@@ -2197,7 +2197,7 @@ Theorem repeat_fst_equiv :
   eapply ratMult_0_r.
   
   repeat rewrite ratMult_0_r.
-  intuition.
+  intuition auto with *.
 
   symmetry.
   eapply sumList_0; intuition.
@@ -2206,7 +2206,7 @@ Theorem repeat_fst_equiv :
   destruct (P (fst a)); simpl in *; discriminate.
   
   repeat rewrite ratMult_0_r.
-  intuition.
+  intuition auto with *.
   
   unfold indicator.
   rewrite H.
@@ -2220,7 +2220,7 @@ Theorem repeat_fst_equiv :
   simpl in *.
   destruct (EqDec_dec eqd a x); subst; try congruence.
   rewrite ratMult_0_r.
-  intuition.
+  intuition auto with *.
   
 Qed.
 
@@ -2240,16 +2240,16 @@ Theorem repeat_fission' :
           evalDist (z <-$ (a <-$ Repeat c P1; b <-$ f a; ret (a, b)); ret (snd z)) x).
 
   rewrite evalDist_assoc.
-  eapply evalDist_seq_eq; intuition.
+  eapply evalDist_seq_eq; intuition auto with *.
   rewrite evalDist_assoc.
   rewrite <- evalDist_right_ident.
-  eapply evalDist_seq_eq; intuition.
+  eapply evalDist_seq_eq; intuition auto with *.
   rewrite evalDist_left_ident.
   simpl.
   reflexivity.
-  intuition.
-  intuition.
-  intuition.
+  intuition auto with *.
+  intuition auto with *.
+  intuition auto with *.
 
   rewrite H3.
   clear H3.
@@ -2257,7 +2257,7 @@ Theorem repeat_fission' :
   assert (evalDist (z <-$ (a <-$ Repeat c P1; b <-$ f a; ret (a, b)); ret snd z) x ==
           evalDist (z <-$ (Repeat (a <-$ c; b <-$ f a; ret (a, b)) (fun p => P1 (fst p))); ret snd z) x).
 
-  eapply evalDist_seq_eq; intuition.
+  eapply evalDist_seq_eq; intuition auto with *.
   eapply repeat_fission; intuition.
   rewrite H3.
   clear H3.
@@ -2271,12 +2271,12 @@ Theorem repeat_fission' :
       Repeat (a <-$ c; b <-$ f a; ret (a, b)) (fun p : A * B => P2 (snd p));
       ret snd z) x).
   
-  eapply evalDist_seq_eq; intuition.
+  eapply evalDist_seq_eq; intuition auto with *.
   destruct (in_dec (EqDec_dec _ ) a (getSupport c)).
   destruct (in_dec (EqDec_dec _) b (getSupport (f a))).
   case_eq (P1 a); intuition.
 
-  eapply evalDist_Repeat_eq; intuition.
+  eapply evalDist_Repeat_eq; intuition auto with *.
   eapply filter_In; intuition.
   eapply getSupport_In_Seq; eauto.
   eapply getSupport_In_Seq; eauto.
@@ -2314,13 +2314,13 @@ Theorem repeat_fission' :
   assert (P2 b = false).
   erewrite <- H2; eauto.
 
-  repeat rewrite evalDistRepeat_pred_0; intuition.
+  repeat rewrite evalDistRepeat_pred_0; intuition auto with *.
 
-  repeat rewrite evalDistRepeat_sup_0; intuition;
+  repeat rewrite evalDistRepeat_sup_0; intuition auto with *;
   eapply getSupport_not_In_evalDist; intuition;
   repeat simp_in_support; intuition.
 
-  repeat rewrite evalDistRepeat_sup_0; intuition;
+  repeat rewrite evalDistRepeat_sup_0; intuition auto with *;
   eapply getSupport_not_In_evalDist; intuition;
   repeat simp_in_support; intuition.
 
@@ -2334,13 +2334,13 @@ Theorem repeat_fission' :
              evalDist (p <-$ (a0 <-$ c; b <-$ f a0; ret (a0, b)); ret snd p) a ==
    evalDist (a0 <-$ c; f a0) a).
   intuition.
-  rewrite evalDist_assoc; intuition.
-  eapply evalDist_seq_eq; intuition.
-  rewrite evalDist_assoc; intuition.
+  rewrite evalDist_assoc; intuition auto with *.
+  eapply evalDist_seq_eq; intuition auto with *.
+  rewrite evalDist_assoc; intuition auto with *.
   symmetry.
   rewrite <- evalDist_right_ident.
-  eapply evalDist_seq_eq; intuition.
-  rewrite evalDist_left_ident; intuition.
+  eapply evalDist_seq_eq; intuition auto with *.
+  rewrite evalDist_left_ident; intuition auto with *.
   simpl.
   reflexivity.
 
@@ -2366,13 +2366,13 @@ Theorem repeat_fission' :
 
   eapply sumList_body_eq; intuition.
   
-  repeat rewrite evalDistRepeat_sup_0; intuition;
+  repeat rewrite evalDistRepeat_sup_0; intuition auto with *;
   eapply getSupport_not_In_evalDist; intuition;
   repeat simp_in_support; intuition.
   eapply n.
   eapply getSupport_In_Seq; eauto.
 
-  repeat rewrite evalDistRepeat_pred_0; intuition.
+  repeat rewrite evalDistRepeat_pred_0; intuition auto with *.
 Qed.
 
 Theorem prob_or_le_sum : 
@@ -2398,7 +2398,7 @@ Theorem prob_or_le_sum :
   destruct a; simpl.
   destruct (EqDec_dec bool_EqDec true true).
   rewrite ratMult_1_r.
-  eapply ratMult_leRat_compat; intuition.
+  eapply ratMult_leRat_compat; intuition auto with *.
   eapply leRat_trans.
   eapply sumList_le.
   intros.
@@ -2447,7 +2447,7 @@ Theorem prob_or_le_sum :
   intuition.
   rewrite sumList_factor_constant_l.
   eapply ratMult_leRat_compat.
-  intuition.
+  intuition auto with *.
   eapply leRat_trans.
   eapply sumList_le.
   intros.
@@ -2472,7 +2472,7 @@ Theorem prob_or_le_sum :
   intuition.
   destruct a; simpl.
   repeat rewrite ratMult_0_r.
-  intuition.
+  intuition auto with *.
   destruct (EqDec_dec bool_EqDec false true ); try discriminate.
   repeat rewrite ratMult_0_r.
   eapply ratMult_0_l.
@@ -2493,7 +2493,7 @@ Theorem evalDist_orb_le :
   eapply sumList_le.
   intuition.
   rewrite ratMult_assoc.
-  eapply ratMult_leRat_compat; intuition.
+  eapply ratMult_leRat_compat; intuition auto with *.
   destruct (f1 a); simpl.
   rewrite ratMult_1_r.
   reflexivity.
@@ -2503,7 +2503,7 @@ Theorem evalDist_orb_le :
   eapply sumList_le.
   intuition.
   rewrite ratMult_assoc.
-  eapply ratMult_leRat_compat; intuition.
+  eapply ratMult_leRat_compat; intuition auto with *.
   destruct (f1 a); simpl.
   rewrite ratMult_0_r.
   eapply rat0_le_all.

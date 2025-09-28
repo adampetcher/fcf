@@ -40,7 +40,7 @@ Theorem hasDups_true_not_NoDup :
   forall (A : Set)(eqd : EqDec A)(ls : list A),
     hasDups eqd ls = true <-> (~ NoDup ls).
 
-  induction ls; intuition; simpl in *.
+  induction ls; intuition auto with *; simpl in *.
   exfalso.
   eapply H.
   econstructor.
@@ -129,7 +129,7 @@ Section DupProb.
     simpl.
     rewrite evalDist_ret_0.
     eapply rat0_le_all.
-    intuition.
+    intuition auto with *.
 
     assert (
         Pr 
@@ -184,7 +184,7 @@ Section DupProb.
 
     eapply ratAdd_leRat_compat.
     eapply leRat_terms; lia.
-    eapply leRat_terms; intuition;
+    eapply leRat_terms; intuition auto with *;
     simpl;
     eapply Nat.mul_le_mono; intuition.
     }

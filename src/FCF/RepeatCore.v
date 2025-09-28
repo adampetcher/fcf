@@ -93,7 +93,7 @@ Section DistSingle_impl_Mult.
     inline_first.
     comp_skip.
     simpl.
-    intuition.
+    intuition auto with *.
 
     unfold computeHybrid.
     unfold minus.
@@ -135,7 +135,7 @@ Section DistSingle_impl_Mult.
     comp_skip.
     comp_simp.
     simpl.
-    intuition.
+    intuition auto with *.
     rewrite H1.
     clear H1.
     eapply eqRat_trans.
@@ -152,7 +152,7 @@ Section DistSingle_impl_Mult.
     comp_skip.
     comp_simp.
     simpl.
-    intuition.
+    intuition auto with *.
 
   Qed.
 
@@ -183,7 +183,7 @@ Section DistSingle_impl_Mult.
     comp_skip.
     comp_simp.
     simpl.
-    intuition.
+    intuition auto with *.
    
     unfold computeHybrid.
     unfold minus.
@@ -216,7 +216,7 @@ Section DistSingle_impl_Mult.
     comp_skip.
     comp_simp.
     rewrite app_comm_cons.
-    intuition.
+    intuition auto with *.
     rewrite H1.
     clear H1.
     eapply eqRat_trans.
@@ -236,7 +236,7 @@ Section DistSingle_impl_Mult.
     comp_skip.
     comp_simp.
     simpl.
-    intuition.
+    intuition auto with *.
   Qed.
 
   Definition B1 : Comp (A * (A * A_State)) :=
@@ -260,7 +260,7 @@ Section DistSingle_impl_Mult.
       (| Pr[DistSingle_G1 c1] - Pr[DistSingle_G1 c2] |).
 
     unfold DistSingle_Adv, DistSingle_G1, DistSingle_G.
-    intuition.
+    intuition auto with *.
 
   Qed.
 
@@ -290,7 +290,7 @@ Section DistSingle_impl_Mult.
     comp_inline_r.
     comp_skip.
     comp_simp.
-    intuition.
+    intuition auto with *.
 
   Qed.
 
@@ -354,7 +354,7 @@ Section DistSingle_impl_Mult.
     comp_skip.
     comp_simp.
     simpl.
-    intuition.
+    intuition auto with *.
   Qed.
   
   Theorem compMap_computeHybrid_n_equiv : 
@@ -373,7 +373,7 @@ Section DistSingle_impl_Mult.
     unfold compMap.
     comp_simp.
     rewrite app_nil_r.
-    intuition.
+    intuition auto with *.
   Qed.
 
   Theorem DistSingle_impl_Mult : 
@@ -419,12 +419,12 @@ Section DistSingle_impl_Mult.
     eapply eqRat_impl_leRat.
     eapply ratDistance_eqRat_compat.
 
-    eapply evalDist_seq; intuition.
+    eapply evalDist_seq; intuition auto with *.
     comp_simp.
 
     eapply compMap_computeHybrid_0_equiv.
 
-    eapply evalDist_seq; intuition.
+    eapply evalDist_seq; intuition auto with *.
     comp_simp.
     eapply compMap_computeHybrid_n_equiv.
 
@@ -547,7 +547,7 @@ Section DistMult_impl_RepeatCore.
      intuition.
      unfold DM_RC_G2, DM_RC_G3.
 
-     eapply evalDist_bind_distance; intuition.
+     eapply evalDist_bind_distance; intuition auto with *.
 
      rewrite ratDistance_comm.
      eapply leRat_trans.
@@ -585,7 +585,7 @@ Section DistMult_impl_RepeatCore.
      inline_first.
      comp_irr_l.
      simpl.
-     intuition.
+     intuition auto with *.
   Qed.
 
   Definition DM_RC_G4(c : A -> Comp B) :=
@@ -603,10 +603,10 @@ Section DistMult_impl_RepeatCore.
      comp_skip.
      symmetry.
      comp_simp.
-     rewrite <- evalDist_assoc; intuition.
+     rewrite <- evalDist_assoc; intuition auto with *.
      comp_skip.
      eapply comp_spec_eq_impl_eq.
-     eapply (@compMap_fission_eq _ _ _ _ _ _ _ _ _ _ _ _ eq); intuition.
+     eapply (@compMap_fission_eq _ _ _ _ _ _ _ _ _ _ _ _ eq); intuition auto with *.
      simpl.
      eapply comp_spec_eq_refl.
 
@@ -620,7 +620,7 @@ Section DistMult_impl_RepeatCore.
      comp_skip.
      comp_skip.
      comp_simp.
-     intuition.
+     intuition auto with *.
    Qed.
    
    Definition DM_RC_G5(c : A -> Comp B) :=
@@ -683,7 +683,7 @@ Section DistMult_impl_RepeatCore.
      intuition.     
 
      Unshelve.
-     intuition.
+     intuition auto with *.
 
    Qed.
 
@@ -742,7 +742,7 @@ Section DistMult_impl_RepeatCore.
     rewrite ratAdd_comm.
     rewrite <- ratAdd_assoc.
     rewrite ratDistance_comm.
-    intuition.
+    intuition auto with *.
 
     intuition.
     intuition.
@@ -797,13 +797,13 @@ Section TrueSingle_impl_Mult.
       eapply ratMult_assoc.
     }
     eapply ratMult_leRat_compat.
-    intuition.
+    intuition auto with *.
 
     specialize (@compMap_Q_eq_compFold _ _ Q n (c a) false); intuition.
     rewrite H0.
     rewrite prob_sum_le_mult.
     rewrite ratMult_comm.
-    eapply ratMult_leRat_compat; intuition.
+    eapply ratMult_leRat_compat; intuition auto with *.
 
     Local Transparent evalDist.
     simpl.
@@ -876,7 +876,7 @@ Section TrueMult_impl_Repeat.
      clear H0.
      inline_first.
      comp_skip.
-     case_eq (hd_error (filter P x0)); intuition.
+     case_eq (hd_error (filter P x0)); intuition auto with *.
      comp_irr_r.
      edestruct Repeat_c_terminating; eauto.
      eapply well_formed_Repeat.
@@ -946,7 +946,7 @@ Section TrueMult_impl_Repeat.
        comp_spec_ret.
      simpl.
      
-     case_eq ( hd_error (filter P x0)); intuition.
+     case_eq ( hd_error (filter P x0)); intuition auto with *.
      rewrite orb_false_r in *.
 
      eapply fold_left_orb_true_in.
@@ -981,7 +981,7 @@ Section TrueMult_impl_Repeat.
      eauto.
 
      simpl.
-     intuition.
+     intuition auto with *.
    Qed.
 
    Theorem TrueRepeat_G1_bad_equiv :
@@ -1083,7 +1083,7 @@ Section TrueMult_impl_Repeat.
      rewrite G3_TrueMult_equiv.
      rewrite TrueRepeat_G1_bad_equiv .
      rewrite TrueRepeat_G2_bad_small.
-     intuition.
+     intuition auto with *.
    Qed.
 
       

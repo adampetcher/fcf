@@ -32,7 +32,7 @@ Ltac pairInv :=
 Ltac simp_ret := 
   match goal with
     | [H : In _ (getSupport (ret _)) |- _] => 
-      simpl in H; intuition; pairInv
+      simpl in H; intuition auto with *; pairInv
   end.
 
 Ltac wftac_one :=
@@ -46,7 +46,7 @@ Ltac wftac_one :=
   end.
   
 Ltac wftac :=
-  repeat (unfold setLet; intuition; eauto with wftac; try simp_ret; wftac_one).
+  repeat (unfold setLet; intuition auto with *; eauto with wftac; try simp_ret; wftac_one).
 
 Ltac destructLet_1 :=
   match goal with
@@ -126,7 +126,7 @@ Ltac dist_swap side :=
 Ltac dist_at_l tac line :=
   match line with
     | O => tac leftc
-    | S ?line' => eapply trans; [ eapply rel_seq; intuition; dist_at_l tac line'; eapply refl; eapply eqRat_refl | idtac]
+    | S ?line' => eapply trans; [ eapply rel_seq; intuition auto with *; dist_at_l tac line'; eapply refl; eapply eqRat_refl | idtac]
   end; dist_simp_weak.
 
 Ltac dist_at_r tac line :=
@@ -134,7 +134,7 @@ Ltac dist_at_r tac line :=
     | O => tac rightc
     | S ?line' =>
       eapply trans; [idtac |
-                     eapply rel_seq; [ intuition | intuition; (dist_at_r tac line'); eapply refl; eapply eqRat_refl] ] 
+                     eapply rel_seq; [ intuition auto with * | intuition auto with *; (dist_at_r tac line'); eapply refl; eapply eqRat_refl] ] 
   end; dist_simp.
 
 Ltac dist_at tac side line :=
@@ -144,13 +144,13 @@ Ltac dist_at tac side line :=
   end.
 
 Ltac dist_skip :=
-  eapply evalDist_seq; [ idtac | eauto with typeclass_instances | idtac] ; intuition; subst; dist_simp_weak; intuition.
+  eapply evalDist_seq; [ idtac | eauto with typeclass_instances | idtac] ; intuition auto with *; subst; dist_simp_weak; intuition auto with *.
 
 Ltac dist_irr_l :=
-  eapply evalDist_irr_l; [  eauto with typeclass_instances | simpl | idtac] ; intuition; dist_simp_weak.
+  eapply evalDist_irr_l; [  eauto with typeclass_instances | simpl | idtac] ; intuition auto with *; dist_simp_weak.
 
 Ltac dist_irr_r :=
-  eapply evalDist_irr_r; [  eauto with typeclass_instances | simpl | idtac] ; intuition; dist_simp_weak.
+  eapply evalDist_irr_r; [  eauto with typeclass_instances | simpl | idtac] ; intuition auto with *; dist_simp_weak.
 
 
 Lemma eqb_true_False : 
@@ -178,7 +178,7 @@ Ltac dist_compute_1 :=
 Ltac dist_compute_simp := simpl; unfold Fold.sumList; try rewrite <- ratAdd_0_l; try rewrite <- ratAdd_0_r; try rewrite ratMult_1_l; try rewrite ratMult_1_r; try rewrite ratMult_0_r; try rewrite ratMult_0_l.
 
 Ltac dist_compute := repeat
-  (dist_compute_simp; try dist_compute_1; try congruence; intuition).
+  (dist_compute_simp; try dist_compute_1; try congruence; intuition auto with *).
 
 Ltac dist_transitivity :=
   match goal with

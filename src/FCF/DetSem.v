@@ -163,7 +163,7 @@ Lemma evalDet_steps_done_inv_h : forall (A : Set)(x y : comp_state A),
   inversion H1; clear H1; subst.
   inversion H0; clear H0; subst.
   econstructor. econstructor.
-  intuition.
+  intuition auto with *.
   
   destruct (IHevalDet_steps c a s s'); eauto.
   destruct H0; intuition.
@@ -196,7 +196,7 @@ Lemma evalDet_steps_eof_inv_h : forall (A : Set)(x y : comp_state A),
   inversion H1; clear H1; subst.
   inversion H0; clear H0; subst.
   econstructor. econstructor.
-  intuition.
+  intuition auto with *.
   
   destruct (IHevalDet_steps c s); eauto.
   destruct H0; intuition.
@@ -1228,7 +1228,7 @@ Lemma evalDet_step_more_skipn_eq : forall (A : Set)(c c' : Comp A)(a1 : A) s1 s2
   trivial.
   right.
   exists (S n).
-  intuition.
+  intuition auto with *.
 
   eapply shiftOut_skipn.
   eauto.
@@ -1386,7 +1386,7 @@ Lemma evalDet_steps_skipn_h : forall (A : Set) a1 (x y : comp_state A),
   inversion H3; clear H3; subst.
 
   exists (x + x0).
-  intuition.
+  intuition auto with *.
   eapply skipn_sum.
 
   inversion H3.
@@ -1398,7 +1398,7 @@ Lemma evalDet_steps_skipn_h : forall (A : Set) a1 (x y : comp_state A),
   eauto.
   subst.
   exists (x + (x0 + x1)).
-  intuition.
+  intuition auto with *.
   rewrite skipn_sum.
   rewrite skipn_sum.
   trivial.
