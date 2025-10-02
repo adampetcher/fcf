@@ -17,8 +17,10 @@ jobs:
     strategy:
       matrix:
         image:
-          - 'coqorg/coq:dev'
           - 'coqorg/coq:8.19'
+          - 'coqorg/coq:8.20'
+          - 'rocq/rocq-prover:9.0'
+          - 'rocq/rocq-prover:dev'
       fail-fast: false
     steps:
       - uses: actions/checkout@v2
