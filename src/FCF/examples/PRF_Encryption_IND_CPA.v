@@ -162,7 +162,7 @@ Section PRF_Encryption_concrete.
       comp_skip; try eapply eqRat_refl).
       comp_simp; simpl.
       comp_simp.
-      intuition.
+      intuition auto with *.
 
     Qed.
 
@@ -419,7 +419,7 @@ Section PRF_Encryption_concrete.
       do 2 (comp_swap_r; comp_skip; comp_simp).
       unfold RF_Encrypt.
       do 2(inline_first; comp_skip; comp_simp).
-      intuition.
+      intuition auto with *.
     Qed.
 
     (* We will modify the procedure one adversary call at a time.  Start with the first one. *)
@@ -442,7 +442,7 @@ Section PRF_Encryption_concrete.
       unfold G2_1, G2_2.
 
       do 5 (inline_first; comp_skip; comp_simp).
-      simpl; intuition.
+      simpl; intuition auto with *.
     Qed.
 
     (* When r is not in the domain of the random function, we can sample the pad randomly, then add it to the function. *)
@@ -534,7 +534,7 @@ Section PRF_Encryption_concrete.
 
       comp_simp.
       simpl.
-      intuition.
+      intuition auto with *.
 
     Qed.
 
@@ -972,7 +972,7 @@ Section PRF_Encryption_concrete.
         comp_irr_l.
         eapply randomFunc_wf; wftac.
         comp_simp.
-        simpl; intuition.
+        simpl; intuition auto with *.
 
         rewrite H. clear H.
         (* dist_compute isn't working for some reason *)
@@ -1030,7 +1030,7 @@ Section PRF_Encryption_concrete.
       comp_skip.
       comp_simp.
       simpl.
-      intuition.
+      intuition auto with *.
       match goal with [H4:_ |- _ ] => rewrite H4; clear H4 end.
       
       eapply leRat_trans.
@@ -1309,7 +1309,7 @@ Section PRF_Encryption_concrete.
         intuition.
         costtac.
 
-        intuition.
+        intuition auto with *.
       Qed.  
 
     Theorem PRF_A'_cost : 

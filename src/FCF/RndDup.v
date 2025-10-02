@@ -56,14 +56,14 @@ Section RndDup.
     rewrite <- ratAdd_0_l.
     rewrite ratAdd_0_r at 1.
     eapply ratAdd_eqRat_compat.
-    intuition.
+    intuition auto with *.
     symmetry.
     
     assert (evalDist c1 false == 0).
     eapply getSupport_not_In_evalDist.
     rewrite <- Heqls.
     simpl.
-    intuition.
+    intuition auto with *.
     rewrite H.
     eapply ratMult_0_l.
 
@@ -81,7 +81,7 @@ Section RndDup.
     unfold sumList.
     simpl.
     rewrite <- ratAdd_0_l.
-    intuition.
+    intuition auto with *.
 
     destruct b.
     assert (NoDup (true :: false :: true :: ls)%list).
@@ -101,15 +101,15 @@ Section RndDup.
     destruct ls.
     unfold sumList.
     simpl.
-    eapply ratAdd_eqRat_compat; intuition.
+    eapply ratAdd_eqRat_compat; intuition auto with *.
     assert ( Pr  [c1 ] == 0).
     eapply getSupport_not_In_evalDist.
     rewrite <- Heqls.
     simpl.
-    intuition.
+    intuition auto with *.
     rewrite H.
     rewrite ratMult_0_l.
-    intuition.
+    intuition auto with *.
 
     destruct b.
     destruct ls.
@@ -155,7 +155,7 @@ Section RndDup.
 
     assert (Pr  [b2 <-$ c2; ret true || b2 ] == 1).
     comp_irr_l.
-    rewrite evalDist_ret_1; simpl; intuition.
+    rewrite evalDist_ret_1; simpl; intuition auto with *.
     rewrite H0.
     clear H0.
     
@@ -167,13 +167,13 @@ Section RndDup.
     rewrite <- ratAdd_0_r.
     eapply ratMult_1_r.
     simpl.
-    intuition.
+    intuition auto with *.
     simpl; intuition.
     rewrite H0.
     clear H0.
     rewrite ratMult_1_r.
     
-    intuition.
+    intuition auto with *.
   Qed.
 
   Theorem evalDist_right_ident_eqb : 
@@ -214,7 +214,7 @@ Section RndDup.
     rewrite ratMult_1_l.
     unfold orb.
     rewrite evalDist_right_ident.
-    intuition.
+    intuition auto with *.
   Qed.
 
 
@@ -237,7 +237,7 @@ Section RndDup.
     comp_simp.
     destruct (in_dec (EqDec_dec (Bvector_EqDec eta)) x nil).
     simpl in *. intuition.
-    rewrite evalDist_ret_0; intuition.
+    rewrite evalDist_ret_0; intuition auto with *.
     symmetry.
     eapply rat_num_0.
 
@@ -281,7 +281,7 @@ Section RndDup.
     case_eq (eqb x x0); intuition.
     destruct (in_dec (EqDec_dec (Bvector_EqDec eta)) x (x0 :: x1)).
     simpl.
-    intuition.
+    intuition auto with *.
 
     rewrite eqb_leibniz in H1.
     subst.
@@ -291,7 +291,7 @@ Section RndDup.
     destruct (in_dec (EqDec_dec (Bvector_EqDec eta)) x x1).
     destruct (in_dec (EqDec_dec (Bvector_EqDec eta)) x (x0 :: x1)).
     simpl.
-    intuition.
+    intuition auto with *.
 
     simpl in *.
     intuition.
@@ -303,7 +303,7 @@ Section RndDup.
     congruence.
 
     simpl.
-    intuition.
+    intuition auto with *.
 
     rewrite H.
     clear H.
@@ -314,7 +314,7 @@ Section RndDup.
     assert (Pr  [a0 <-$ { 0 , 1 }^eta; ret eqb x a0 ] == 1 / expnat 2 eta) as HA. {
       rewrite evalDist_right_ident_eqb.
       simpl.
-      intuition.
+      intuition auto with *.
     } rewrite HA; clear HA.
 
     eapply eqRat_impl_leRat.

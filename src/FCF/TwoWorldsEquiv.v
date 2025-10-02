@@ -37,8 +37,8 @@ Theorem evalDist_bool_support :
   intuition.
   rewrite <- H0 in H2.
   simpl in *.
-  intuition.
-  intuition.
+  intuition auto with *.
+  intuition auto with *.
   
   destruct b.
   inversion H1; clear H1; subst.
@@ -67,13 +67,13 @@ Theorem evalDist_bool_support :
   
   rewrite ratAdd_comm.
   eapply ratAdd_eqRat_compat.
-  intuition.
+  intuition auto with *.
   symmetry.
   eapply getSupport_not_In_evalDist.
   intuition.
   rewrite <- H0 in H2.
   simpl in *.
-  intuition.
+  intuition auto with *.
 
   destruct b.
   
@@ -82,7 +82,7 @@ Theorem evalDist_bool_support :
   unfold sumList.
   simpl.
   rewrite <- ratAdd_0_l.
-  intuition.
+  intuition auto with *.
   
   destruct b.
   inversion H1; clear H1; subst.
@@ -144,7 +144,7 @@ Theorem rndBool_bind :
   repeat rewrite <- ratAdd_0_l.
   repeat rewrite ratMult_1_r.
   eapply ratAdd_eqRat_compat;
-    eapply ratMult_eqRat_compat; intuition.
+    eapply ratMult_eqRat_compat; intuition auto with *.
   
   intuition.
   intuition.
@@ -199,7 +199,7 @@ Section TwoWorldsEquiv.
       rewrite <- (ratMult_1_r (1/2)) at 2.
       
       rewrite ratMult_ratDistance_factor_l.
-      eapply ratMult_eqRat_compat; intuition.
+      eapply ratMult_eqRat_compat; intuition auto with *.
       
       assert ((Pr  [f eta false])  + ratSubtract 1 (Pr  [f eta false]) == 1).
       rewrite <- ratSubtract_ratAdd_assoc.
@@ -223,7 +223,7 @@ Section TwoWorldsEquiv.
       
       rewrite StandardDef_equiv_2W_h.
       rewrite ratDistance_comm.
-      intuition.
+      intuition auto with *.
       
     Qed.
 
@@ -283,7 +283,7 @@ Section TwoWorldsEquiv.
         eapply Def_equiv_2W.
       }
 
-      eapply ratMult_leRat_compat; intuition.
+      eapply ratMult_leRat_compat; intuition auto with *.
       unfold leRat.
       eapply leRat_terms; intuition.
       unfold natToPosnat, posnatToNat.

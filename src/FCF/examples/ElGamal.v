@@ -127,13 +127,13 @@ Section ElGamal.
 
     comp_inline rightc.
     comp_skip.
-    rewrite groupExp_mult; intuition.
+    rewrite groupExp_mult; intuition auto with *.
 
     (* Simplify using left identity. *)
     comp_simp.
 
     (* The goal is an equality on two (obviously equal) rational numbers.  This equality is registered as a setoid in Coq, so it can be proved automatically using the intuition tactic. *)
-    intuition.
+    intuition auto with *.
   Qed.
 
   (* The next equality is proved using a short sequence involving two intermediate games.  RndG produces a random group element as described in the RndGrpElem module.  *)
@@ -186,7 +186,7 @@ Section ElGamal.
     comp_skip.
 
     comp_simp.
-    intuition.
+    intuition auto with *.
     
   Qed.   
 

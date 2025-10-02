@@ -225,7 +225,7 @@ Section ListHybrid.
     rewrite tl_skipn_eq.
     comp_skip.
 
-    rewrite skipn_gt_nil; intuition.
+    rewrite skipn_gt_nil; intuition auto with *.
     simpl.
     comp_simp.
     rewrite app_nil_r.
@@ -373,7 +373,7 @@ Section ListHybrid.
     simpl.
     eapply eqRat_impl_leRat.
     rewrite <- ratIdentityIndiscernables.
-    intuition.
+    intuition auto with *.
     
     eapply leRat_trans.
     2:{
@@ -387,7 +387,7 @@ Section ListHybrid.
     eapply IHn.
     eapply leRat_refl.
     rewrite ratAdd_comm.
-    intuition.
+    intuition auto with *.
     
   Qed.
   
@@ -423,7 +423,7 @@ Section ListHybrid.
     rewrite sumList_body_const.
     rewrite forNats_length.
     rewrite ratMult_comm.
-    intuition.
+    intuition auto with *.
 
   Qed.
 End ListHybrid.

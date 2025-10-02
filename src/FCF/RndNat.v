@@ -113,12 +113,12 @@ Lemma RndNat_uniform : forall v1 v2 n,
   
   intuition.
     
-  eapply evalDist_Repeat_eq; intuition.
+  eapply evalDist_Repeat_eq; intuition auto with *.
   unfold RndNat_unchecked.
   remember (lognat n) as length.
   eapply (evalDist_iso
     (BVxor length (BVxor length (natToBv length v1) (natToBv length v2)))
-    (BVxor length (BVxor length (natToBv length v1) (natToBv length v2)))); intuition.
+    (BVxor length (BVxor length (natToBv length v1) (natToBv length v2)))); intuition auto with *.
   
 (*
   eapply getSupport_In_evalDist.
@@ -150,7 +150,7 @@ Lemma RndNat_uniform : forall v1 v2 n,
       (BVxor (lognat n)
         (BVxor (lognat n) (natToBv (lognat n) v1)
           (natToBv (lognat n) (bvToNat x))) x)) v1).
-  intuition.
+  intuition auto with *.
   exfalso.
   eapply n0.
     
@@ -183,7 +183,7 @@ Lemma RndNat_uniform : forall v1 v2 n,
   eapply lognat_monotonic.
   lia.
 
-  intuition.
+  intuition auto with *.
   
   unfold ltNatBool.
   destruct (lt_dec v1 n); destruct (lt_dec v2 n); congruence.
@@ -267,7 +267,7 @@ Theorem RndNat_prob :
   rewrite sumList_body_const.  
   
   rewrite RndNat_support_length.
-  intuition.
+  intuition auto with *.
   intuition.
   eapply rat_num_nz.
   destruct nzn.
@@ -292,7 +292,7 @@ Theorem RndNat_seq :
   trivial.
   eapply eqRat_refl.
   rewrite sumList_factor_constant_l.
-  eapply ratMult_eqRat_compat; intuition.
+  eapply ratMult_eqRat_compat; intuition auto with *.
   eapply sumList_permutation.
   eapply NoDup_Permutation.
   eapply getSupport_NoDup.
@@ -332,7 +332,7 @@ Lemma rndNat_sumList :
 
   eapply sumList_body_eq.
   intuition.
-  eapply ratMult_eqRat_compat; intuition.
+  eapply ratMult_eqRat_compat; intuition auto with *.
   
   eapply RndNat_prob.
   eapply forNats_In.

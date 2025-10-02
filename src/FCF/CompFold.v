@@ -99,7 +99,7 @@ Theorem compMap_cons:
   
   intuition.
   simpl.
-  intuition.
+  intuition auto with *.
   
 Qed.
 
@@ -140,7 +140,7 @@ Theorem compMap_fission_eq:
   simpl.
   prog_inline_first.
 
-  eapply comp_spec_seq; intuition;
+  eapply comp_spec_seq; intuition auto with *;
   eauto with inhabited. 
 
   eapply comp_spec_eq_trans.
@@ -282,7 +282,7 @@ Lemma repeatMax_fold_in_support_false :
   simpl.
   intuition.
 
-  eapply IHls; intuition.
+  eapply IHls; intuition auto with *.
 Qed.
 
 
@@ -333,9 +333,9 @@ Theorem compFold_eq :
 
   eapply comp_spec_eq_refl.
 
-  eapply comp_spec_seq; intuition.
+  eapply comp_spec_seq; intuition auto with *.
   subst.
-  intuition.
+  intuition auto with *.
   
 Qed.
 
@@ -543,7 +543,7 @@ Lemma compMap_map :
   prog_simp.
   
   eapply comp_spec_eq_trans.
-  eapply comp_spec_seq_eq; intuition.
+  eapply comp_spec_seq_eq; intuition auto with *.
   eapply IHls.
   eapply comp_spec_eq_refl.
   prog_simp.
@@ -589,7 +589,7 @@ Lemma compFold_app :
   unfold compFold.
   fold compFold.
   comp_simp.
-  intuition.
+  intuition auto with *.
   
   rewrite <- app_comm_cons.
   unfold compFold.
@@ -689,7 +689,7 @@ Lemma compMap_eq :
   
   induction 1; intuition.
   unfold compMap.
-  intuition.
+  intuition auto with *.
   
   unfold compMap. fold compMap.
   comp_skip.
@@ -719,12 +719,12 @@ Theorem compFold_perm :
       evalDist (compFold _ c init ls2) x.
   
   induction 1; 
-  intuition.
+  intuition auto with *.
   
   unfold compFold.
   fold compFold.
   comp_skip.
-  eapply IHPermutation; intuition.
+  eapply IHPermutation; intuition auto with *.
   eapply H1.
   simpl.
   right.
@@ -742,12 +742,12 @@ Theorem compFold_perm :
   fold compFold.
   eapply (trans _  (evalDist (init'0 <-$ (init' <-$ c init y; c init' x); compFold eqd c init'0 l) x0)).
   inline_first.
-  intuition.
+  intuition auto with *.
   eapply trans.
   comp_skip.
   eapply eqRat_refl.
   inline_first.
-  intuition.
+  intuition auto with *.
   
   eapply trans.
   eapply IHPermutation1; intuition.
@@ -828,7 +828,7 @@ Lemma compMap_spec :
   eapply nil.
   eapply nil.
   eapply IHlist_pred.
-  intuition.
+  intuition auto with *.
   intuition.
   eapply comp_spec_ret.
   econstructor; eauto.
@@ -896,7 +896,7 @@ Lemma compMap_support :
   
   eapply IHlsa.
   trivial.
-  intuition.
+  intuition auto with *.
   
 Qed.
 
@@ -1037,7 +1037,7 @@ Theorem list_pred_impl'
 
   induction 1; intuition.
   econstructor.
-  econstructor; intuition.
+  econstructor; intuition auto with *.
 
 Qed.
 
@@ -1322,7 +1322,7 @@ Lemma compMap_app :
   comp_simp.
   comp_skip.
   simpl.
-  intuition.
+  intuition auto with *.
 Qed.
 
 Lemma compMap_flatten :
@@ -1527,7 +1527,7 @@ Lemma removePresent_In :
   induction ls2; intuition; simpl in *.
   intuition; subst.
   unfold setLet.
-  destruct (in_dec eqd a0 ls1); intuition.
+  destruct (in_dec eqd a0 ls1); intuition auto with *.
   
   unfold setLet.
   destruct (in_dec eqd a ls1); subst.
@@ -1550,7 +1550,7 @@ Lemma lookupIndex_lt_length :
   induction ls; intuition; simpl in *;
   intuition; subst.
   
-  destruct (eqd a0 a0); subst; intuition.
+  destruct (eqd a0 a0); subst; intuition auto with *.
   
   destruct (eqd a0 a); subst.
   lia.
@@ -1618,7 +1618,7 @@ Lemma fold_add_nat_Permutation :
     fold_left (fun acc a => acc + (f a))%nat ls1 O = 
     fold_left (fun acc a => acc + (f a))%nat ls2 O.
   
-  induction 1; intuition; simpl in *.
+  induction 1; intuition auto with *; simpl in *.
   rewrite fold_add_init_nat.
   symmetry.
   rewrite fold_add_init_nat.
@@ -1745,7 +1745,7 @@ Lemma fold_left_add_removePresent :
        
   rewrite (@fold_add_nat_filter_partition _ (fun a => if (in_dec eqd a u) then true else false) _ ls).
   rewrite <- Nat.add_0_r at 1.
-  eapply Nat.add_le_mono; intuition.
+  eapply Nat.add_le_mono; intuition auto with *.
   
   trivial.
   trivial.
@@ -1863,7 +1863,7 @@ Theorem removePresent_correct2 :
   destruct (in_dec eqd a u).
   intuition; subst; intuition.
   
-  intuition; subst.
+  intuition auto with *; subst.
   simpl.
   intuition.
 Qed.
@@ -1914,7 +1914,7 @@ Theorem nth_NoDup :
     (forall e, In e ls -> NoDup e) ->
     NoDup (nth i ls nil).
   
-  induction ls; destruct i; intuition; simpl in *.
+  induction ls; destruct i; intuition auto with *; simpl in *.
   econstructor.
   econstructor.
   eauto.
@@ -1951,7 +1951,7 @@ Lemma compFold_foldBodyOption_None :
   
   induction ls; intuition.
   unfold compFold.
-  intuition.
+  intuition auto with *.
   
   unfold compFold.
   fold compFold.
@@ -2020,7 +2020,7 @@ Lemma map_eq_nth_h :
   induction lsa; destruct lsb; intuition; simpl in *; try lia.
   
   inversion H0; clear H0; subst.
-  destruct i; intuition.
+  destruct i; intuition auto with *.
   
 Qed.
 
@@ -2240,7 +2240,7 @@ Lemma compMap_Repeat_close :
   eapply ratDistance_eqRat_compat.
   eapply eqRat_refl.
   eapply evalDist_seq.
-  intuition.
+  intuition auto with *.
   intuition.
   eapply repeat_unroll_eq; intuition.
   econstructor; eauto.
@@ -2267,10 +2267,10 @@ Lemma compMap_Repeat_close :
   comp_skip.
   comp_simp.
   simpl.
-  case_eq (P x2); intuition.
+  case_eq (P x2); intuition auto with *.
   simpl.
   unfold value.
-  intuition.
+  intuition auto with *.
 
   rewrite H1.
   clear H1.
@@ -2302,7 +2302,7 @@ Lemma compMap_Repeat_close :
      (r2 <-$ (if P a then ret a else Repeat c P); ret Some (f r2)) x)) | )).
 
   simpl.
-  intuition.
+  intuition auto with *.
   rewrite H1.
   clear H1.
   eapply leRat_trans.
@@ -2329,7 +2329,7 @@ Lemma compMap_Repeat_close :
   comp_ret_l.
   eapply eqRat_refl.
   rewrite <- ratIdentityIndiscernables.
-  intuition.
+  intuition auto with *.
   eapply ratMult_0_r.
 
   eapply sumList_le; intuition.
@@ -2344,7 +2344,7 @@ Lemma compMap_Repeat_close :
   econstructor; eauto.
   rewrite <- ratAdd_0_l.
   rewrite sumList_factor_constant_r.
-  eapply ratMult_leRat_compat; intuition.
+  eapply ratMult_leRat_compat; intuition auto with *.
   simpl.
   eapply eqRat_impl_leRat.
   symmetry.
@@ -2368,7 +2368,7 @@ Lemma compMap_Repeat_close :
   intuition.
   destruct (EqDec_dec bool_EqDec (negb (P a)) true).
   rewrite ratMult_1_r.
-  intuition.
+  intuition auto with *.
   congruence.
 Qed.
 
@@ -2387,7 +2387,7 @@ Theorem compMap_head :
   unfold hd_error.
   unfold error.
   comp_simp.
-  intuition.
+  intuition auto with *.
 
   unfold compMap. fold compMap.
   unfold hd_error. fold hd_error.
@@ -2398,8 +2398,8 @@ Theorem compMap_head :
   inline_first.
   comp_irr_l.
   eapply compMap_wf.
-  intuition.
-  intuition.
+  intuition auto with *.
+  intuition auto with *.
 Qed.
 
 Theorem compMap_filter : 
@@ -2413,7 +2413,7 @@ Theorem compMap_filter :
   unfold compMap.
   comp_simp.
   simpl.
-  intuition.
+  intuition auto with *.
   
   rewrite filter_cons.
   case_eq (P a); intuition.
@@ -2442,7 +2442,7 @@ Theorem compMap_filter :
   comp_simp.
   dist_compute.
 
-  intuition.
+  intuition auto with *.
 
 Qed.
 
@@ -2458,7 +2458,7 @@ Theorem prob_sum_le :
   simpl in *.
   rewrite evalDist_ret_0.
   eapply rat0_le_all.
-  intuition.
+  intuition auto with *.
   
   simpl.
   
@@ -2507,10 +2507,10 @@ Theorem prob_sum_le :
 
   
   rewrite prob_or_le_sum.
-  eapply ratAdd_leRat_compat; intuition.
+  eapply ratAdd_leRat_compat; intuition auto with *.
 
   Unshelve.
-  intuition.
+  intuition auto with *.
 
 Qed.
 
@@ -2531,11 +2531,11 @@ Theorem prob_sum_le_mult :
   eapply ratMult_1_r.
   rewrite sumList_factor_constant_l.
   rewrite ratMult_comm.
-  eapply ratMult_leRat_compat; intuition.
+  eapply ratMult_leRat_compat; intuition auto with *.
 
   rewrite  sumList_1_mult.
   rewrite forNats_length.
-  intuition.
+  intuition auto with *.
 Qed.
 
 Theorem compMap_Q_eq_compFold : 
@@ -2548,7 +2548,7 @@ Theorem compMap_Q_eq_compFold :
   simpl.
   comp_simp.
   simpl.
-  intuition.
+  intuition auto with *.
 
   Local Opaque evalDist.
   simpl.
@@ -2576,7 +2576,7 @@ Theorem Repeat_unroll_n :
   unfold compMap.
   comp_simp.
   simpl.
-  intuition.
+  intuition auto with *.
   
   unfold forNats.
   fold forNats.
@@ -2601,7 +2601,7 @@ Theorem Repeat_unroll_n :
   comp_simp.
   simpl.
   rewrite H2.
-  intuition.
+  intuition auto with *.
   trivial.
   trivial.
   trivial.
@@ -2627,7 +2627,7 @@ Theorem prob_fold_add_false_0 :
   
   induction ls; intuition.
   simpl.
-  rewrite evalDist_ret_0; intuition.
+  rewrite evalDist_ret_0; intuition auto with *.
   
   simpl.
   inline_first.
@@ -2636,7 +2636,7 @@ Theorem prob_fold_add_false_0 :
   intuition.
   comp_simp.
   rewrite IHls.
-  intuition.
+  intuition auto with *.
   eapply rat0_le_all.
 
 Qed.  
@@ -2672,7 +2672,7 @@ Theorem sumList_support_bool':
   
   destruct b.
   rewrite sumList_cons.
-  eapply ratAdd_eqRat_compat; intuition.
+  eapply ratAdd_eqRat_compat; intuition auto with *.
   destruct l.
   
   unfold sumList.
@@ -2681,11 +2681,11 @@ Theorem sumList_support_bool':
   assert (evalDist c false == 0).
   eapply getSupport_not_In_evalDist.
   rewrite H.
-  simpl; intuition.
+  simpl; intuition auto with *.
   rewrite H0.
   clear H0.
   rewrite ratMult_0_l.
-  intuition.
+  intuition auto with *.
   
   destruct b.
   specialize (getSupport_NoDup c); intuition.
@@ -2697,9 +2697,9 @@ Theorem sumList_support_bool':
   symmetry.
   rewrite ratAdd_0_r at 1.
   eapply ratAdd_eqRat_compat.
-  intuition.
+  intuition auto with *.
   destruct l.
-  unfold sumList; simpl; intuition.
+  unfold sumList; simpl; intuition auto with *.
   
   specialize (getSupport_NoDup c); intuition.
   rewrite H in H0.
@@ -2711,7 +2711,7 @@ Theorem sumList_support_bool':
   rewrite sumList_cons.
   symmetry.
   rewrite ratAdd_comm.
-  eapply ratAdd_eqRat_compat; intuition.
+  eapply ratAdd_eqRat_compat; intuition auto with *.
   destruct l.
   unfold sumList.
   simpl.
@@ -2719,7 +2719,7 @@ Theorem sumList_support_bool':
   assert (Pr[c] == 0).
   eapply getSupport_not_In_evalDist.
   rewrite H.
-  simpl; intuition.
+  simpl; intuition auto with *.
   rewrite H0.
   clear H0.
   eapply ratMult_0_l.
@@ -2728,12 +2728,12 @@ Theorem sumList_support_bool':
   rewrite sumList_cons.
   rewrite ratAdd_0_r at 1.
   eapply ratAdd_eqRat_compat.
-  intuition.
+  intuition auto with *.
   
   destruct l.
   unfold sumList.
   simpl.
-  intuition.
+  intuition auto with *.
   
   specialize (getSupport_NoDup c); intuition.
   rewrite H in H0.
@@ -2755,7 +2755,7 @@ Theorem prob_fold_and_eq_exp_h :
   
   induction ls; intuition.
   simpl.
-  rewrite evalDist_ret_1; intuition.
+  rewrite evalDist_ret_1; intuition auto with *.
 
   simpl.
   rewrite evalDist_seq_step.
@@ -2764,7 +2764,7 @@ Theorem prob_fold_and_eq_exp_h :
   rewrite prob_fold_add_false_0.
   repeat rewrite ratMult_0_r.
   rewrite <- ratAdd_0_r.
-  eapply ratMult_eqRat_compat; intuition.
+  eapply ratMult_eqRat_compat; intuition auto with *.
 Qed.
 
 Theorem prob_fold_and_eq_exp : 

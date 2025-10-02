@@ -114,13 +114,13 @@ Theorem evalDist_bind_event_le :
   destruct (EqDec_dec bool_EqDec (evta a) true ).
   rewrite e.
 
-  eapply ratMult_leRat_compat; intuition.
+  eapply ratMult_leRat_compat; intuition auto with *.
   eapply leRat_trans.
   eapply ratMult_leRat_compat.
   eapply leRat_refl.
   eapply evalDist_le_1.
   rewrite ratMult_1_r.
-  intuition.
+  intuition auto with *.
 
   destruct (evta a); intuition.
   repeat rewrite ratMult_0_r.
@@ -138,7 +138,7 @@ Theorem evalDist_bind_event_le :
   case_eq (evta a); intuition.
   eapply eqRat_impl_leRat.
   repeat rewrite ratMult_0_r.
-  intuition.
+  intuition auto with *.
   rewrite H0.
   eapply eqRat_impl_leRat.
   repeat rewrite ratMult_1_r.
@@ -154,7 +154,7 @@ Theorem evalDist_bind_event_le :
     eapply eqRat_impl_leRat.
     eapply ratMult_1_r.
   }
-  eapply ratMult_leRat_compat; intuition.
+  eapply ratMult_leRat_compat; intuition auto with *.
   
   
   assert (sumList (getSupport c)
@@ -169,8 +169,8 @@ Theorem evalDist_bind_event_le :
     eapply eqRat_impl_leRat.
     eapply ratMult_1_r.
   }
-  eapply ratMult_leRat_compat; intuition.
-  destruct (evta a); intuition.
+  eapply ratMult_leRat_compat; intuition auto with *.
+  destruct (evta a); intuition auto with *.
   eapply rat0_le_all.
   rewrite H2.
   eapply evalDist_sum_le_1.
@@ -212,7 +212,7 @@ Theorem oc_eventProb :
   trivial.
   intuition.
   intuition.
-  eapply ratMult_leRat_compat; intuition.
+  eapply ratMult_leRat_compat; intuition auto with *.
   eapply H2.
   eapply Nat.add_le_mono; intuition.
 
@@ -238,16 +238,16 @@ Theorem oc_eventProb :
   eapply ratAdd_leRat_compat;
   eapply ratMult_leRat_compat.
   1, 3: reflexivity.
-  intuition.
+  intuition auto with *.
   eapply H2.
   rewrite Nat.mul_add_distr_l.
   rewrite Nat.add_comm.
   repeat rewrite <- Nat.add_assoc.
-  eapply Nat.add_le_mono; intuition.
+  eapply Nat.add_le_mono; intuition auto with *.
 
   rewrite H1; intuition.
   rewrite <- ratMult_1_l.
-  eapply ratMult_leRat_compat; intuition.
+  eapply ratMult_leRat_compat; intuition auto with *.
   eapply leRat_terms; intuition.
 
   inline_first.
@@ -327,7 +327,7 @@ Theorem oc_eventProb :
 
   comp_skip.
   simpl.
-  intuition.
+  intuition auto with *.
   rewrite H7.
   clear H7.
 
@@ -340,7 +340,7 @@ Theorem oc_eventProb :
                              (fun p => count (snd p)) (fun p => evt (snd p))
          _ (fun x => q2 / 1 * k (x)%nat) (i * q2)%nat).
   intuition.
-  eapply ratMult_leRat_compat; intuition.
+  eapply ratMult_leRat_compat; intuition auto with *.
   trivial.
   intuition.
   
@@ -358,7 +358,7 @@ Theorem oc_eventProb :
 
   comp_skip.
   simpl.
-  intuition.
+  intuition auto with *.
   rewrite H8.
   clear H8.
   simpl.
@@ -391,7 +391,7 @@ Theorem oc_eventProb :
   reflexivity.
 
   rewrite IHqueries_at_most.
-  eapply ratMult_leRat_compat; intuition.
+  eapply ratMult_leRat_compat; intuition auto with *.
   eapply leRat_terms; intuition.
   intuition.
   trivial.
@@ -426,7 +426,7 @@ Theorem oc_eventProb_0_1 :
   rewrite H4.
   rewrite Nat.mul_1_l.
   rewrite Nat.add_0_r.
-  intuition.
+  intuition auto with *.
 Qed.
 
 Local Open Scope nat_scope.
@@ -535,14 +535,14 @@ Section RndInList.
     eapply sumList_le.
     intuition.
     eapply ratMult_leRat_compat.
-    intuition.
+    intuition auto with *.
     apply filter_In in H.
     intuition.
     destruct (EqDec_dec (Bvector_EqDec eta) a a0 ).
     subst.
     rewrite eqb_refl in H1.
     simpl in *. discriminate.
-    destruct (in_dec (EqDec_dec (Bvector_EqDec eta)) a0 ls); intuition.
+    destruct (in_dec (EqDec_dec (Bvector_EqDec eta)) a0 ls); intuition auto with *.
     
     eapply rat0_le_all.
   Qed.
@@ -606,7 +606,7 @@ Section FixedInRndList.
     simpl.
     rewrite evalDist_ret_0.
     eapply rat0_le_all.
-    intuition.
+    intuition auto with *.
 
     simpl.
     inline_first.
@@ -635,9 +635,9 @@ Section FixedInRndList.
     intuition; subst.
     rewrite eqb_refl in *.
     discriminate.
-    destruct (in_dec (EqDec_dec (Bvector_EqDec eta)) x x0); intuition.
+    destruct (in_dec (EqDec_dec (Bvector_EqDec eta)) x x0); intuition auto with *.
     simpl in n; intuition.
-    destruct (in_dec (EqDec_dec (Bvector_EqDec eta)) x x0); intuition.
+    destruct (in_dec (EqDec_dec (Bvector_EqDec eta)) x x0); intuition auto with *.
 
     rewrite H1.
     rewrite IHls.
@@ -684,7 +684,7 @@ Section RndInAdaptive.
     intuition.
     rewrite ratMult_assoc.
     eapply ratMult_leRat_compat.
-    intuition.
+    intuition auto with *.
 
     case_eq (evt1 a); intuition.
     rewrite ratMult_1_r.
@@ -700,7 +700,7 @@ Section RndInAdaptive.
     
     destruct (EqDec_dec bool_EqDec false true); intuition.
     discriminate.
-    rewrite ratMult_0_r; intuition.
+    rewrite ratMult_0_r; intuition auto with *.
 
     assert ( sumList (getSupport c)
    (fun a : A0 =>
@@ -717,7 +717,7 @@ Section RndInAdaptive.
     symmetry.
     apply ratMult_0_l.
     repeat rewrite ratMult_1_r.
-    eapply ratMult_leRat_compat; intuition.
+    eapply ratMult_leRat_compat; intuition auto with *.
 
     rewrite H1.
     clear H1.
@@ -727,7 +727,7 @@ Section RndInAdaptive.
       eapply eqRat_impl_leRat.
       eapply ratMult_1_l.
     }
-    eapply ratMult_leRat_compat; intuition.
+    eapply ratMult_leRat_compat; intuition auto with *.
     assert ( sumList (getSupport c)
    (fun a : A0 => evalDist c a * (if evt1 a then 0 else 1)) <=
     sumList (getSupport c)
@@ -738,7 +738,7 @@ Section RndInAdaptive.
     rewrite ratMult_0_r.
     eapply rat0_le_all.
     rewrite ratMult_1_r.
-    intuition.
+    intuition auto with *.
     rewrite H1. clear H1.
     eapply evalDist_sum_le_1.
   Qed.    
@@ -774,7 +774,7 @@ Section RndInAdaptive.
     comp_simp.
     comp_skip.
     simpl.
-    intuition.
+    intuition auto with *.
     simpl.
     destruct x; simpl in*.
     case_eq (evt s0); intuition.
@@ -782,9 +782,9 @@ Section RndInAdaptive.
     eapply oc_comp_invariant_f;
     eauto.
     rewrite H8.
-    simpl; intuition.
+    simpl; intuition auto with *.
     rewrite orb_false_l.
-    intuition.
+    intuition auto with *.
     
     rewrite H5.
     clear H5.
@@ -807,7 +807,7 @@ Section RndInAdaptive.
     eapply eqRat_impl_leRat.
     rewrite ratAdd_den_same.
     rewrite ratMult_distrib_r.
-    intuition.
+    intuition auto with *.
 
     (* Query case *)
     Opaque evalDist.
@@ -877,7 +877,7 @@ Section RndInAdaptive.
     trivial.
 
     rewrite <- ratMult_assoc.
-    eapply ratMult_leRat_compat; intuition.
+    eapply ratMult_leRat_compat; intuition auto with *.
     rewrite <- ratMult_num_den.
     eapply eqRat_impl_leRat.
     eapply eqRat_terms; intuition.
@@ -885,7 +885,7 @@ Section RndInAdaptive.
     (* trans case *)
     eapply leRat_trans.
     eapply IHqueries_at_most; eauto.
-    eapply ratMult_leRat_compat; intuition.
+    eapply ratMult_leRat_compat; intuition auto with *.
     eapply leRat_terms; intuition.
 
   Qed.

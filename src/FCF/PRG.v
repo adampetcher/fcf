@@ -68,7 +68,7 @@ Definition firstPart(A : Set)(m1 m2 : nat)(v : Vector.t A (m1 + m2)) : Vector.t 
 Theorem skipn_length : forall (A : Set) n0 (ls : list A),
   length (skipn n0 ls) = (length ls) - n0.
   
-  induction n0; intuition; simpl in *.
+  induction n0; intuition auto with *; simpl in *.
   
   destruct ls; simpl.
   trivial.
@@ -339,7 +339,7 @@ Section OWP_HCP_Impl_PRG.
     
     eapply eqRat_impl_leRat.
     eapply ratDistance_eqRat_compat.
-    intuition.
+    intuition auto with *.
 
     eapply eqRat_trans.
     eapply evalDist_seq_eq.
@@ -360,7 +360,7 @@ Section OWP_HCP_Impl_PRG.
 
     comp_simp.
 
-    intuition.
+    intuition auto with *.
    
   Qed.
     

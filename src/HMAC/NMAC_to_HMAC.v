@@ -144,7 +144,7 @@ Section NMAC_to_HMAC.
     simpl.
     inline_first.
     comp_simp.
-    intuition.
+    intuition auto with *.
   Qed.
   
   Definition A_NMAC_G1 :=
@@ -273,7 +273,7 @@ Section NMAC_to_HMAC.
     simpl.
     inline_first.
     comp_simp.
-    intuition.
+    intuition auto with *.
   Qed.
 
   Theorem A_HMAC_NMAC_close : 

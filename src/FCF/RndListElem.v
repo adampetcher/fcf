@@ -105,7 +105,7 @@ Lemma rndListElem_support:
   unfold rndListElem.
   case_eq (length ls); intuition.
   exfalso.
-  destruct ls; simpl in *; intuition.
+  destruct ls; simpl in *; intuition auto with *.
   
   eapply getSupport_In_Seq.
 
@@ -272,7 +272,7 @@ Theorem rndListElem_uniform :
   simpl in *.
   intuition.
 
-  intuition.
+  intuition auto with *.
 
 Qed.
 
